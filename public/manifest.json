@@ -1,0 +1,18 @@
+{
+    "dir": "ltr",
+    "lang": "English",
+    "name": "Squool",
+    "short_name": "Squool",
+    "scope": "/",
+    "display": "standalone",
+    "start_url": "https://squool.vercel.app/",
+    "background_color": "transparent",
+    "theme_color": "transparent",
+    "description": "<Description>",
+    "orientation": "any",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": [],
+    "url": "https://squool.vercel.app",
+    "screenshots": []
+}
