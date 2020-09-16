@@ -11,6 +11,8 @@ export default function MyApp(props) {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
+        console.log("jss");
+        
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
@@ -37,8 +39,3 @@ export default function MyApp(props) {
     </>
   );
 }
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
-};
