@@ -1,3 +1,3 @@
 import { useSelector } from "react-redux";
 
-export default () => useSelector(s => s.ajaxLoading);
+//export default () => useSelector(s => s.ajaxLoading);

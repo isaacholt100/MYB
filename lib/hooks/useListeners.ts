@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MutableRefObject, ReactText, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+/*import { useDispatch } from "react-redux";
 import publicRoutes from "../../json/publicRoutes.json";
 import usePathname from "./usePathname";
 import useSnackbar from "./useSnackbar";
@@ -75,4 +75,4 @@ export default () => {
             //snackbar.error("Please login first");
         //}
     }, [pathname]);
-}
+}*/

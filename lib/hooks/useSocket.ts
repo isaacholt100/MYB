@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import socket from "../api/socket";
+/*import socket from "../api/socket";
 
 export default () => {
     const dispatch = useDispatch();
@@ -27,4 +27,4 @@ export default () => {
             }));
         }
     }
-}
+}*/
