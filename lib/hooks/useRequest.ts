@@ -1,9 +1,9 @@
-import Request from "../workers/request.worker";
+/*import Request from "../workers/request.worker";
 import serverUrl from "../api/serverUrl";
 import fetchData from "../api/fetchData";
 import { useDispatch } from "react-redux";
 import useSnackbar from "./useSnackbar";
-import useCookies from "./useCookies";
+*/import useCookies from "./useCookies";/*
 
 const useFetch = () => {
     const snackbar = useSnackbar();
@@ -80,4 +80,4 @@ export default () => {
             f({ url, method: "DELETE", ...obj });
         }
     };
-}
+}*/
