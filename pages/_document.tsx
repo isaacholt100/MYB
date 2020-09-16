@@ -1,6 +1,7 @@
 import React from "react";
 import Document, { Html, Main, NextScript, DocumentContext } from "next/document";
 import { ServerStyleSheets } from "@material-ui/core/styles";
+import Head from "next/head";
 
 export default class Doc extends Document {
     static async getInitialProps(ctx: DocumentContext) {
@@ -18,6 +19,13 @@ export default class Doc extends Document {
     render() {
         return (
             <Html lang="en">
+                <Head>
+          {/* PWA primary color */}
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          />
+        </Head>
                 <body>
                     <Main />
                     <NextScript />
