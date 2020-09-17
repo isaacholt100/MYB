@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createGenerateClassName, createMuiTheme, StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 export default function MyApp(props) {
@@ -17,6 +17,9 @@ export default function MyApp(props) {
   }, []);
 
   return (
+      <StylesProvider generateClassName={createGenerateClassName({
+          productionPrefix: "myclasses-"
+      })}>
     <React.Fragment>
       <Head>
         <title>My page</title>
@@ -28,6 +31,7 @@ export default function MyApp(props) {
         <Component {...pageProps} />
       </ThemeProvider>
     </React.Fragment>
+    </StylesProvider>
   );
 }
 
