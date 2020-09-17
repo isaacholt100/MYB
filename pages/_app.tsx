@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { createGenerateClassName, createMuiTheme, StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 export default function MyApp(props) {
+    const [mounted, setMounted] = useState(false);
   const { Component, pageProps } = props;
 
   React.useEffect(() => {
@@ -14,8 +15,11 @@ export default function MyApp(props) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+    setMounted(true);
   }, []);
-
+  if (!mounted) {
+      return <div></div>
+  }
   return (
       <StylesProvider generateClassName={createGenerateClassName({
           productionPrefix: "myclasses-"
