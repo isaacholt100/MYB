@@ -1,9 +1,7 @@
 import IAction from "../../types/action";
 import defaultTimetable from "../../json/defaultTimetable.json";
 
-export default (state = localStorage.getItem("timetable")
-? JSON.parse(localStorage.getItem("timetable")) || defaultTimetable
-: defaultTimetable, action: IAction) => {
+export default (state = defaultTimetable, action: IAction) => {
     switch (action.type) {
         case "UPLOAD_DATA":
             return action.payload.timetable ? {

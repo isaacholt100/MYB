@@ -1,6 +1,6 @@
 import IAction from "../../types/action";
 
-export default (state = localStorage.getItem("carouselView") === "1", action: IAction) => {
+export default (state = false, action: IAction) => {
     switch (action.type) {
         case "/user/carouselView":
             return Boolean(action.payload);

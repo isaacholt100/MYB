@@ -6,7 +6,7 @@ import { AlertError } from "../components/AlertError";
 export default function Error({ statusCode }) {
     return (
         <AlertError
-            msg={statusCode ? `An error ${statusCode} occurred on server` : 'An error occurred on client'}
+            msg={statusCode ? `An error ${statusCode} occurred on server` : "An error occurred on client"}
             btn={(
                 <Link href="/feedback">
                     <Button component="a" variant="outlined">
