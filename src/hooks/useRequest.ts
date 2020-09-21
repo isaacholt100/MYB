@@ -1,9 +1,9 @@
 import fetchData from "../lib/fetchData";
 import { useDispatch } from "react-redux";
 import useSnackbar from "./useSnackbar";
-import useCookies from "./useCookies";
 import { IFetchOptions, IRes } from "../types/fetch";
 import { useState } from "react";
+import Cookies from "js-cookie";
 type Handler = (data: object | string) => void;
 interface IOptions extends IFetchOptions {
     setLoading?: boolean;
@@ -17,12 +17,11 @@ function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, erro
     const
         snackbar = useSnackbar(),
         dispatch = useDispatch(),
-        cookies = useCookies(),
         [loading, setLoading] = useState(false);
     const fetcher = ({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => {
         const response = (res: IRes) => {
             load && setLoading(false);
-            res.accessToken && cookies.set("accessToken", res.accessToken, true);
+            res.accessToken && Cookies.set("accessToken", res.accessToken, { expires: 7 });
             switch (res.type) {
                 case "failed":
                     if (method === "GET" && load) {
@@ -51,8 +50,8 @@ function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, erro
             method,
             serverUrl: "/api",
             body,
-            accessToken: cookies.get("accessToken"),
-            refreshToken: cookies.get("refresh"),
+            accessToken: Cookies.get("accessToken"),
+            refreshToken: Cookies.get("refresh"),
             ...other,
         }
         if (file) {

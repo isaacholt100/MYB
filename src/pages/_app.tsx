@@ -17,6 +17,8 @@ import Theme, { useTheme } from "../context/Theme";
 import { SWRConfig } from "swr";
 import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
+import Cookies from "js-cookie";
+
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
         [mounted, setMounted] = useState(false),
@@ -216,7 +218,10 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         });
     useEffect(() => setMounted(true), []);
     useEffect(() => {
+        //router.
+        console.log(document.getElementById("jss-server-side"));
         console.log(router.pathname);
+
     }, [router.pathname]);
     return (
         <>
@@ -306,7 +311,7 @@ export default ({ Component, pageProps }: AppProps) => {
     const snack: MutableRefObject<ProviderContext> = useRef();
     const classes = useStyles();
     useEffect(() => {
-        const jssStyles = document.getElementById("jss-server-side");
+        const jssStyles = document.querySelector("#jss-server-side");
         if (jssStyles) {
             jssStyles.parentElement.removeChild(jssStyles);
         }

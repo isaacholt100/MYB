@@ -1,8 +1,6 @@
 import type { IOptions, Handler } from "../types/fetch";
 
 export default async ({ serverUrl, url, method, file, body, accessToken, refreshToken, ...other }: IOptions, fn: Handler) => {
-    console.log({serverUrl});
-    
     const res = await fetch(serverUrl + url, {
         credentials: "include",
         method,
