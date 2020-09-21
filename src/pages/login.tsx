@@ -8,6 +8,7 @@ import useRequest, { usePost }/*, { usePost }*/ from "../hooks/useRequest";
 //import { useHistory } from "react-router-dom";
 //import serverUrl from "../../api/serverUrl";
 //import socket from "../../api/socket";
+import Cookies from "js-cookie";
 import {
     Typography,
     Divider,
@@ -28,6 +29,9 @@ import effects from "../css/effects.module.css";
 import useSWR from "swr";
 import { useTheme } from "../context/Theme";
 import LoadBtn from "../components/LoadBtn";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import redirect from "../lib/redirect";
 //import AjaxBtn from "../../components/AjaxBtn";
 //import { setCookie } from "../../api/cookies";
 //import useSocket from "../../hooks/useSocket";
@@ -38,14 +42,15 @@ const initialState = {
     emailError: "",
     passwordError: "",
 };
-export default () => {
+export default function Login() {
     const
         [post, loading] = usePost(),
         //request = useRequest(),
+        router = useRouter(),
         [show, setShow] = useState(false),
         [staySigned, setStaySigned] = useState(true),
         [state, setState] = useState(initialState),
-        //dispatch = useDispatch(),
+        dispatch = useDispatch(),
         //history = useHistory(),
         //socket = useSocket(),
         disabled = state.emailError !== "" || state.passwordError !== "" || state.email === "" || state.password === "",
@@ -68,10 +73,9 @@ export default () => {
                         password: state.password,
                         staySignedIn: staySigned,
                     },
-                    done(data) {
-                        /*setCookie("refresh", data.refreshToken, state.staySignedIn);
-                        setCookie("accessToken", data.accessToken, true);
-                        setCookie("email", email, true);
+                    done(data: any) {
+                        Cookies.set("refresh", data.refreshToken, staySigned ? { expires: 4e12 } : undefined);
+                        Cookies.set("accessToken", data.accessToken, { expires: 7, secure: true });
                         dispatch({
                             type: "UPLOAD_DATA",
                             payload: {
@@ -83,8 +87,8 @@ export default () => {
                             },
                         });
                         sessionStorage.setItem("visited", "1");
-                        socket.connect(`http://${serverUrl.split(":5000")[0]}`);
-                        history.push(redirect());*/
+                        router.push(redirect());
+                        //socket.connect(`http://${serverUrl.split(":5000")[0]}`);
                     },
                     errors: data => setState({
                         ...state,

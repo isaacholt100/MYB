@@ -17,11 +17,11 @@ import {
 import { Box } from "@material-ui/core";
 import clsx from "clsx";
 import usePathname from "../hooks/usePathname";
-import useCookies from "../hooks/useCookies";
 import Icon from "./Icon";
 import { mdiAccountGroup, mdiAccountPlus, mdiBell, mdiBook, mdiCalendar, mdiChat, mdiCog, mdiDotsHorizontal, mdiFormatListChecks, mdiGroup, mdiHome, mdiLogin, mdiMenu, mdiSchool, mdiTimetable, mdiWrench } from "@mdi/js";
 import Link from "next/link";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
+import Cookies from "js-cookie";
 
 const
     useStyles = makeStyles(theme => ({
