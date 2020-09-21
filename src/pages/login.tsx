@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 //Imports
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 //import { Link } from "react-router-dom";
 //import redirect from "../../api/redirect";
 //import { useDispatch } from "react-redux";
-//import useRequest from "../../hooks/useFetch";
+import useRequest, { usePost }/*, { usePost }*/ from "../hooks/useRequest";
 //import { useHistory } from "react-router-dom";
 //import serverUrl from "../../api/serverUrl";
 //import socket from "../../api/socket";
@@ -24,24 +24,27 @@ import {
 import Icon from "../components/Icon";
 import { mdiEye, mdiEyeOff } from "@mdi/js";
 import Link from "next/link";
+import effects from "../css/effects.module.css";
+import useSWR from "swr";
+import { useTheme } from "../context/Theme";
+import LoadBtn from "../components/LoadBtn";
 //import AjaxBtn from "../../components/AjaxBtn";
 //import { setCookie } from "../../api/cookies";
 //import useSocket from "../../hooks/useSocket";
 
-const
-    originalState = {
-        email: "",
-        password: "",
-        emailError: "",
-        passwordError: "",
-    };
-
+const initialState = {
+    email: "",
+    password: "",
+    emailError: "",
+    passwordError: "",
+};
 export default () => {
     const
+        [post, loading] = usePost(),
         //request = useRequest(),
         [show, setShow] = useState(false),
         [staySigned, setStaySigned] = useState(true),
-        [state, setState] = useState(originalState),
+        [state, setState] = useState(initialState),
         //dispatch = useDispatch(),
         //history = useHistory(),
         //socket = useSocket(),
@@ -53,23 +56,20 @@ export default () => {
                 [`${name}Error`]: e.target.value === "" ? "Field required" : "",
             });
         },
-        handleClear = () => {
-            setState(originalState);
-        },
-        handleSubmit = async e => {
+        handleSubmit = (e: FormEvent) => {
             e.preventDefault();
             const email = state.email.trim().toLocaleLowerCase();
-            if (state.emailError === "" && state.passwordError === "") {
-                /*request.post("/login", {
+            if (!disabled) {
+                post("/login", {
                     setLoading: true,
                     failedMsg: "logging you in",
                     body: {
                         email,
                         password: state.password,
-                        staySignedIn: state.staySignedIn,
+                        staySignedIn: staySigned,
                     },
-                    done: data => {
-                        setCookie("refresh", data.refreshToken, state.staySignedIn);
+                    done(data) {
+                        /*setCookie("refresh", data.refreshToken, state.staySignedIn);
                         setCookie("accessToken", data.accessToken, true);
                         setCookie("email", email, true);
                         dispatch({
@@ -84,49 +84,20 @@ export default () => {
                         });
                         sessionStorage.setItem("visited", "1");
                         socket.connect(`http://${serverUrl.split(":5000")[0]}`);
-                        history.push(redirect());
+                        history.push(redirect());*/
                     },
                     errors: data => setState({
                         ...state,
-                        ...data.errors,
+                        ...(data as any).errors,
                     })
-                });*/
-                /*request("/login", "POST", true, data => {
-                    setCookie("refresh", data.refreshToken, state.staySignedIn);
-                    setCookie("accessToken", data.accessToken, true);
-                    setCookie("email", email, true);
-                    dispatch({
-                        type: "UPLOAD_DATA",
-                        payload: {
-                            userInfo: {
-                                ...data.userInfo,
-                                email,
-                            },
-                            ...data,
-                        },
-                    });
-                    sessionStorage.setItem("visited", "1");
-                    socket.connect(`http://${serverUrl.split(":5000")[0]}`);
-                    history.push(redirect());
-                }, "logging you in", {
-                    email,
-                    password: state.password,
-                    staySignedIn: state.staySignedIn,
-                }, data => {
-                    setState({
-                        ...state,
-                        ...data.errors,
-                    });
-                });*/
+                });
             }
-        }
-        //t({ url: "/test", done: console.log})
-        //console.log(snack, s, t({ url: "/test"}));
+        };
     return (
         <div>
-            <Box maxWidth={600} mx="auto" className="fadeup" component={Card}>
+            <Box maxWidth={600} mx="auto" className={effects.fadeup} component={Card}>
                 <Typography variant="h5" gutterBottom>
-                    Login to Unnamed
+                    Login to Squool
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <Box my="8px">
@@ -190,12 +161,9 @@ export default () => {
                         />
                     </Box>
                     <Box display="flex" justifyContent="space-between">
-                        <Button type="submit">
-                            Login
-                        </Button>
-                        {/*<AjaxBtn label="Login" disabled={disabled} />*/}
+                        <LoadBtn loading={loading} label="Login" disabled={disabled} />
                         <Button
-                            onClick={handleClear}
+                            onClick={() => setState(initialState)}
                             variant="outlined"
                             color="primary"
                         >
@@ -209,17 +177,10 @@ export default () => {
                     <Button
                         color="secondary"
                         component="a"
-                        //component={React.forwardRef((props, ref) => <Link href="/signup" naked ref={ref as any} {...props} />)}
-                        //href="/signup"
                     >
                         Sign up now
                     </Button>
                 </Link>
-                <Link href="/poo">
-                        <Button variant="outlined" component="a">
-                            Go Home
-                        </Button>
-                    </Link>
             </Box>
         </div>
     );

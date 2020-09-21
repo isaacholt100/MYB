@@ -1,0 +1,120 @@
+import fetchData from "../lib/fetchData";
+import { useDispatch } from "react-redux";
+import useSnackbar from "./useSnackbar";
+import useCookies from "./useCookies";
+import { IFetchOptions, IRes } from "../types/fetch";
+import { useState } from "react";
+type Handler = (data: object | string) => void;
+interface IOptions extends IFetchOptions {
+    setLoading?: boolean;
+    failedMsg?: string;
+    doneMsg?: string;
+    errors?: Handler;
+    done?: Handler;
+    failed?: Handler;
+}
+function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => void, boolean] {
+    const
+        snackbar = useSnackbar(),
+        dispatch = useDispatch(),
+        cookies = useCookies(),
+        [loading, setLoading] = useState(false);
+    const fetcher = ({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => {
+        const response = (res: IRes) => {
+            load && setLoading(false);
+            res.accessToken && cookies.set("accessToken", res.accessToken, true);
+            switch (res.type) {
+                case "failed":
+                    if (method === "GET" && load) {
+                        dispatch({
+                            type: "LOAD_ERROR",
+                            payload: failedMsg,
+                        });
+                    }
+                    failed && failed(failedMsg);
+                    failedMsg && snackbar.error("There was an error " + failedMsg);
+                    break;
+                case "errors":
+                    errors && errors(res.data);
+                    break;
+                default:
+                    dispatch({
+                        type: "CLOSE_CONFIRM_DIALOG",
+                    });
+                    doneMsg && snackbar.info(doneMsg);
+                    done && done(res.data);
+            }
+        }
+        load && setLoading(true);
+        const obj = {
+            url,
+            method,
+            serverUrl: "/api",
+            body,
+            accessToken: cookies.get("accessToken"),
+            refreshToken: cookies.get("refresh"),
+            ...other,
+        }
+        if (file) {
+            fetchData({
+                file: true,
+                ...obj
+            }, response);
+        } else {
+            const worker = new Worker("../workers/request.worker", { type: "module" });
+            worker.postMessage(obj);
+            worker.addEventListener("message", ({ data: res }) => {
+                response(res);
+                worker.terminate();
+            });
+        }
+    }
+    return [fetcher, loading];
+}
+type PublicOptions = Omit<IOptions, "url" | "method">;
+type FetchHook = [(url: string, options: PublicOptions) => void, boolean];
+export function useGet(): FetchHook {
+    const [f, loading] = useFetch();
+    const fn = (url: string, options: PublicOptions) => {
+        f({ url, method: "GET", ...options });
+    }
+    return [fn, loading];
+}
+export function usePost(): FetchHook {
+    const [f, loading] = useFetch();
+    const fn = (url: string, options: PublicOptions) => {
+        f({ url, method: "POST", ...options });
+    }
+    return [fn, loading];
+}
+export function usePut(): FetchHook {
+    const [f, loading] = useFetch();
+    const fn = (url: string, options: PublicOptions) => {
+        f({ url, method: "PUT", ...options });
+    }
+    return [fn, loading];
+}
+export function useDelete(): FetchHook {
+    const [f, loading] = useFetch();
+    const fn = (url: string, options: PublicOptions) => {
+        f({ url, method: "DELETE", ...options });
+    }
+    return [fn, loading];
+}
+export default () => {
+    const [f] = useFetch();
+    return {
+        get(url: string, options: PublicOptions) {
+            f({ url, method: "GET", ...options });
+        },
+        post(url: string, options: PublicOptions) {
+            f({ url, method: "POST", ...options });
+        },
+        put(url: string, options: PublicOptions) {
+            f({ url, method: "PUT", ...options });
+        },
+        delete(url: string, options: PublicOptions) {
+            f({ url, method: "DELETE", ...options });
+        }
+    };
+}

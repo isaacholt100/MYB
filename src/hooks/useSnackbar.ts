@@ -10,7 +10,7 @@ export default () => {
             enqueueSnackbar(msg, { variant: "error" });
         },
         info(msg: ReactNode) {
-            enqueueSnackbar(msg, { variant: "error" });
+            enqueueSnackbar(msg, { variant: "info" });
         },
         success(msg: ReactNode) {
             enqueueSnackbar(msg, { variant: "success" });
