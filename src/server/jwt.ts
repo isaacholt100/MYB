@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                     if (err.name === "TokenExpiredError") {
                         const refreshHeader = req.headers["authorization-refresh"] as string;
                         const refreshToken = refreshHeader.split(" ")[1];
-                        if (req.cookies.refreshToken !== refreshToken) {
+                        if (req.cookies.httpRefreshToken !== refreshToken) {
                             throw new Error();
                         }
                         const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as IUSer;

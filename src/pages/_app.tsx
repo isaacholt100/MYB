@@ -21,14 +21,13 @@ import Cookies from "js-cookie";
 
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
-        [mounted, setMounted] = useState(false),
+        //[mounted, setMounted] = useState(true),
         isLoggedIn = useIsLoggedIn(),
         [theme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
         level1Bg = theme.type === "light" ? "#ddd" : "#333",
         fontFamily = `https://fonts.googleapis.com/css?family=${theme.fontFamily.toLowerCase().split(" ").map((s: string) => s.charAt(0).toUpperCase() + s.substring(1)).join("+")}:300,400,500`,
-        router = useRouter(),
         classes = useContainerStyles(isLoggedIn),
         muiTheme = createMuiTheme({
             palette: {
@@ -49,6 +48,14 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 fontFamily: `"${theme.fontFamily}", "Helvetica", "Arial", sans-serif`,
             },
             overrides: {
+                MuiCssBaseline: {
+                    "@global": {
+                        "html, body, body > #__next": {
+                            width: "100vw",
+                            height: "100vh",
+                        },
+                    }
+                },
                 MuiMenu: {
                     paper: {
                         border: `2px solid gray`,
@@ -135,9 +142,9 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     },
                 },
                 MuiToolbar: {
-                    root: {
-                        display: "none !important" as any,
-                    }
+                    regular: {
+                        minHeight: "56px !important"
+                    },
                 },
                 MuiPaper: {
                     root: {
@@ -170,12 +177,12 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         padding: "8px 16px",
                     },
                 },
-                /*MuiAlert: {
+                MuiAlert: {
                     root: {
-                        borderRadius: 8,
+                        borderRadius: "16px !important",
                         width: "100%",
                     },
-                },*/
+                },
                 MuiDialogActions: {
                     root: {
                         padding: 16,
@@ -189,7 +196,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 MuiAppBar: {
                     root: {
                         overflow: "hidden",
-                        height: 100
                     },
                     colorDefault: {
                         backgroundColor: level1Bg,
@@ -201,7 +207,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         borderBottom: `4px solid ${theme.primary}`,
                     },
                 },
-            },
+            } as any,
             props: {
                 MuiButton: {
                     variant: "contained",
@@ -216,22 +222,19 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 },
             },
         });
-    useEffect(() => setMounted(true), []);
-    useEffect(() => {
-        //router.
-        console.log(document.getElementById("jss-server-side"));
-        console.log(router.pathname);
-
-    }, [router.pathname]);
     return (
         <>
             <Head>
                 <link rel="stylesheet" href={fontFamily} />
             </Head>
-            {!mounted ? <div /> : (
+            {false ? <div /> : (
                 <MuiTheme theme={muiTheme}>
-                    <Box className={classes.appContainer} ml={{lg: isLoggedIn ? "65px" : 0, xs: 0}}>
-                        {children}
+                    <Box display="flex" flexDirection="column" height="100vh" width="100vw">
+                        <Navigation />
+                        <CssBaseline />
+                        <div className={classes.appContainer}>
+                            {children}
+                        </div>
                     </Box>
                 </MuiTheme>
             )}
@@ -245,7 +248,7 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        [breakpoints.up("lg")]: {
+        [breakpoints.up("md")]: {
             marginLeft: props => (props as any) ? 65 : 0,
             width: props => (props as any) ? "calc(100vw - 65px)" : "100vw",
         },
@@ -262,7 +265,7 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
             },
             padding: 8,
         },
-        flexGrow: 1,
+        flex: 1,
         minHeight: 0,
     },
 }));
@@ -368,13 +371,9 @@ export default ({ Component, pageProps }: AppProps) => {
                                     <meta name="theme-color" content="#317EFB" />
                                     <title>Squool</title>
                                 </Head>
-                                <Box display="flex" flexDirection="column" height="100vh" width="100vw" bgcolor="background.default" color="text.primary" >
-                                    <Navigation />
-                                    <CssBaseline />
-                                    <ThemeWrapper>
-                                        <Component {...pageProps} />
-                                    </ThemeWrapper>
-                                </Box>
+                                <ThemeWrapper>
+                                    <Component {...pageProps} />
+                                </ThemeWrapper>
                             </Snackbar>
                         </Pickers>
                     </Theme>

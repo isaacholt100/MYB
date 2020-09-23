@@ -15,7 +15,7 @@ export default async (req: NextApiRequest & {user: any}, res: NextApiResponse) =
             if (!accessToken || !refreshToken) {
                 throw new Error();
             }
-            if (req.cookies.refreshToken !== refreshToken) {
+            if (req.cookies.httpRefreshToken !== refreshToken) {
                 throw new Error();
             }
             const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as IUSer;

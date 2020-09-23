@@ -51,7 +51,7 @@ function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, erro
             serverUrl: "/api",
             body,
             accessToken: Cookies.get("accessToken"),
-            refreshToken: Cookies.get("refresh"),
+            refreshToken: Cookies.get("refreshToken"),
             ...other,
         }
         if (file) {

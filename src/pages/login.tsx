@@ -4,7 +4,7 @@ import React, { FormEvent, useState } from "react";
 //import { Link } from "react-router-dom";
 //import redirect from "../../api/redirect";
 //import { useDispatch } from "react-redux";
-import useRequest, { usePost }/*, { usePost }*/ from "../hooks/useRequest";
+import { usePost }/*, { usePost }*/ from "../hooks/useRequest";
 //import { useHistory } from "react-router-dom";
 //import serverUrl from "../../api/serverUrl";
 //import socket from "../../api/socket";
@@ -26,12 +26,12 @@ import Icon from "../components/Icon";
 import { mdiEye, mdiEyeOff } from "@mdi/js";
 import Link from "next/link";
 import effects from "../css/effects.module.css";
-import useSWR from "swr";
 import { useTheme } from "../context/Theme";
 import LoadBtn from "../components/LoadBtn";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import redirect from "../lib/redirect";
+import useAuthRedirect from "../hooks/useAuthRedirect";
+import { mutate } from "swr";
 //import AjaxBtn from "../../components/AjaxBtn";
 //import { setCookie } from "../../api/cookies";
 //import useSocket from "../../hooks/useSocket";
@@ -44,9 +44,11 @@ const initialState = {
 };
 export default function Login() {
     const
+        isLoggedIn = useAuthRedirect(),
+        router = useRouter(),
         [post, loading] = usePost(),
         //request = useRequest(),
-        router = useRouter(),
+        [, setTheme] = useTheme(),
         [show, setShow] = useState(false),
         [staySigned, setStaySigned] = useState(true),
         [state, setState] = useState(initialState),
@@ -74,8 +76,8 @@ export default function Login() {
                         staySignedIn: staySigned,
                     },
                     done(data: any) {
-                        Cookies.set("refresh", data.refreshToken, staySigned ? { expires: 4e12 } : undefined);
-                        Cookies.set("accessToken", data.accessToken, { expires: 7, secure: true });
+                        console.log(data);
+                        setTheme(data.theme);
                         dispatch({
                             type: "UPLOAD_DATA",
                             payload: {
@@ -87,7 +89,11 @@ export default function Login() {
                             },
                         });
                         sessionStorage.setItem("visited", "1");
-                        router.push(redirect());
+                        Cookies.set("refreshToken", data.refreshToken, {sameSite: "strict", secure: true, ...(staySigned ? { expires: 1000000 } : {})});
+                        Cookies.set("accessToken", data.accessToken, { sameSite: "strict",  secure: true, expires: 1000000 });
+                        mutate("/api/login", true, false);
+                        const q = router.query.to as string;
+                        router.replace(q && q[0] === "/" ? q : "/");
                         //socket.connect(`http://${serverUrl.split(":5000")[0]}`);
                     },
                     errors: data => setState({
@@ -97,7 +103,7 @@ export default function Login() {
                 });
             }
         };
-    return (
+    return isLoggedIn ? null : (
         <div>
             <Box maxWidth={600} mx="auto" className={effects.fadeup} component={Card}>
                 <Typography variant="h5" gutterBottom>
@@ -111,7 +117,7 @@ export default function Login() {
                             required
                             error={state.emailError !== ""}
                             variant="outlined"
-                            label="Username or email"
+                            label="Email"
                             value={state.email}
                             onChange={handleChange("email")}
                             autoComplete="new-email"
