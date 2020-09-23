@@ -14,35 +14,29 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
             "Access-Control-Allow-Headers": "authorization",
         },
     });
-    const extra: { accessToken?: string } = {};
-    if (res && res.headers && res.headers.get("authorization")) {
-        extra.accessToken = res.headers.get("authorization");
-    }
-    try {
-        if (res && res.ok) {
-            const data = await res.json();
-            if (data === "failed") {
-                throw new Error("Failed");
-            } else if (data && data.errors) {
-                fn({
-                    type: "errors",
-                    data,
-                    ...extra,
-                });
-            } else {
-                fn({
-                    type: "success",
-                    data,
-                    ...extra,
-                });
-            }
+    const header = res?.headers?.get("authorization");
+    const extra = header ? {
+        accessToken: header,
+    } : {};
+    if (res?.ok) {
+        const data = await res.json();
+        if (data?.errors) {
+            fn({
+                type: "errors",
+                data,
+                ...extra,
+            });
         } else {
-            throw new Error("Response not OK");
+            fn({
+                type: "success",
+                data,
+                ...extra,
+            });
         }
-    } catch (err) {
+    } else {
         fn({
             type: "failed",
-            data: err.name,
+            data: "failed",
             ...extra,
         });
     }

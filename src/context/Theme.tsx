@@ -33,4 +33,4 @@ export default function Theme({ children }: { children: ReactChild }) {
         </ThemeContext.Provider>
     )
 }
-export const useTheme: any = () => useContext(ThemeContext);
+export const useTheme = (): [ITheme, (theme: ITheme) => void] => useContext(ThemeContext) as any;

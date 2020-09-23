@@ -22,25 +22,26 @@ import { mdiAccountGroup, mdiAccountPlus, mdiBell, mdiBook, mdiCalendar, mdiChat
 import Link from "next/link";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import Cookies from "js-cookie";
+//import BtnLink from "./BtnLink";
 
 const
     useStyles = makeStyles(theme => ({
         appBar: {
             marginLeft: 65,
-            [theme.breakpoints.up("lg")]: {
+            [theme.breakpoints.up("md")]: {
                 width: `calc(100% - ${65}px)`
             },
-            boxShadow: "none",
+            //boxShadow: "none",
             //position: "fixed",
             backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
+            //color: theme.palette.text.primary,
             padding: 0,
             borderRadius: 0,
-            zIndex: 1200,
+            //zIndex: 1200,
             borderBottom: `4px solid ${theme.palette.primary.main}`,
         },
         navIconHide: {
-            [theme.breakpoints.up("lg")]: {
+            [theme.breakpoints.up("md")]: {
                 display: "none",
             },
             marginLeft: 4,
@@ -53,11 +54,11 @@ const
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen
             }),
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-            "& *": {
-                fontFamily: theme.typography.fontFamily,
-            },
+            //backgroundColor: theme.palette.background.paper,
+            //color: theme.palette.text.primary,
+            //"& *": {
+                //fontFamily: theme.typography.fontFamily,
+            //},
             padding: 0,
             borderRadius: 0,
         },
@@ -67,7 +68,9 @@ const
         mr: {
             marginRight: 4,
             position: "relative",
-            top: 0,
+        },
+        ml: {
+            marginLeft: "auto",
         },
         iconBtn: {
             /*color: theme.palette.text.primary,
@@ -93,16 +96,16 @@ const Nav = memo(() => {
         role = ["student", "teacher"][0],//useSelector(s => s.userInfo.role),
         iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent),
         icons = {
-            "Books": <Icon path={mdiBook} />,
-            "Classes": <Icon path={mdiAccountGroup} />,
-            "Chats": <Icon path={mdiChat} />,
-            "Timetable": <Icon path={mdiTimetable} />,
-            "Calendar": <Icon path={mdiCalendar} />,
-            "Tools": <Icon path={mdiWrench} />,
-            "Reminders": <Icon path={mdiFormatListChecks} />,
-            "Settings": <Icon path={mdiCog} />,
-            "School": <Icon path={mdiSchool} />,
-            "Home": <Icon path={mdiHome} />
+            "Books": mdiBook,
+            "Classes": mdiAccountGroup,
+            "Chats": mdiChat,
+            "Timetable": mdiTimetable,
+            "Calendar": mdiCalendar,
+            "Tools": mdiWrench,
+            "Reminders": mdiFormatListChecks,
+            "Settings": mdiCog,
+            "School": mdiSchool,
+            "Home": mdiHome
         },
         links = () => {
             if (!isLoggedIn) {
@@ -120,36 +123,37 @@ const Nav = memo(() => {
         DrawerItems = (small: boolean) => isLoggedIn && (
             <>
                 <Box p={"8px 8px 0px 8px"}>
-                    {links().map((link, i) => (
-                        <Box whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden" borderRadius={8} mb="8px" height="48px !important" px="12px !important" key={i} color={link.toLowerCase() === pathname.split("/")[1] ? "primary.main" : "text.primary"} /*border={link === "Home" && 2}*/ onClick={() => setMobileOpen(false)}>
+                    {links().map(link => (
+                                    <Link href={"/" + link.toLowerCase()} key={link}>
+                        <Box whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden" borderRadius={8} mb="8px" height="48px !important" px="12px !important" color={link.toLowerCase() === pathname.split("/")[1] ? "primary.main" : "text.primary"} /*border={link === "Home" && 2}*/ onClick={() => setMobileOpen(false)}>
                             {b => (
-                                <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
-                                    <ListItem
-                                        {...b}
-                                        button
-                                        component={Link}
-                                        to={"/" + link.toLowerCase()}
-                                        //selected={link.toLowerCase() === location.pathname.split("/")[1]}
-                                        selected={link === "Home"}
-                                    >
-                                        {icons[link]}
-                                        {small && (
-                                            <Box ml="16px" clone>
-                                                <ListItemText primary={link} />
-                                            </Box>
-                                        )}
-                                    </ListItem>
+                                    <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
+                                        <ListItem
+                                            {...b}
+                                            button
+                                            //component={BtnLink}
+                                            href={"/" + link.toLowerCase()}
+                                            //selected={link.toLowerCase() === location.pathname.split("/")[1]}
+                                            selected={link === "Home"}
+                                        >
+                                            <Icon path={icons[link]} />
+                                            {small && (
+                                                <Box ml="16px" clone>
+                                                    <ListItemText primary={link} />
+                                                </Box>
+                                            )}
+                                        </ListItem>
                                 </Tooltip>
                             )}
-                        </Box>
+                        </Box></Link>
                     ))}
                 </Box>
             </>
         );
     return (
         <>
-            <AppBar position="absolute" className={classes.appBar}>
-                <Toolbar disableGutters={true} style={{minHeight: 56}}>
+            <AppBar position="absolute" className={classes.appBar} color="default">
+                <Toolbar disableGutters={true}>
                     <Tooltip title="Menu">
                         <IconButton
                             aria-label="Open drawer"
@@ -164,14 +168,13 @@ const Nav = memo(() => {
                         {isLoggedIn && (
                             <>
                                 <Tooltip title="Notifications">
-                                    <Box ml="auto" mr="8px" clone>
-                                        <IconButton
-                                            className={clsx(classes.mr, classes.iconBtn)}
-                                            onClick={() => setNotificationOpen(true)}
-                                        >
-                                            <Icon path={mdiBell} />
-                                        </IconButton>
-                                    </Box>
+                                    <IconButton
+                                        className={clsx(classes.mr, classes.iconBtn, classes.ml)}
+                                        onClick={() => setNotificationOpen(true)}
+                                        color="inherit"
+                                    >
+                                        <Icon path={mdiBell} />
+                                    </IconButton>
                                 </Tooltip>
                                 <Tooltip title="More Options">
                                     <IconButton
@@ -179,6 +182,7 @@ const Nav = memo(() => {
                                         onClick={() => dispatch({
                                             type: "/moreActions/open",
                                         })}
+                                        color="inherit"
                                     >
                                         <Icon path={mdiDotsHorizontal} />
                                     </IconButton>
@@ -204,7 +208,7 @@ const Nav = memo(() => {
                     <Typography variant="h5">Notifications</Typography>
                 </div>
             </Drawer>
-            <Hidden lgUp>
+            <Hidden mdUp>
                 <SwipeableDrawer
                     variant="temporary"
                     anchor="left"
@@ -223,7 +227,7 @@ const Nav = memo(() => {
                     {DrawerItems(true)}
                 </SwipeableDrawer>
             </Hidden>
-            <Hidden mdDown implementation="css">
+            <Hidden smDown>
                 <Drawer
                     variant="permanent"
                     open
