@@ -74,7 +74,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             }
             break;
         case "GET":
-            console.log([req.cookies.refreshToken, req.cookies.accessToken, req.cookies.httpRefreshToken]);
             res.json(Boolean(req.cookies.refreshToken && req.cookies.httpRefreshToken && req.cookies.accessToken));
             break;
         case "DELETE":
