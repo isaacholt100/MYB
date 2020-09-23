@@ -21,7 +21,7 @@ function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, erro
     const fetcher = ({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => {
         const response = (res: IRes) => {
             load && setLoading(false);
-            res.accessToken && Cookies.set("accessToken", res.accessToken, { expires: 7 });
+            res.accessToken && Cookies.set("accessToken", res.accessToken, { expires: 100, secure: true, sameSite: "strict" });
             switch (res.type) {
                 case "failed":
                     if (method === "GET" && load) {

@@ -35,16 +35,22 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     const accessToken = jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
                         expiresIn: "20m",
                     });
+                    const extra = staySignedIn ? {
+                        maxAge: 400000000000000
+                    } : {};
                     setCookies(res, ["httpRefreshToken", refreshToken, {
                         sameSite: "strict",
                         httpOnly: true,
                         secure: true,
+                        ...extra
                     }], ["accessToken", accessToken, {
                         sameSite: "strict",
                         secure: true,
+                        ...extra
                     }], ["refreshToken", refreshToken, {
                         sameSite: "strict",
                         secure: true,
+                        ...extra
                     }]);
                     res.json({
                         userInfo: {
