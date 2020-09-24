@@ -89,8 +89,8 @@ export default function Login() {
                             },
                         });
                         sessionStorage.setItem("visited", "1");
-                        Cookies.set("refreshToken", data.refreshToken, {sameSite: "strict", secure: true, ...(staySigned ? { expires: 1000000 } : {})});
-                        Cookies.set("accessToken", data.accessToken, { sameSite: "strict",  secure: true, expires: 1000000 });
+                        Cookies.set("accessToken", data.accessToken, {sameSite: "strict", ...(staySigned ? { expires: 100 } : {expires: 100})});
+                        Cookies.set("refreshToken", data.refreshToken, {sameSite: "strict", ...(staySigned ? { expires: 1000000 } : {})});
                         mutate("/api/login", true, false);
                         const q = router.query.to as string;
                         router.replace(q && q[0] === "/" ? q : "/");

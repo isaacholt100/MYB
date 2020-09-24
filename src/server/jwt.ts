@@ -11,7 +11,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         try {
             const accessToken = accessHeader.split(" ")[1];
             if (!accessToken) {
-                throw new Error();
+                throw new Error("401");
             }
             jwt.verify(accessToken, process.env.ACCESS_TOKEN, (err, user: IUSer) => {
                 if (err) {
@@ -19,7 +19,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                         const refreshHeader = req.headers["authorization-refresh"] as string;
                         const refreshToken = refreshHeader.split(" ")[1];
                         if (req.cookies.httpRefreshToken !== refreshToken) {
-                            throw new Error();
+                            throw new Error("403");
                         }
                         const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as IUSer;
                         if (user.user_id !== payload.user_id) {
