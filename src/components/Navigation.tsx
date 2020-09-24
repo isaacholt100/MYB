@@ -26,14 +26,14 @@ import NProgressBar from "./NProgressBar";
 import { useRouter } from "next/router";
 NProgress.configure({
     parent: "#nprogress-parent"
-})
+});
 
 const
     useStyles = makeStyles(theme => ({
         appBar: {
-            marginLeft: 65,
             [theme.breakpoints.up("md")]: {
-                width: `calc(100% - ${65}px)`
+                width: `calc(100% - ${65}px)`,
+                marginLeft: 65,
             },
             //boxShadow: "none",
             //position: "fixed",
@@ -249,6 +249,6 @@ const Nav = memo(() => {
     );
 });
 export default () => {
-    const loggedIn = true//useIsLoggedIn();
+    const loggedIn = useIsLoggedIn();
     return loggedIn ? <Nav /> : null;
 }
