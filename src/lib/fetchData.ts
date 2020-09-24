@@ -18,9 +18,8 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
     const extra = header ? {
         accessToken: header,
     } : {};
-    console.log("hi");
-    
     console.log(await res.json());
+    
     if (res?.ok) {
         const data = await res.json();
         if (data?.errors) {
@@ -37,7 +36,6 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
             });
         }
     } else {
-        
         fn({
             type: "failed",
             data: "failed",
