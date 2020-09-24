@@ -35,17 +35,24 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     const accessToken = jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
                         expiresIn: "20m",
                     });
-                    setCookies(res, ["httpRefreshToken", refreshToken, {
+                    res.setHeader("Set-Cookie", [cookie.serialize("httpRefreshToken", refreshToken, {
+                        httpOnly: true,
+                        maxAge: 100000000000000,
+                        sameSite: "strict",
+                    })]);
+                    /*setCookies(res, ["httpRefreshToken", refreshToken, {
                         sameSite: "strict",
                         httpOnly: true,
                         secure: true,
                     }], ["accessToken", accessToken, {
-                        sameSite: "strict",
-                        secure: true,
+                        //sameSite: "strict",
+                        //secure: true,
+                        path: "/",
                     }], ["refreshToken", refreshToken, {
-                        sameSite: "strict",
-                        secure: true,
-                    }]);
+                        //sameSite: "strict",
+                        //secure: true,
+                        path: "/",
+                    }]);*/
                     res.json({
                         userInfo: {
                             role: user.role,
@@ -74,21 +81,14 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             }
             break;
         case "GET":
-            console.log([req.cookies.refreshToken, req.cookies.accessToken, req.cookies.httpRefreshToken]);
             res.json(Boolean(req.cookies.refreshToken && req.cookies.httpRefreshToken && req.cookies.accessToken));
             break;
         case "DELETE":
-            clearCookies(res, ["httpRefreshToken", {
-                sameSite: "strict",
+            res.setHeader("Set-Cookie", [cookie.serialize("httpRefreshToken", '', {
+                maxAge: -1,
                 httpOnly: true,
-                secure: true,
-            }], ["accessToken", {
                 sameSite: "strict",
-                secure: true,
-            }], ["refreshToken", {
-                sameSite: "strict",
-                secure: true,
-            }]);
+              })]);
             done(res);
             break;
         default:
