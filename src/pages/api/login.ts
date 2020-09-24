@@ -37,13 +37,14 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     });
                     res.setHeader("Set-Cookie", [cookie.serialize("httpRefreshToken", refreshToken, {
                         httpOnly: true,
-                        maxAge: 100000000000000,
                         sameSite: "strict",
+                        ...(staySignedIn ? { maxAge: 1000000000000000 } : {})
                     })]);
                     /*setCookies(res, ["httpRefreshToken", refreshToken, {
                         sameSite: "strict",
                         httpOnly: true,
                         secure: true,
+                        ...extra
                     }], ["accessToken", accessToken, {
                         //sameSite: "strict",
                         //secure: true,
