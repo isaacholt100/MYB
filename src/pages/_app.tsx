@@ -244,7 +244,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
 const useContainerStyles = makeStyles(({ breakpoints }) => ({
     appContainer: {
         width: "100vw",
-        marginTop: props => (props as any) ? 60 : 0,
+        //marginTop: props => (props as any) ? 60 : 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",

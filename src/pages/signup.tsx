@@ -229,7 +229,7 @@ export default () => {
     }, []);
     return (
         <div>
-            <Box maxWidth={600} className={effects.fadeup} mx="auto" component={Card}>
+            <Box maxWidth={600} /*className={effects.fadeup}*/ mx="auto" component={Card}>
                 <Typography variant="h5" gutterBottom>
                     Sign up to Squool
                 </Typography>
