@@ -1,5 +1,4 @@
 import { MongoClient } from "mongodb";
-import { NextApiRequest } from "next";
 const client = new MongoClient(process.env.MONGODB_URI, {
     useUnifiedTopology: true,
 });

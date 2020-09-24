@@ -6,6 +6,6 @@ export default async (res: NextApiResponse, fn: (() => Promise<void>) | (() => v
         await fn();
     } catch (err) {
         console.error(err);
-        res.status(Number.isNaN(+err.name) ? 500 : +err.name).end();
+        res.status(Number.isNaN(+err.name) ? 500 : +err.name).json({err});
     }
 }
