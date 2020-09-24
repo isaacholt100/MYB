@@ -143,7 +143,7 @@ export default function Login() {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <Tooltip title="Show Password">
+                                        <Tooltip title={(show ? "Hide" : "Show") + " Password"}>
                                             <IconButton
                                                 aria-label="Toggle password visibility"
                                                 onClick={() => setShow(!show)}

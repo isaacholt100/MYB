@@ -13,7 +13,7 @@ export default () => {
                 Cookies.remove("refreshToken");
                 Cookies.remove("accessToken");
                 mutate("/api/login", false, false);
-                router.push("/login");
+                router.push("/");
             }
         });
     }
