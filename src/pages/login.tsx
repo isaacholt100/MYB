@@ -105,7 +105,7 @@ export default function Login() {
         };
     return isLoggedIn ? null : (
         <div>
-            <Box maxWidth={600} mx="auto" className={effects.fadeup} component={Card}>
+            <Box maxWidth={600} mx="auto" /*className={effects.fadeup}*/ component={Card}>
                 <Typography variant="h5" gutterBottom>
                     Login to Squool
                 </Typography>

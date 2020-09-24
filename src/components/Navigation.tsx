@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, memo, ReactChildren, ReactNode } from "react";
+import React, { useState, memo, ReactChildren, ReactNode, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,8 +21,12 @@ import Icon from "./Icon";
 import { mdiAccountGroup, mdiAccountPlus, mdiBell, mdiBook, mdiCalendar, mdiChat, mdiCog, mdiDotsHorizontal, mdiFormatListChecks, mdiGroup, mdiHome, mdiLogin, mdiMenu, mdiSchool, mdiTimetable, mdiWrench } from "@mdi/js";
 import Link from "next/link";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
-import Cookies from "js-cookie";
-//import BtnLink from "./BtnLink";
+import NProgress from "nprogress";
+import NProgressBar from "./NProgressBar";
+import { useRouter } from "next/router";
+NProgress.configure({
+    parent: "#nprogress-parent"
+})
 
 const
     useStyles = makeStyles(theme => ({
@@ -37,8 +41,9 @@ const
             //color: theme.palette.text.primary,
             padding: 0,
             borderRadius: 0,
-            //zIndex: 1200,
-            borderBottom: `4px solid ${theme.palette.primary.main}`,
+            zIndex: 1200,
+            height: 60,
+            //borderBottom: `4px solid ${theme.palette.primary.main}`,
         },
         navIconHide: {
             [theme.breakpoints.up("md")]: {
@@ -88,10 +93,10 @@ const
 const Nav = memo(() => {
     const
         pathname = usePathname(),
+        router = useRouter(),
         [mobileOpen, setMobileOpen] = useState(false),
         [notificationOpen, setNotificationOpen] = useState(false),
         dispatch = useDispatch(),
-        isLoggedIn = useIsLoggedIn(),
         classes = useStyles(),
         role = ["student", "teacher"][0],//useSelector(s => s.userInfo.role),
         iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent),
@@ -108,9 +113,6 @@ const Nav = memo(() => {
             "Home": mdiHome
         },
         links = () => {
-            if (!isLoggedIn) {
-                return ["Home", "Signup", "Login"];
-            }
             switch (role) {
                 case "student":
                     return ["Home", "Books", "Classes", "Chats", "Timetable", "Calendar", "Tools", "Reminders", "Settings"];
@@ -120,7 +122,7 @@ const Nav = memo(() => {
                     return ["Home", "School", "Chats", "Calendar", "Tools", "Reminders", "Settings"];
             }
         },
-        DrawerItems = (small: boolean) => isLoggedIn && (
+        DrawerItems = (small: boolean) => (
             <>
                 <Box p={"8px 8px 0px 8px"}>
                     {links().map(link => (
@@ -150,9 +152,14 @@ const Nav = memo(() => {
                 </Box>
             </>
         );
+    useEffect(() => {
+        router.events.on("routeChangeStart", NProgress.start);
+        router.events.on("routeChangeComplete", NProgress.done);
+        router.events.on("routeChangeError", NProgress.done);
+    }, []);
     return (
         <>
-            <AppBar position="absolute" className={classes.appBar} color="default">
+            <AppBar className={classes.appBar} color="default" position="relative">
                 <Toolbar disableGutters={true}>
                     <Tooltip title="Menu">
                         <IconButton
@@ -165,32 +172,32 @@ const Nav = memo(() => {
                         </IconButton>
                     </Tooltip>
                     <Box ml="auto">
-                        {isLoggedIn && (
-                            <>
-                                <Tooltip title="Notifications">
-                                    <IconButton
-                                        className={clsx(classes.mr, classes.iconBtn, classes.ml)}
-                                        onClick={() => setNotificationOpen(true)}
-                                        color="inherit"
-                                    >
-                                        <Icon path={mdiBell} />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="More Options">
-                                    <IconButton
-                                        className={clsx(classes.mr, classes.iconBtn)}
-                                        onClick={() => dispatch({
-                                            type: "/moreActions/open",
-                                        })}
-                                        color="inherit"
-                                    >
-                                        <Icon path={mdiDotsHorizontal} />
-                                    </IconButton>
-                                </Tooltip>
-                            </>
-                        )}
+                        <Tooltip title="Notifications">
+                            <IconButton
+                                className={clsx(classes.mr, classes.iconBtn, classes.ml)}
+                                onClick={() => setNotificationOpen(true)}
+                                color="inherit"
+                            >
+                                <Icon path={mdiBell} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="More Options">
+                            <IconButton
+                                className={clsx(classes.mr, classes.iconBtn)}
+                                onClick={() => dispatch({
+                                    type: "/moreActions/open",
+                                })}
+                                color="inherit"
+                            >
+                                <Icon path={mdiDotsHorizontal} />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 </Toolbar>
+                <div id="nprogress-parent" style={{position: "relative", zIndex: 1000000, height: 4}}>
+                    <Box position="absolute" bgcolor="primary.main" height={"4px"} width={1} />
+                    <NProgressBar />
+                </div>
             </AppBar>
             <Drawer
                 variant="temporary"
@@ -242,6 +249,6 @@ const Nav = memo(() => {
     );
 });
 export default () => {
-    const loggedIn = useIsLoggedIn();
+    const loggedIn = true//useIsLoggedIn();
     return loggedIn ? <Nav /> : null;
 }
