@@ -1,7 +1,7 @@
-import { MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 import url from "url";
 let cachedDb = null;
-export default async (db: string) => {
+export default async (db: string): Promise<Db> => {
     try {
         if (cachedDb) {
             console.log("cache");

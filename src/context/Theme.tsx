@@ -1,4 +1,5 @@
-import { createContext, ReactChild, ReactChildren, useContext, useReducer, useState } from "react";
+import { IDBPDatabase, openDB } from "idb";
+import { createContext, ReactChild, ReactChildren, useContext, useEffect, useReducer, useState } from "react";
 import defaultTheme from "../json/defaultTheme.json";
 interface ITheme {
     fontFamily: string;
@@ -18,14 +19,29 @@ function reducer(state: ITheme, action: { type: string; payload: ITheme }) {
             throw new Error("Unrecognised action type for theme reducer");
     }
 }
+const useDB = async () => {
+    return openDB("data", 1, {
+        upgrade(db) {
+            db.createObjectStore("user");
+        }
+    });
+}
 export default function Theme({ children }: { children: ReactChild }) {
     const
-        [theme, setTheme] = useState(defaultTheme as ITheme),
-        dispatch = (t: ITheme) => {
+        [theme, setTheme] = useState(typeof(localStorage) !== "undefined" ? {
+            primary: localStorage.getItem("theme-primary") || defaultTheme.primary,
+            secondary: localStorage.getItem("theme-secondary") || defaultTheme.secondary,
+            type: localStorage.getItem("theme-type") as "light" | "dark" || defaultTheme.type,
+            fontFamily: localStorage.getItem("theme-fontFamily") || defaultTheme.fontFamily,
+        } : defaultTheme),
+        dispatch = (t: Partial<ITheme>) => {
             setTheme({
                 ...theme,
-                ...t,
+                ...(t || defaultTheme),
             });
+            for (let key in t) {
+                localStorage.setItem("theme-" + key, t[key]);
+            }
         };
     return (
         <ThemeContext.Provider value={[theme, dispatch]}>
@@ -33,4 +49,4 @@ export default function Theme({ children }: { children: ReactChild }) {
         </ThemeContext.Provider>
     )
 }
-export const useTheme = (): [ITheme, (theme: ITheme) => void] => useContext(ThemeContext) as any;
+export const useTheme = (): [ITheme, (theme: Partial<ITheme>) => void] => useContext(ThemeContext) as any;

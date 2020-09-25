@@ -106,7 +106,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         }
                     },
                 },
-                /*MuiAutocomplete: {
+                MuiAutocomplete: {
                     paper: {
                         border: `2px solid gray`,
                         borderRadius: 8,
@@ -118,7 +118,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     option: {
                         minHeight: 36,
                     },
-                },*/
+                },
                 MuiOutlinedInput: {
                     root: {
                         borderRadius: 8,

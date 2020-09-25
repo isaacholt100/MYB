@@ -6,8 +6,6 @@ import tryCatch from "../../server/tryCatch";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
-import { clearCookies, setCookies } from "../../server/cookies";
-import Cookies from "js-cookie";
 
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
@@ -16,7 +14,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 db = await getDB("data"),
                 users = db.collection("users"),
                 { password, staySignedIn, email } = req.body,
-                isUser = await users.findOne({ email }, {projection: {password: 1}});
+                isUser = await users.findOne({ email }, { projection: { password: 1 } });
             if (!isUser) {
                 errors(res, {
                     emailError: "Email not found",
@@ -89,7 +87,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 maxAge: -1,
                 httpOnly: true,
                 sameSite: "strict",
-              })]);
+            })]);
             done(res);
             break;
         default:

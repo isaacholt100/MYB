@@ -16,7 +16,7 @@ export default withStyles(({ palette }) => ({
             left: 0,
             right: 0,
             height: 4,
-            backgroundColor: Color(palette.primary.main).lighten(0.75).toString(),
+            backgroundColor: palette.background.default,//Color(palette.primary.main).lighten(0.75).toString(),
             "& .nprogress-bar": {
                 backgroundColor: palette.primary.main,
                 height: 4,
