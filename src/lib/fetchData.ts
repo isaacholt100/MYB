@@ -40,6 +40,6 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
             ...extra,
         });
     }
-    console.log(await res.json());
+    res && console.log(await res.json());
     
 }
