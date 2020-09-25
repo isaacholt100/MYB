@@ -1,5 +1,5 @@
 import Icon from "@mdi/react"
-
-export default ({ path, ...other }: { path: string, other?: object }) => {
-    return <Icon path={path} color="currentColor" size="24px" {...other} />
+import { IconProps } from "@mdi/react/dist/IconProps"
+export default (props: IconProps) => {
+    return <Icon color="currentColor" size="24px" {...props} />
 }

@@ -9,9 +9,12 @@ interface IOptions extends IFetchOptions {
     setLoading?: boolean;
     failedMsg?: string;
     doneMsg?: string;
-    errors?: Handler;
+    errors?: (data: IErrors) => void;
     done?: Handler;
     failed?: Handler;
+}
+interface IErrors {
+    errors: string | { [key: string]: string };
 }
 function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => void, boolean] {
     const
@@ -34,7 +37,7 @@ function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, erro
                     failedMsg && snackbar.error("There was an error " + failedMsg);
                     break;
                 case "errors":
-                    errors && errors(res.data);
+                    errors && errors(res.data as IErrors);
                     break;
                 default:
                     dispatch({
