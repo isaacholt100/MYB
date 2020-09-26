@@ -4,7 +4,7 @@ export default async (name: string) => {
     if (cachedDb) {
         return cachedDb;
     }
-    const client = new MongoClient("mongodb+sr://Isaac:paphIs-juqsib-kogvo8@testcluster.i2ddc.mongodb.net/data?retryWrites=true&w=majority", {
+    const client = new MongoClient("mongodb+srv://Isaac:paphIs-juqsib-kogvo8@testcluster.i2ddc.mongodb.net/data?retryWrites=true&w=majority", {
         useUnifiedTopology: true,
         useNewUrlParser: true,
     });
