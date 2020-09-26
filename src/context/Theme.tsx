@@ -1,5 +1,6 @@
 import { IDBPDatabase, openDB } from "idb";
 import { createContext, ReactChild, ReactChildren, useContext, useEffect, useReducer, useState } from "react";
+import useSWR from "swr";
 import defaultTheme from "../json/defaultTheme.json";
 interface ITheme {
     fontFamily: string;
@@ -28,6 +29,9 @@ const useDB = async () => {
 }
 export default function Theme({ children }: { children: ReactChild }) {
     const
+        { data, error, mutate } = useSWR("/api/user/settings/theme", url => fetch(url).then(res => res.json()), {
+            refreshInterval: 1000
+        }),
         [theme, setTheme] = useState(typeof(localStorage) !== "undefined" ? {
             primary: localStorage.getItem("theme-primary") || defaultTheme.primary,
             secondary: localStorage.getItem("theme-secondary") || defaultTheme.secondary,
@@ -35,6 +39,10 @@ export default function Theme({ children }: { children: ReactChild }) {
             fontFamily: localStorage.getItem("theme-fontFamily") || defaultTheme.fontFamily,
         } : defaultTheme),
         dispatch = (t: Partial<ITheme>) => {
+            mutate({
+                ...theme,
+                ...(t || defaultTheme),
+            }, false);
             setTheme({
                 ...theme,
                 ...(t || defaultTheme),
@@ -43,8 +51,10 @@ export default function Theme({ children }: { children: ReactChild }) {
                 localStorage.setItem("theme-" + key, t[key]);
             }
         };
+        console.log(data);
+        
     return (
-        <ThemeContext.Provider value={[theme, dispatch]}>
+        <ThemeContext.Provider value={[data || theme, dispatch]}>
             {children}
         </ThemeContext.Provider>
     )
