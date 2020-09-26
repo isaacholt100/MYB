@@ -39,22 +39,20 @@ export default function Theme({ children }: { children: ReactChild }) {
             fontFamily: localStorage.getItem("theme-fontFamily") || defaultTheme.fontFamily,
         } : defaultTheme),
         dispatch = (t: Partial<ITheme>) => {
-            mutate({
+            const newTheme = {
                 ...theme,
                 ...(t || defaultTheme),
-            }, false);
-            setTheme({
-                ...theme,
-                ...(t || defaultTheme),
-            });
+            }
+            mutate(newTheme, false);
+            setTheme(newTheme);
             for (let key in t) {
                 localStorage.setItem("theme-" + key, t[key]);
             }
         };
-        console.log(data);
+        console.log({data});
         
     return (
-        <ThemeContext.Provider value={[data || theme, dispatch]}>
+        <ThemeContext.Provider value={[data?.theme || theme, dispatch]}>
             {children}
         </ThemeContext.Provider>
     )

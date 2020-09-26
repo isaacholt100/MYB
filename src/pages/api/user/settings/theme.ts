@@ -25,7 +25,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
         }
         case "GET": {
             const users = (await getDB("data")).collection("users");
-            res.json((await users.findOne({ _id: new ObjectId(req.cookies.user_id) }, { projection: { theme: 1, _id: 0 } })).theme);
+            const user = (await users.findOne({ _id: new ObjectId(req.cookies.user_id) }, { projection: { theme: 1, _id: 0 } }));
+            res.json({theme: user ? user.theme : null});
             break;
         }
         default: {

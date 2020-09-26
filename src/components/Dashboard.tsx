@@ -14,6 +14,7 @@ export default () => {
             done: () => {
                 Cookies.remove("refreshToken");
                 Cookies.remove("accessToken");
+                Cookies.remove("user_id");
                 localStorage.clear();
                 setTheme(null);
                 mutate("/api/login", false, false);

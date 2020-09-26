@@ -107,8 +107,6 @@ export default memo(() => {
                 done: () => {}//socket.emit("user message", "/theme", { type })
             });
         };
-        console.log({theme});
-        
     useEffect(() => {
         /*socket.on("/theme/reset", () => setThemeState({
             primaryShade: "500",
