@@ -12,7 +12,7 @@ export default () => {
     return (
         <Box mb="50px !important" pb={"0 !important"}>
             <Box clone mb={{ xs: 1, lg: 2 }}>
-                <AppBar position="static" color="default">
+                <AppBar position="relative" color="default">
                     <Tabs
                         value={page}
                         onChange={(e, p) => setPage(p)}
