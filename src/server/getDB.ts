@@ -4,7 +4,7 @@ export default async (name: string) => {
     if (cachedDb) {
         return cachedDb;
     }
-    const client = new MongoClient("mongodb+srv://Isaac:paphIs-juqsib-kogvo8@testcluster.i2ddc.mongodb.net/data?authSource=admin&replicaSet=atlas-nutwo7-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true", {
+    const client = new MongoClient(process.env.MONGODB_URI, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
     });
