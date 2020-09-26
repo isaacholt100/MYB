@@ -1,7 +1,6 @@
 const withPWA = require("next-pwa");
-const withWorkers = require("@zeit/next-workers");
 const WorkerPlugin = require("worker-plugin");
-module.exports = withPWA(/*withWorkers(*/{
+module.exports = withPWA({
     pwa: {
         disable: process.env.NODE_ENV !== "production",
         dest: "public",
@@ -11,11 +10,10 @@ module.exports = withPWA(/*withWorkers(*/{
         if (!isServer) {
             config.plugins.push(
                 new WorkerPlugin({
-                    // use "self" as the global object when receiving hot updates.
                     globalObject: "self",
                 })
             );
         }
         return config;
     },
-})//);
+});
