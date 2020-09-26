@@ -12,7 +12,7 @@ import { setRefreshToken } from "../../server/cookies";
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "POST": {
-            throw new Error("Test error");
+            //throw new Error("Test error");
             const
                 db = await getDB("data"),
                 users = db.collection("users"),
