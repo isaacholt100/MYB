@@ -8,9 +8,3 @@ export default function Page() {
     const isLoggedIn = useRedirect();
     return isLoggedIn ? <h1>Hello</h1> : null;
 }
-/*export async function getServerSideProps(ctx: NextPageContext) {
-    console.log(ctx);
-    ctx.res.writeHead(301, {Location: "/"});
-    ctx.res.end();
-    return {props:{}}
-}*/

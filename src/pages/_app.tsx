@@ -53,6 +53,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         "html, body, body > #__next": {
                             width: "100vw",
                             height: "100vh",
+                            fontFamily: theme.fontFamily,
                         },
                     }
                 },
@@ -269,7 +270,7 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
         minHeight: 0,
     },
 }));
-const useStyles = makeStyles(({ palette, breakpoints }) => ({
+const useStyles = makeStyles(({ palette, typography }) => ({
     snackbar: {
         "& > div": {
             borderRadius: 8,

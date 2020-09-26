@@ -32,6 +32,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import { mutate } from "swr";
+import jwtCookies from "../lib/jwtCookies";
 //import AjaxBtn from "../../components/AjaxBtn";
 //import { setCookie } from "../../api/cookies";
 //import useSocket from "../../hooks/useSocket";
@@ -50,7 +51,7 @@ export default function Login() {
         //request = useRequest(),
         [, setTheme] = useTheme(),
         [show, setShow] = useState(false),
-        [staySigned, setStaySigned] = useState(true),
+        [staySignedIn, setStaySignedIn] = useState(true),
         [state, setState] = useState(initialState),
         dispatch = useDispatch(),
         //history = useHistory(),
@@ -73,10 +74,9 @@ export default function Login() {
                     body: {
                         email,
                         password: state.password,
-                        staySignedIn: staySigned,
+                        staySignedIn,
                     },
                     done(data: any) {
-                        console.log(data);
                         setTheme(data.theme);
                         dispatch({
                             type: "UPLOAD_DATA",
@@ -88,10 +88,11 @@ export default function Login() {
                                 ...data,
                             },
                         });
-                        sessionStorage.setItem("visited", "1");
-                        Cookies.set("accessToken", data.accessToken, {sameSite: "strict", ...(staySigned ? { expires: 100 } : {expires: 100})});
-                        Cookies.set("refreshToken", data.refreshToken, {sameSite: "strict", ...(staySigned ? { expires: 1000000 } : {})});
-                        mutate("/api/login", true, false);
+                        jwtCookies({
+                            accessToken: data.accessToken,
+                            refreshToken: data.refreshToken,
+                            staySignedIn,
+                        });
                         const q = router.query.to as string;
                         router.replace(q && q[0] === "/" ? q : "/");
                         //socket.connect(`http://${serverUrl.split(":5000")[0]}`);
@@ -161,8 +162,8 @@ export default function Login() {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={staySigned}
-                                    onChange={e => setStaySigned(e.target.checked)}
+                                    checked={staySignedIn}
+                                    onChange={e => setStaySignedIn(e.target.checked)}
                                     value="Stay signed in"
                                     color="primary"
                                 />

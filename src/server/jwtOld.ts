@@ -20,14 +20,14 @@ export default async (req: NextApiRequest & {user: any}, res: NextApiResponse) =
             }
             const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as IUSer;
             jwt.verify(accessToken, process.env.ACCESS_TOKEN, (err, user: IUSer) => {
-                if (user && user.user_id !== payload.user_id) {
+                if (user && user.user_id !== payload._id) {
                     throw err;
                 }
                 if (err) {
                     if (err.name === "TokenExpiredError") {
                         req.user = {
                             ...payload,
-                            user_id: new ObjectId(payload.user_id),
+                            _id: new ObjectId(payload._id),
                         };
                         res.setHeader("authorization", jwt.sign(payload, process.env.ACCESS_TOKEN, {
                             expiresIn: "20m",

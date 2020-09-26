@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useState, useEffect } from "react";
-import useRequest from "../../hooks/useRequest";
+import useRequest, { usePut } from "../../hooks/useRequest";
 import { useSelector, useDispatch } from "react-redux";
 //import socket from "../../api/socket";
 import { FormControlLabel, Switch, Grid, Button } from "@material-ui/core";
@@ -14,6 +14,7 @@ type Intent = "primary" | "secondary";
 export default memo(() => {
     const
         request = useRequest(),
+        [put] = usePut(),
         //socket = useSocket(),
         [theme, setTheme] = useTheme(),
         huesAndShades = (col: string, intent: Intent) => {
@@ -36,7 +37,7 @@ export default memo(() => {
             });
             const payload = colors[e.target.value][themeState[`${name}Shade`]];
             setTheme({ [name]: payload });
-            request.put("/user/theme", {
+            put("/user/settings/theme", {
                 failedMsg: "updating the theme",
                 body: {
                     path: `theme.${name}`,
@@ -44,12 +45,6 @@ export default memo(() => {
                 },
                 done: () => {}//socket.emit("user message", "/theme", { [name]: payload }),
             });
-            /*request("/user/theme", "PUT", false, () => {
-                socket.emit("user message", "/theme", { [name]: payload });
-            }, "updating the theme", {
-                path: `theme.${name}`,
-                val: payload,
-            });*/
         },
         handleChangeShade = (name: Intent) => (e, shade) => {
             setThemeState({
@@ -57,10 +52,10 @@ export default memo(() => {
                 [`${name}Shade`]: shades[shade],
             });
         },
-        endChangeShade = (name: Intent) => (e, shade) => {
-            const payload = colors[themeState[name + "Hue"]][shade];
+        endChangeShade = (name: Intent) => (e: React.ChangeEvent<{}>, shade: number) => {
+            const payload = colors[themeState[name + "Hue"]][shades[shade]];
             setTheme({ [name]: payload });
-            request.put("/user/theme", {
+            put("/user/settings/theme", {
                 failedMsg: "updating the theme",
                 body: {
                     path: `theme.${name}`,
@@ -68,12 +63,6 @@ export default memo(() => {
                 },
                 done: () => {}//socket.emit("user message", "/theme", { [name]: payload }),
             });
-            /*request("/user/theme", "PUT", false, () => {
-                socket.emit("user message", "/theme", { [name]: payload });
-            }, "updating the theme", {
-                path: `theme.${name}`,
-                val: payload,
-            });*/
         },
         resetTheme = () => {
             dispatch({
@@ -85,7 +74,7 @@ export default memo(() => {
                 primaryHue: "indigo",
                 secondaryHue: "indigo",
             });
-            request.put("/user/theme", {
+            put("/user/settings/theme", {
                 failedMsg: "updating the theme",
                 body: {
                     path: `theme`,
@@ -93,49 +82,31 @@ export default memo(() => {
                 },
                 done: () => {}//socket.emit("user message", "/theme/reset")
             });
-            /*request("/user/theme", "PUT", false, () => {
-                socket.emit("user message", "/theme/reset");
-            }, "updating the theme", {
-                path: "theme",
-                val: {},
-            });*/
         },
-        changeCarouselView = e => {
-            const { checked } = e.target;
+        changeCarouselView = (e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
             dispatch({
                 type: "/user/carouselView",
                 payload: checked,
             });
-            request.put("/user/carouselView", {
+            put("/user/carouselView", {
                 failedMsg: "updating the theme",
                 body: {
                     carouselView: checked,
                 },
                 done: () => {}//socket.emit("user message", "/user/carouselView", checked)
             });
-            /*request("/user/carouselView", "PUT", false, () => {
-                socket.emit("user message", "/user/carouselView", checked);
-            }, "updating your settings", {
-                carouselView: checked,
-            });*/
         },
-        handleTypeChange = e => {
-            const type = e.target.checked ? "dark" : "light";
+        handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+            const type = checked ? "dark" : "light";
             setTheme({ type });
-            request.put("/user/theme", {
+            request.put("/user/settings/theme", {
                 failedMsg: "updating the theme",
                 body: {
-                    path: `theme.type`,
+                    path: "theme.type",
                     val: type,
                 },
                 done: () => {}//socket.emit("user message", "/theme", { type })
             });
-            /*quest("/user/theme", "PUT", false, () => {
-                socket.emit("user message", "/theme", { type });
-            }, "updating the theme", {
-                path: "theme.type",
-                val: type,
-            });*/
         };
     useEffect(() => {
         /*socket.on("/theme/reset", () => setThemeState({

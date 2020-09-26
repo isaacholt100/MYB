@@ -1,14 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, ChangeEvent } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-//import redirect from "../../api/redirect";
-//import useRequest from "../hooks/useRequest";
-import { useDispatch, useSelector } from "react-redux";
-//import socket from "../../api/socket";
+import { useDispatch } from "react-redux";
 import { startCase } from "lodash";
-//import { useHistory, Link } from "react-router-dom";
-//import serverUrl from "../../api/serverUrl";
-import effects from "../css/effects.module.css";
 import {
     Typography,
     Button,
@@ -18,21 +12,26 @@ import {
     TextField,
     Radio,
     RadioGroup,
-    InputAdornment,
     Divider,
     Box,
     Card,
 } from "@material-ui/core";
 import LoadBtn from "../components/LoadBtn";
 import clsx from "clsx";
-//import { setCookie } from "../../api/cookies";
-//import useTitle from "../../hooks/useTitle";
-//import useSocket from "../../hooks/useSocket";
 import { usePost } from "../hooks/useRequest";
 import Link from "next/link";
-
+import Head from "next/head";
+import jwtCookies from "../lib/jwtCookies";
+interface IFields {
+    firstName: string;
+    surname: string;
+    email: string;
+    schoolID: string;
+    password: string;
+    repeatPassword: string;
+}
 const
-    initialValues = {
+    initialValues: IFields = {
         firstName: "",
         surname: "",
         email: "",
@@ -70,14 +69,14 @@ export default () => {
         [values, setValues] = useState(initialValues),
         [helpers, setHelpers] = useState(initialValues),
         [role, setRole] = useState("student"),
-        [staySigned, setStaySigned] = useState(true),
+        [staySignedIn, setStaySignedIn] = useState(true),
         dispatch = useDispatch(),
         classes = useStyles(),
         //history = useHistory(),
-        signup = e => {
+        signup = (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const email = values.email.trim().toLocaleLowerCase();
-            post("/signup", {
+            post("/user", {
                 setLoading: true,
                 failedMsg:  "signing you up",
                 body: {
@@ -87,10 +86,15 @@ export default () => {
                     schoolID: values.schoolID.trim(),
                     password: values.password,
                     repeatPassword: values.repeatPassword,
-                    role: role,
-                    staySignedIn: staySigned,
+                    role,
+                    staySignedIn,
                 },
                 done: (data: any) => {
+                    jwtCookies({
+                        accessToken: data.accessToken,
+                        refreshToken: data.refreshToken,
+                        staySignedIn,
+                    });
                     /*sessionStorage.setItem("visited", "1");
                     localStorage.setItem("role", role);
                     setCookie("refresh", data.refreshToken, staySignedIn);
@@ -107,9 +111,9 @@ export default () => {
                     history.push(redirect());
                     socket.connect(`http://${serverUrl.split(":5000")[0]}`);*/
                 },
-                errors: (data: any) => setHelpers({
+                errors: data => setHelpers({
                     ...helpers,
-                    ...data.errors,
+                    ...data.errors as object,
                 })
             });
         },
@@ -117,7 +121,7 @@ export default () => {
             setHelpers(initialValues);
             setValues(initialValues);
         },
-        handleChange = (field: string) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        handleChange = (field: keyof(IFields)) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
             let newState = {};
             const { value } = e.target;
             setValues({
@@ -158,16 +162,6 @@ export default () => {
                     newState = {
                         ...newState,
                         repeatPassword: "Passwords must match",
-                    };
-                }
-            } else if (field === "username") {
-                if (value.length < 4) {
-                    newState = {
-                        username: "Username must be at least 4 characters",
-                    };
-                } else if (!value.match(/^[0-9a-z]+$/)) {
-                    newState = {
-                        username: "Username must be alphanumerical",
                     };
                 }
             } else if (field === "schoolID") {
@@ -224,109 +218,104 @@ export default () => {
             values.firstName === "" ||
             values.surname === "" ||
             (role === "admin" && values.schoolID === "");
-    useEffect(() => {
-        //title("Sign Up");
-    }, []);
     return (
-        <div>
-            <Box maxWidth={600} /*className={effects.fadeup}*/ mx="auto" component={Card}>
-                <Typography variant="h5" gutterBottom>
-                    Sign up to Squool
-                </Typography>
-                <form noValidate autoComplete="off" onSubmit={signup}>
-                    <Typography>I am a...</Typography>
-                    <FormGroup row>
-                        <RadioGroup
-                            aria-label="Position"
-                            name="role"
-                            value={role}
-                            onChange={changePosition}
-                            row
-                        >
-                            <FormControlLabel
-                                value="student"
-                                control={<Radio />}
-                                label="Student"
-                            />
-                            <FormControlLabel
-                                value="teacher"
-                                control={<Radio />}
-                                label="Teacher"
-                            />
-                            <FormControlLabel
-                                value="admin"
-                                control={<Radio />}
-                                label="Admin"
-                            />
-                        </RadioGroup>
-                    </FormGroup>
-                    {Object.keys(initialValues).map((field, i) => (
-                        <TextField
-                            autoFocus={i === 0}
-                            key={field}
-                            id={field}
-                            required={field !== "schoolID" || role === "admin"}
-                            error={helpers[field] !== "" && (role !== "admin" ? field !== "schoolID" || helpers[field] === "School not found" : true)}
-                            autoComplete={`new-${field}`}
-                            variant="outlined"
-                            type={field.includes("assword") ? "password" : "text"}
-                            label={
-                                field === "firstName" && role !== "student"
-                                    ? "Title"
-                                    : field === "schoolID" && role === "admin"
-                                        ? "Create School (Enter Name)"
-                                        : startCase(field)
-                            }
-                            value={values[field]}
-                            onChange={handleChange(field)}
-                            helperText={helpers[field] + " "}
-                            className={clsx(classes.input, classes[field])}
-                            InputProps={{
-                                startAdornment: field === "username" && (
-                                    <InputAdornment position="start">
-                                        @
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    ))}
-                    <Box clone mt="-8px" mb="4px">
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={staySigned}
-                                    onChange={e => setStaySigned(e.target.checked)}
-                                    value="Stay signed in"
-                                    color="primary"
+        <>
+            <Head>
+                <title>Signup</title>
+            </Head>
+            <div>
+                <Box maxWidth={600} /*className={effects.fadeup}*/ mx="auto" component={Card}>
+                    <Typography variant="h5" gutterBottom>
+                        Sign up to Squool
+                    </Typography>
+                    <form noValidate autoComplete="off" onSubmit={signup}>
+                        <Typography>I am a...</Typography>
+                        <FormGroup row>
+                            <RadioGroup
+                                aria-label="Position"
+                                name="role"
+                                value={role}
+                                onChange={changePosition}
+                                row
+                            >
+                                <FormControlLabel
+                                    value="student"
+                                    control={<Radio />}
+                                    label="Student"
                                 />
-                            }
-                            label="Stay signed in"
-                        />
-                    </Box>
-                    <Box display="flex" justifyContent="space-between">
-                        <LoadBtn loading={loading} label="Sign Up" disabled={disabled} />
+                                <FormControlLabel
+                                    value="teacher"
+                                    control={<Radio />}
+                                    label="Teacher"
+                                />
+                                <FormControlLabel
+                                    value="admin"
+                                    control={<Radio />}
+                                    label="Admin"
+                                />
+                            </RadioGroup>
+                        </FormGroup>
+                        {Object.keys(initialValues).map((field: keyof IFields, i) => (
+                            <TextField
+                                autoFocus={i === 0}
+                                key={field}
+                                id={field}
+                                required={field !== "schoolID" || role === "admin"}
+                                error={helpers[field] !== "" && (role !== "admin" ? field !== "schoolID" || helpers[field] === "School not found" : true)}
+                                autoComplete={`new-${field}`}
+                                variant="outlined"
+                                type={field.includes("assword") ? "password" : "text"}
+                                label={
+                                    field === "firstName" && role !== "student"
+                                        ? "Title"
+                                        : field === "schoolID" && role === "admin"
+                                            ? "Create School (Enter Name)"
+                                            : startCase(field)
+                                }
+                                value={values[field]}
+                                onChange={handleChange(field)}
+                                helperText={helpers[field] + " "}
+                                className={clsx(classes.input, classes[field])}
+                            />
+                        ))}
+                        <Box clone mt="-8px" mb="4px">
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={staySignedIn}
+                                        onChange={(e, checked) => setStaySignedIn(checked)}
+                                        value="Stay signed in"
+                                        color="primary"
+                                    />
+                                }
+                                label="Stay signed in"
+                            />
+                        </Box>
+                        <Box display="flex" justifyContent="space-between">
+                            <LoadBtn loading={loading} label="Sign Up" disabled={disabled} />
+                            <Button
+                                onClick={handleClear}
+                                variant="outlined"
+                                color="primary"
+                            >
+                                clear
+                            </Button>
+                        </Box>
+                    </form>
+                    <Divider style={{margin: "8px 0"}} />
+                    <Typography variant="h6" gutterBottom>
+                        Already have an account?
+                    </Typography>
+                    <Link href="/login">
                         <Button
-                            onClick={handleClear}
-                            variant="outlined"
-                            color="primary"
+                            color="secondary"
+                            component="a"
                         >
-                            clear
+                            Login
                         </Button>
-                    </Box>
-                </form>
-                <Divider style={{margin: "8px 0"}} />
-                <Typography variant="h6" gutterBottom>
-                    Already have an account?
-                </Typography>
-                <Link href="/login">
-                    <Button
-                        color="secondary"
-                        component="a"
-                    >
-                        Login
-                    </Button>
-                </Link>
-            </Box>
-        </div>
+                    </Link>
+                </Box>
+            </div>
+        </>
     );
 };

@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import useRequest from "../../hooks/useRequest";
+import useRequest, { usePut } from "../../hooks/useRequest";
 import { useSelector } from "react-redux";
 import useThemeUpdate from "../../hooks/useThemeUpdate";
 import { Typography, TextField } from "@material-ui/core";
@@ -8,17 +8,17 @@ import MarginDivider from "../MarginDivider";
 //import socket from "../../api/socket";
 import fonts from "../../json/googleFonts.json";
 import { useTheme } from "../../context/Theme";
+import { startCase } from "lodash";
 
 export default memo(() => {
     const
-        request = useRequest(),
+        [put] = usePut(),
         [{ fontFamily }, setTheme] = useTheme(),
-        //fontFamily = useSelector(s => s.theme.fontFamily),
-        //updateTheme = useThemeUpdate(),
         updateFontFamily = (f: string) => {
-            if (f && fonts.some(i => i.toLowerCase() === f.toLowerCase().trim())) {
-                setTheme({ fontFamily: f.trim() });
-                request.put("/user/theme", {
+            f = f && startCase(f).trim();
+            if (f && f !== fontFamily && fonts.some(i => i === f)) {
+                setTheme({ fontFamily: f });
+                put("/user/settings/theme", {
                     failedMsg: "updating the theme",
                     body: {
                         path: "theme.fontFamily",
@@ -26,12 +26,6 @@ export default memo(() => {
                     },
                     done: () => {} //socket.emit("user message", "/theme", { fontFamily: f.trim() })
                 });
-                /*request("/user/theme", "PUT", false, () => {
-                    socket.emit("user message", "/theme", { fontFamily: f.trim() });
-                }, "updating the theme", {
-                    path: "theme.fontFamily",
-                    val: f,
-                });*/
             }
         };
     return (

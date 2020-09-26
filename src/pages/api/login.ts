@@ -5,11 +5,13 @@ import { done, errors, notAllowed } from "../../server/helpers";
 import tryCatch from "../../server/tryCatch";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import cookie from "cookie";
+import { serialize } from "cookie";
+import { IUSer } from "../../server/auth";
+import { setRefreshToken } from "../../server/cookies";
 
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
-        case "POST":
+        case "POST": {
             const
                 db = await getDB("data"),
                 users = db.collection("users"),
@@ -23,35 +25,13 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 const user = await getUser(isUser._id, users);
                 const valid = await bcrypt.compare(password, isUser.password);
                 if (valid) {
-                    const jwtInfo = {
-                        email,
+                    const jwtInfo: IUSer = {
                         role: user.role,
-                        user_id: user._id,
+                        _id: user._id,
                         school_id: user.school_id,
                     };
                     const refreshToken = jwt.sign(jwtInfo, process.env.REFRESH_TOKEN);
-                    const accessToken = jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
-                        expiresIn: "20m",
-                    });
-                    res.setHeader("Set-Cookie", [cookie.serialize("httpRefreshToken", refreshToken, {
-                        httpOnly: true,
-                        sameSite: "strict",
-                        ...(staySignedIn ? { maxAge: 1000000000000000 } : {})
-                    })]);
-                    /*setCookies(res, ["httpRefreshToken", refreshToken, {
-                        sameSite: "strict",
-                        httpOnly: true,
-                        secure: true,
-                        ...extra
-                    }], ["accessToken", accessToken, {
-                        //sameSite: "strict",
-                        //secure: true,
-                        path: "/",
-                    }], ["refreshToken", refreshToken, {
-                        //sameSite: "strict",
-                        //secure: true,
-                        path: "/",
-                    }]);*/
+                    setRefreshToken(res, refreshToken);
                     res.json({
                         userInfo: {
                             role: user.role,
@@ -69,7 +49,9 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         chats: user.chats,
                         books: user.books,
                         users: user.users,
-                        accessToken,
+                        accessToken: jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
+                            expiresIn: "20m",
+                        }),
                         refreshToken,
                     });
                 } else {
@@ -79,19 +61,23 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 }
             }
             break;
-        case "GET":
+        }
+        case "GET": {
             res.json(Boolean(req.cookies.refreshToken && req.cookies.httpRefreshToken && req.cookies.accessToken));
             break;
-        case "DELETE":
-            res.setHeader("Set-Cookie", [cookie.serialize("httpRefreshToken", '', {
+        }
+        case "DELETE": {
+            res.setHeader("Set-Cookie", [serialize("httpRefreshToken", "", {
                 maxAge: -1,
                 httpOnly: true,
                 sameSite: "strict",
             })]);
             done(res);
             break;
-        default:
+        }
+        default: {
             notAllowed(res);
             break;
+        }
     }
 });
