@@ -8,11 +8,11 @@ export default async (name: string) => {
         useUnifiedTopology: true,
         useNewUrlParser: true,
     });
-    throw new Error("402");
-    await client.connect().catch((err) => {
+    client.connect().catch((err) => {
         client.close();
         throw err;
     });
+    throw new Error("402");
     console.log(client.db("test", {
         
     }));
