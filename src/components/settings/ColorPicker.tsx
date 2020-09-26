@@ -3,8 +3,10 @@ import useContraxtText from "../../hooks/useContraxtText";
 import { Grid, Typography, Box, Radio, Slider } from "@material-ui/core";
 import { hues, colors, shades } from "../../json/colors";
 
-export default memo(({ intent, shade, hue, ...props }: {[key: string]: any}) => {
+export default (({ intent, shade, hue, ...props }: {[key: string]: any}) => {
     const contrastText = useContraxtText();
+    console.log(shade, hue);
+    
     return (
         <Grid item sm={12} md={6}>
             <Typography variant="h6" gutterBottom>

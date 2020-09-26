@@ -13,7 +13,6 @@ import { useTheme } from "../../context/Theme";
 type Intent = "primary" | "secondary";
 export default memo(() => {
     const
-        request = useRequest(),
         [put] = usePut(),
         //socket = useSocket(),
         [theme, setTheme] = useTheme(),
@@ -99,7 +98,7 @@ export default memo(() => {
         handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
             const type = checked ? "dark" : "light";
             setTheme({ type });
-            request.put("/user/settings/theme", {
+            put("/user/settings/theme", {
                 failedMsg: "updating the theme",
                 body: {
                     path: "theme.type",
@@ -108,6 +107,8 @@ export default memo(() => {
                 done: () => {}//socket.emit("user message", "/theme", { type })
             });
         };
+        console.log({theme});
+        
     useEffect(() => {
         /*socket.on("/theme/reset", () => setThemeState({
             primaryShade: "500",
