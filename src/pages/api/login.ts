@@ -23,9 +23,9 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     emailError: "Email not found",
                 });
             } else {
-                const user = await getUser(isUser._id, users);
                 const valid = await bcrypt.compare(password, isUser.password);
                 if (valid) {
+                    const user = await getUser(isUser._id, users);
                     const jwtInfo: IUSer = {
                         role: user.role,
                         _id: user._id,
