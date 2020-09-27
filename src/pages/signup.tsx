@@ -94,6 +94,7 @@ export default () => {
                         accessToken: data.accessToken,
                         refreshToken: data.refreshToken,
                         staySignedIn,
+                        user_id: data.user_id,
                     });
                     /*sessionStorage.setItem("visited", "1");
                     localStorage.setItem("role", role);
