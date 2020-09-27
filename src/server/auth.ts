@@ -17,7 +17,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         if (!accessToken) {
             throw new Error("401");
         }
-        jwt.verify(accessToken, process.env.ACCESS_TOKEN, (err, user: IUSer) => {
+        jwt.verify(accessToken, `${process.env.ACCESS_TOKEN}`, (err, user: IUSer) => {
             if (!user || err) {
                 if (err.name === "TokenExpiredError") {
                     const refreshHeader = req.headers["authorization-refresh"] as string;
@@ -28,7 +28,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                     if (req.cookies.httpRefreshToken !== refreshToken) {
                         throw new Error("403");
                     }
-                    const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN) as IUSer;
+                    const payload = jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN}`) as IUSer;
                     if (user && user._id !== payload._id) {
                         throw err;
                     }
