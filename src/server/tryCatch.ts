@@ -8,9 +8,7 @@ export default async (res: NextApiResponse, fn: (() => Promise<void>) | (() => v
         console.error("error:");
         console.error(err);
         res.status(Number.isNaN(+err.message) ? 500 : +err.message).json({
-            access: process.env.ACCESS_TOKEN,
-            refresh: process.env.REFRESH_TOKEN,
-            err: err.toString(),
+            err: err.toString() + " " + process.env.ACCESS_TOKEN + " " + process.env.REFRESH_TOKEN,
         });
     }
 }
