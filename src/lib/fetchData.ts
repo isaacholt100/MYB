@@ -18,7 +18,6 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
     const extra = header ? {
         accessToken: header,
     } : {};
-    console.log(res, await res.json());
     if (res?.ok) {
         const data = await res.json();
         if (data?.errors) {
@@ -35,6 +34,9 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
             });
         }
     } else {
+        const data = await res.json();
+        console.log(data);
+        
         fn({
             type: "failed",
             data: "failed",
