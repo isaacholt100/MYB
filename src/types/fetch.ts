@@ -9,6 +9,7 @@ export interface IFetchOptions {
     method: "GET" | "POST" | "PUT" | "DELETE";
     file?: boolean;
     body?: object | BodyInit;
+    fetchOptions?: RequestInit;
 }
 export interface IRes {
     type: "errors" | "success" | "failed";

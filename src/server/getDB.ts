@@ -14,11 +14,6 @@ export default async (name: string) => {
         await client.close();
         throw err;
     }
-    //throw new Error("402");
-    //console.log(client.db("test", {
-        
-    //}));
-    
     const db = client.db(name);
     cachedDb = db;
     return db;

@@ -4,13 +4,106 @@ import tryCatch from "../../../server/tryCatch";
 import bcrypt from "bcrypt";
 import getDB from "../../../server/getDB";
 import auth from "../../../server/auth";
-import { ObjectId } from "mongodb";
+import { Collection, ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import cookie from "cookie";
-
+const returnQuery = (user_id: ObjectId, type: "chat" | "class") => [
+    {
+        $lookup: {
+            from: "chats",
+            pipeline: [
+                {$match: {member_ids: user_id}},
+                { "$group": {
+                "_id": 1,
+                "member_ids": { "$addToSet": "$member_ids" }
+                }},
+                { "$addFields": {
+                "member_ids": {
+                    "$reduce": {
+                    "input": "$member_ids",
+                    "initialValue": [],
+                    "in": { "$setUnion": [ "$$value", "$$this" ] }
+                    }
+                }
+                }}, {
+                    $project: {
+                        member_ids: 1,
+                        _id: 0,
+                    },
+                }],
+            as: `${type}_members`,
+        },
+    }, {
+        $unwind: {
+            path: `$${type}_members`,
+            preserveNullAndEmptyArrays: true,
+        }
+    },
+],
+getUser = async (user_id: ObjectId, users: Collection<any>) => await users.aggregate([
+    {
+        $match: { _id: user_id }
+    },
+    ...returnQuery(user_id, "chat"),
+    ...returnQuery(user_id, "class"),
+   {$project: {"users": { $setUnion: [{$ifNull: ["$class_members.member_ids", []]}, {$ifNull: ["$chat_members.member_ids", []]}]}, email: 1, icon: 1, timetable: 1, theme: 1, firstName: 1, lastName: 1, carouselView: 1, role: 1, /*name: {$concat: ["$firstName", " ", "$lastName"]}*/}},
+   {$project: {"users": {$filter: {
+        input: "$users",
+        as: "id",
+        cond: {
+            $ne:[user_id, "$$id"]},
+    }}, email: 1, icon: 1, timetable: 1, theme: 1, firstName: 1, lastName: 1, carouselView: 1, role: 1}},
+    {$lookup: {
+        from: "classes",
+        pipeline: [{$match: {member_ids: user_id}}],
+        as: "classes"
+    }},
+    {$lookup: {
+        from: "chats",
+        pipeline: [{$match: {member_ids: user_id}}],
+        as: "chats"
+    }},
+    {$lookup: {
+        from: "reminders",
+        localField: "_id",
+        foreignField: "user_id",
+        //pipeline: [{$match: {user_id}}],
+        as: "reminders"
+    }},
+    {$lookup: {
+        from: "books",
+        pipeline: [{
+            $match: {owner_id: user_id}
+        }, {
+            $project: {content: 0, comments: 0, }
+        }],
+        as: "books"
+    }},
+    {$lookup: {
+        from: "users",
+        let: {
+            user_ids: "$users",
+        },
+        pipeline: [{
+            $match: {
+                $expr: {$in:["$_id", "$$user_ids"] }
+            },
+        },
+        {$project: {
+            "email": 1,
+            "icon": 1,
+            "role": 1,
+            "name": {
+                "$concat": ["$firstName", " ", "$lastName"]
+            }
+        }}
+        ],
+        as: "users",
+    }},
+  ]).next();
 const saltRounds = 12;
-export default(req : NextApiRequest, res : NextApiResponse) => tryCatch(res, async() => {
+export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "POST": {
             type Errors = Partial<Record<"schoolID" | "repeatPassword" | "password" | "firstName" | "surname" | "email", string>>;
@@ -59,16 +152,13 @@ export default(req : NextApiRequest, res : NextApiResponse) => tryCatch(res, asy
             }
             if (Object.keys(errors).length === 0) {
                 const hash = await bcrypt.hash(password, saltRounds),
-                    school_id = admin
-                        ? new ObjectId()
-                        : new ObjectId(schoolID),
                     r1 = admin
-                        ? await schools.insertOne({admin: email, name: schoolID, _id: school_id})
+                        ? await schools.insertOne({admin: email, name: schoolID })
                         : {
                             insertedCount: 1
                         },
                     r = await users.insertOne({
-                        school_id,
+                        school_id: new ObjectId(schoolID),
                         email,
                         icon: "",
                         role,
@@ -161,6 +251,14 @@ export default(req : NextApiRequest, res : NextApiResponse) => tryCatch(res, asy
             break;
         }
         case "GET": {
+            const { _id } = await auth(req, res);
+            const db = await getDB("data");
+            const users = db.collection("users");
+            const user = await getUser(_id, users);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            res.json(user);
             break;
         }
         case "DELETE": {
