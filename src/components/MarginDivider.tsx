@@ -1,4 +1,5 @@
 import React from "react";
-import { Box, Divider } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
+import layoutStyles from "../css/layout.module.css";
 
-export default () => <Box my="16px !important" component={Divider} />;
+export default () => <Divider className={layoutStyles.my_16} />;

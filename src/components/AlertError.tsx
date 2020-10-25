@@ -3,8 +3,9 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 import { Button } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import { Box } from "@material-ui/core";
 import Link from "next/link";
+import layoutStyles from "../css/layout.module.css";
+
 interface IProps {
     msg: string;
     btn: ReactChild;
@@ -15,14 +16,14 @@ export function AlertError(props: IProps) {
             <Alert severity="error" className="fadein" variant="filled">
                 <AlertTitle>Uh oh!</AlertTitle>
                 {props.msg}
-                <Box mt="8px">
+                <div className={layoutStyles.mt_8}>
                     <Link href="/">
                         <Button variant="outlined" component="a">
                             Go Home
                         </Button>
                     </Link>
                     {props.btn}
-                </Box>
+                </div>
             </Alert>
         </div>
     );
@@ -42,7 +43,7 @@ export default ({ msg }) => {
             <Alert severity="error" className="fadein" variant="filled">
                 <AlertTitle>Uh oh!</AlertTitle>
                 {msg}
-                <Box mt="8px">
+                <div className={layoutStyles.mt_8}>
                     {msg.includes("went wrong") ? (
                         <>
                             <Link href="/">
@@ -64,15 +65,13 @@ export default ({ msg }) => {
                                 </Button>
                             </Link>
                             {history.length > 2 && (
-                                <Box clone ml="8px">
-                                    <Button variant="outlined" onClick={router.back}>
-                                        Go Back
-                                    </Button>
-                                </Box>
+                                <Button variant="outlined" onClick={router.back} className={layoutStyles.ml_8}>
+                                    Go Back
+                                </Button>
                             )}
                         </>
                     )}
-                </Box>
+                </div>
             </Alert>
         </div>
     );

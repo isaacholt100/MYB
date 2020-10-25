@@ -24,8 +24,8 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         //[mounted, setMounted] = useState(true),
         [get] = useGet(),
         dispatch = useDispatch(),
-        [dataLoaded, setDataLoaded] = useState(false),
         isLoggedIn = useIsLoggedIn(),
+        [dataLoaded, setDataLoaded] = useState(!isLoggedIn),
         [theme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
@@ -269,7 +269,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         {children}
                     </div>
                 </Box>
-                <Fade in={true} timeout={{appear: 0, enter: 0, exit: 500}}>
+                <Fade in={!dataLoaded} timeout={{appear: 0, enter: 0, exit: 500}}>
                     <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
                 </Fade>
             </MuiTheme>

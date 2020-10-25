@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Button, CircularProgress, Box } from "@material-ui/core";
+import styles from "../css/loadBtn.module.css";
 interface IProps {
     label: string;
     disabled: boolean;
@@ -9,7 +10,7 @@ interface IProps {
 }
 export default ({ label, disabled, loading, ...other }: IProps) => {
     return (
-        <Box position="relative" display="inline-block">
+        <div className={styles.root}>
             <Button
                 color="primary"
                 disabled={disabled || loading}
@@ -19,10 +20,8 @@ export default ({ label, disabled, loading, ...other }: IProps) => {
                 {label}
             </Button>
             {loading && (
-                <Box clone position="absolute" top="50%" left="50%" mt="-12px" ml="-12px">
-                    <CircularProgress size={24} />
-                </Box>
+                <CircularProgress size={24} className={styles.progress} />
             )}
-        </Box>
+        </div>
     );
 }
