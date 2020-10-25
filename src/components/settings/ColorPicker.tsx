@@ -10,7 +10,7 @@ export default (({ intent, shade, hue, ...props }: {[key: string]: any}) => {
     return (
         <Grid item sm={12} md={6}>
             <Typography variant="h6" gutterBottom>
-                {intent.replace(/\b\w/g, l => l.toUpperCase())} Color<br />
+                {intent.replace(/\b\w/g, (l: string) => l.toUpperCase())} Color<br />
             </Typography>
             {hues.map(h => {
                 const backgroundColor = colors[h][shade];
