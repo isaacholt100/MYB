@@ -28,7 +28,7 @@ export default memo(() => {
         };
     return (
         <>
-            <Box mb="8px" width={1}>
+            <div className={"full_width mb_8"}>
                 <FormControlLabel
                     //disabled={periodsLength === 0}
                     control={
@@ -40,7 +40,7 @@ export default memo(() => {
                     }
                     label="Saturday on timetable"
                 />
-            </Box>
+            </div>
             <Link href="/timetable/search">
                 <Button component="a" color="secondary">
                     Change Template

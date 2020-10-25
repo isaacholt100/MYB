@@ -13,6 +13,7 @@ import {
     Tooltip,
     ListItemText,
     ListItem,
+    Divider,
 } from "@material-ui/core";
 import { Box } from "@material-ui/core";
 import clsx from "clsx";
@@ -25,7 +26,7 @@ import NProgress from "nprogress";
 import NProgressBar from "./NProgressBar";
 import { useRouter } from "next/router";
 NProgress.configure({
-    parent: "#nprogress-parent"
+    parent: "#nprogress-parent",
 });
 
 const
@@ -74,21 +75,30 @@ const
             marginRight: 4,
             position: "relative",
         },
-        ml: {
-            marginLeft: "auto",
-        },
-        iconBtn: {
-            /*color: theme.palette.text.primary,
-            backgroundColor: theme.palette.background.paper,
-            "&:hover": {
-                backgroundColor: (theme.palette.background as any).level1,
-            },*/
-        },
         linksContainer: {
             padding: 8,
             display: "flex",
             flexDirection: "column",
         },
+        navItem: {
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            borderRadius: 8,
+            marginBottom: 8,
+            height: "48px !important",
+            paddingLeft: "12px !important",
+            paddingRight: "12px !important",
+        },
+        progressContainer: {
+            position: "relative",
+            zIndex: 1000000,
+            height: 4,
+        },
+        homeDivider: {
+            marginTop: -4,
+            marginBottom: 4,
+        }
     }));
 const Nav = memo(() => {
     const
@@ -126,28 +136,32 @@ const Nav = memo(() => {
             <>
                 <Box p={"8px 8px 0px 8px"}>
                     {links().map(link => (
-                                    <Link href={"/" + link.toLowerCase()} key={link}>
-                        <Box whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden" borderRadius={8} mb="8px" height="48px !important" px="12px !important" color={link.toLowerCase() === pathname.split("/")[1] ? "primary.main" : "text.primary"} /*border={link === "Home" && 2}*/ onClick={() => setMobileOpen(false)}>
-                            {b => (
-                                    <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
-                                        <ListItem
-                                            {...b}
-                                            button
-                                            //component={BtnLink}
-                                            href={"/" + link.toLowerCase()}
-                                            //selected={link.toLowerCase() === location.pathname.split("/")[1]}
-                                            selected={link === "Home"}
-                                        >
-                                            <Icon path={icons[link]} />
-                                            {small && (
-                                                <Box ml="16px" clone>
-                                                    <ListItemText primary={link} />
-                                                </Box>
-                                            )}
-                                        </ListItem>
-                                </Tooltip>
-                            )}
-                        </Box></Link>
+                        <Link href={"/" + link.toLowerCase()} key={link}>
+                            <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
+                                <div>
+                                <ListItem
+                                    button
+                                    //component={BtnLink}
+                                    href={"/" + link.toLowerCase()}
+                                    selected={link.toLowerCase() === location.pathname.split("/")[1]}
+                                    //selected={link === "Home"}
+                                    className={classes.navItem}
+                                    onClick={() => setMobileOpen(false)}
+                                    style={{
+                                        //color: link.toLowerCase() === pathname.split("/")[1] ? "primary.main" : "text.primary"
+                                    }}
+                                >
+                                    <Icon path={icons[link]} />
+                                    {small && (
+                                        <ListItemText primary={link} className={"ml_16"} />
+                                    )}
+                                </ListItem>
+                                {link === "Home" && (
+                                    <Divider className={classes.homeDivider} />
+                                )}
+                                </div>
+                        </Tooltip>
+                        </Link>
                     ))}
                 </Box>
             </>
@@ -171,15 +185,15 @@ const Nav = memo(() => {
                             aria-label="Open drawer"
                             color="inherit"
                             onClick={() => setMobileOpen(!mobileOpen)}
-                            className={clsx(classes.navIconHide, classes.iconBtn)}
+                            className={classes.navIconHide}
                         >
                             <Icon path={mdiMenu} />
                         </IconButton>
                     </Tooltip>
-                    <Box ml="auto">
+                    <div className={"ml_auto"}>
                         <Tooltip title="Notifications">
                             <IconButton
-                                className={clsx(classes.mr, classes.iconBtn, classes.ml)}
+                                className={clsx(classes.mr, "ml_auto")}
                                 onClick={() => setNotificationOpen(true)}
                                 color="inherit"
                             >
@@ -188,7 +202,7 @@ const Nav = memo(() => {
                         </Tooltip>
                         <Tooltip title="More Options">
                             <IconButton
-                                className={clsx(classes.mr, classes.iconBtn)}
+                                className={classes.mr}
                                 onClick={() => dispatch({
                                     type: "/moreActions/open",
                                 })}
@@ -197,9 +211,9 @@ const Nav = memo(() => {
                                 <Icon path={mdiDotsHorizontal} />
                             </IconButton>
                         </Tooltip>
-                    </Box>
+                    </div>
                 </Toolbar>
-                <div id="nprogress-parent" style={{position: "relative", zIndex: 1000000, height: 4}}>
+                <div id="nprogress-parent" className={classes.progressContainer}>
                     <Box position="absolute" bgcolor="primary.main" height={"4px"} width={1} />
                     <NProgressBar />
                 </div>

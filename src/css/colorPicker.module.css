@@ -1,0 +1,4 @@
+.slider {
+    margin: 8px;
+    width: calc(100% - 32px) !important;
+}

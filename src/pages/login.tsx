@@ -112,7 +112,7 @@ export default function Login() {
                     Login to Squool
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <Box my="8px">
+                    <div className={"my_8"}>
                         <TextField
                             id="email"
                             name="email"
@@ -127,8 +127,8 @@ export default function Login() {
                             fullWidth
                             autoFocus
                         />
-                    </Box>
-                    <Box my="8px">
+                    </div>
+                    <div className={"my_8"}>
                         <TextField
                             name="password"
                             id="password"
@@ -158,7 +158,7 @@ export default function Login() {
                                 ),
                             }}
                         />
-                    </Box>
+                    </div>
                     <Box clone mt="-8px" mb="4px">
                         <FormControlLabel
                             control={
@@ -172,7 +172,7 @@ export default function Login() {
                             label="Stay signed in"
                         />
                     </Box>
-                    <Box display="flex" justifyContent="space-between">
+                    <div className={"flex space_between"}>
                         <LoadBtn loading={loading} label="Login" disabled={disabled} />
                         <Button
                             onClick={() => setState(initialState)}
@@ -181,9 +181,9 @@ export default function Login() {
                         >
                             clear
                         </Button>
-                    </Box>
+                    </div>
                 </form>
-                <Divider style={{ margin: "8px 0" }} />
+                <Divider className={"my_8"} />
                 <Typography variant="h6" gutterBottom>Don't have an account yet?</Typography>
                 <Link href="/signup">
                     <Button

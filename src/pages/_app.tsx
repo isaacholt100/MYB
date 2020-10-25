@@ -18,6 +18,7 @@ import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import LoadPreview from "../components/LoadPreview";
 import { useGet } from "../hooks/useRequest";
+import "../css/global.css";
 
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
@@ -256,19 +257,21 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
             }
         };
     useEffect(getData, []);
+    console.log(isLoggedIn, dataLoaded);
+    
     return (
         <>
             <Head>
                 <link rel="stylesheet" href={fontFamily} />
             </Head>
             <MuiTheme theme={muiTheme}>
-                <Box display="flex" flexDirection="column" height="100vh" width="100vw">
+                <div className={"flex flex_col full_screen"}>
                     <Navigation />
                     <CssBaseline />
                     <div className={classes.appContainer}>
                         {children}
                     </div>
-                </Box>
+                </div>
                 <Fade in={!dataLoaded} timeout={{appear: 0, enter: 0, exit: 500}}>
                     <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
                 </Fade>

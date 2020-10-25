@@ -126,7 +126,7 @@ export default memo(() => {
     }, []);
     return (
         <>
-            <Box display="flex">
+            <div className={"flex"}>
                 <Button
                     variant="contained"
                     color="primary"
@@ -141,7 +141,7 @@ export default memo(() => {
                 >
                     Delete Account
                 </Button>
-            </Box>
+            </div>
             <Dialog
                 open={state.deleteDialogOpen}
                 onClose={closeDeleteDialog}

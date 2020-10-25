@@ -10,8 +10,8 @@ import Theme from "../components/settings/Theme";
 export default () => {
     const [page, setPage] = useState(0);
     return (
-        <Box mb="50px !important" pb={"0 !important"}>
-            <Box clone mb={{ xs: 1, lg: 2 }}>
+        <div>
+            <Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
                 <AppBar position="relative" color="default">
                     <Tabs
                         value={page}
@@ -45,6 +45,6 @@ export default () => {
                 )}
                 {page === 1 && <Theme />}
             </Box>
-        </Box>
+        </div>
     );
 };

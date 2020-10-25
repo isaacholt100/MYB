@@ -1,7 +1,8 @@
-import React, { memo } from "react";
+import React from "react";
 import useContraxtText from "../../hooks/useContraxtText";
 import { Grid, Typography, Box, Radio, Slider } from "@material-ui/core";
 import { hues, colors, shades } from "../../json/colors";
+import styles from "../../css/colorPicker.module.css";
 
 export default (({ intent, shade, hue, ...props }: {[key: string]: any}) => {
     const contrastText = useContraxtText();
@@ -15,34 +16,32 @@ export default (({ intent, shade, hue, ...props }: {[key: string]: any}) => {
             {hues.map(h => {
                 const backgroundColor = colors[h][shade];
                 return (
-                    <Box clone m="2px" key={h}>
-                        <Radio
-                            checked={hue === h}
-                            onChange={props.handleChangeHue(intent)}
-                            value={h}
-                            key={h}
-                            style={{
-                                backgroundColor,
-                                color: contrastText(backgroundColor),
-                            }}
-                        />
-                    </Box>
+                    <Radio
+                        checked={hue === h}
+                        onChange={props.handleChangeHue(intent)}
+                        value={h}
+                        key={h}
+                        style={{
+                            backgroundColor,
+                            color: contrastText(backgroundColor),
+                            margin: 2,
+                        }}
+                    />
                 );
             })}
             <Typography style={{ marginTop: 16 }}>
                 Shade
             </Typography>
-            <Box clone m="8px" width="calc(100% - 32px) !important">
-                <Slider
-                    value={shades.indexOf(shade)}
-                    min={0}
-                    max={13}
-                    color={intent}
-                    step={1}
-                    onChange={props.handleChangeShade(intent)}
-                    onChangeCommitted={props.endChangeShade(intent)}
-                />
-            </Box>
+            <Slider
+                value={shades.indexOf(shade)}
+                min={0}
+                max={13}
+                color={intent}
+                step={1}
+                onChange={props.handleChangeShade(intent)}
+                onChangeCommitted={props.endChangeShade(intent)}
+                className={styles.slider}
+            />
         </Grid>
     );
 });
