@@ -18,15 +18,17 @@ import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import LoadPreview from "../components/LoadPreview";
 import { useGet } from "../hooks/useRequest";
+import Cookies from "js-cookie";
 import "../css/global.css";
-
+const l = Boolean(Cookies.get("refreshToken") && Cookies.get("accessToken"));
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
         //[mounted, setMounted] = useState(true),
         [get] = useGet(),
         dispatch = useDispatch(),
         isLoggedIn = useIsLoggedIn(),
-        [dataLoaded, setDataLoaded] = useState(!isLoggedIn),
+        [dataLoaded, setDataLoaded] = useState(false),
+        [test, setTest] = useState(false),
         [theme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
@@ -254,6 +256,8 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         sessionStorage.setItem("visited", "1");*/
                     }
                 });
+            } else {
+                setDataLoaded(true);
             }
         };
     useEffect(getData, []);
@@ -266,7 +270,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
             </Head>
             <MuiTheme theme={muiTheme}>
                 <div className={"flex flex_col full_screen"}>
-                    <Navigation />
+                    {dataLoaded && <Navigation />}
                     <CssBaseline />
                     <div className={classes.appContainer}>
                         {children}

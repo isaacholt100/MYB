@@ -1,13 +1,14 @@
 import Cookies from "js-cookie";
 import useSWR from "swr";
 export default () => {
+    const l = Boolean(Cookies.get("refreshToken") && Cookies.get("accessToken"));
     const { data, error } = useSWR("/api/login", url => fetch(url).then(res => res.json()), {
         refreshInterval: 1000,
-        onError: () => {}
+        onError: () => {},
+        initialData: l,
     });
     if (data !== undefined && !error) {
         return data as boolean;
     }
-    const l = Boolean(Cookies.get("refreshToken") && Cookies.get("accessToken"));
     return l;
 }
