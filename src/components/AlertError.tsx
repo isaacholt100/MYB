@@ -4,7 +4,6 @@ import { Button } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import layoutStyles from "../css/layout.module.css";
 
 interface IProps {
     msg: string;
@@ -16,7 +15,7 @@ export function AlertError(props: IProps) {
             <Alert severity="error" className="fadein" variant="filled">
                 <AlertTitle>Uh oh!</AlertTitle>
                 {props.msg}
-                <div className={layoutStyles.mt_8}>
+                <div className={"mt_8"}>
                     <Link href="/">
                         <Button variant="outlined" component="a">
                             Go Home
@@ -43,7 +42,7 @@ export default ({ msg }) => {
             <Alert severity="error" className="fadein" variant="filled">
                 <AlertTitle>Uh oh!</AlertTitle>
                 {msg}
-                <div className={layoutStyles.mt_8}>
+                <div className={"mt_8"}>
                     {msg.includes("went wrong") ? (
                         <>
                             <Link href="/">
@@ -65,7 +64,7 @@ export default ({ msg }) => {
                                 </Button>
                             </Link>
                             {history.length > 2 && (
-                                <Button variant="outlined" onClick={router.back} className={layoutStyles.ml_8}>
+                                <Button variant="outlined" onClick={router.back} className={"ml_8"}>
                                     Go Back
                                 </Button>
                             )}

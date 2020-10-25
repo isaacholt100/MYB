@@ -22,6 +22,7 @@ import { usePost } from "../hooks/useRequest";
 import Link from "next/link";
 import Head from "next/head";
 import jwtCookies from "../lib/jwtCookies";
+import styles from "../css/signup.module.css";
 interface IFields {
     firstName: string;
     surname: string;
@@ -303,7 +304,7 @@ export default () => {
                             </Button>
                         </Box>
                     </form>
-                    <Divider style={{margin: "8px 0"}} />
+                    <Divider className={"my_8"} />
                     <Typography variant="h6" gutterBottom>
                         Already have an account?
                     </Typography>

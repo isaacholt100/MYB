@@ -1,0 +1,54 @@
+.mt_8 {
+    margin-top: 8px;
+}
+.mb_8 {
+    margin-bottom: 8px;
+}
+.ml_8 {
+    margin-left: 8px;
+}
+.ml_16 {
+    margin-left: 16px;
+}
+.ml_auto {
+    margin-left: auto;
+}
+.mx_auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+.my_16 {
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+}
+.my_8 {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+.progress_container {
+    position: "relative";
+    z-index: 1000000;
+    height: 4px;
+}
+.flex {
+    display: flex;
+}
+.flex_col {
+    flex-direction: column;
+}
+.flex_wrap {
+    flex-wrap: wrap;
+}
+.space_between {
+    justify-content: space-between;
+}
+.align_items_center {
+    align-items: center;
+}
+.full_width {
+    width: 100%;
+}
+.full_screen {
+    height: 100vh;
+    width: 100vw;
+}
