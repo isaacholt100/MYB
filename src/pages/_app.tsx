@@ -3,25 +3,28 @@ import Head from "next/head";
 import { createMuiTheme, makeStyles, ThemeProvider as MuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import type { AppProps } from "next/app";
-import { Provider as Redux } from "react-redux";
+import { Provider as Redux, useDispatch } from "react-redux";
 import { MuiPickersUtilsProvider as Pickers } from "@material-ui/pickers";
 import DateUtils from "@date-io/date-fns";
 import "date-fns";
 import { ProviderContext, SnackbarProvider as Snackbar } from "notistack";
-import { Box, Grow, IconButton } from "@material-ui/core";
+import { Box, Fade, Grow, IconButton } from "@material-ui/core";
 import Icon from "../components/Icon";
 import { mdiClose } from "@mdi/js";
 import store from "../redux/store";
-import { useRouter } from "next/router";
 import Theme, { useTheme } from "../context/Theme";
 import { SWRConfig } from "swr";
 import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
-import Cookies from "js-cookie";
+import LoadPreview from "../components/LoadPreview";
+import { useGet } from "../hooks/useRequest";
 
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
         //[mounted, setMounted] = useState(true),
+        [get] = useGet(),
+        dispatch = useDispatch(),
+        [dataLoaded, setDataLoaded] = useState(false),
         isLoggedIn = useIsLoggedIn(),
         [theme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
@@ -222,23 +225,54 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     size: "small",
                 },
             },
-        });
+        }),
+        getData = () => {
+            if (!dataLoaded && isLoggedIn) {
+                console.log({dataLoaded});
+                
+                if (dataLoaded === undefined) {
+                    setDataLoaded(false);
+                }
+                get("/user", {
+                    setLoading: false,
+                    fetchOptions: {
+                        cache: "no-cache",
+                    },
+                    failed: () => setDataLoaded(undefined),
+                    done: (data: any) => {
+                        setDataLoaded(true);
+                        /*dispatch({
+                            type: "UPLOAD_DATA",
+                            payload: {
+                                userInfo: {
+                                    icon: data.icon,
+                                },
+                                ...data,
+                            },
+                        });
+                        sessionStorage.setItem("visited", "1");*/
+                    }
+                });
+            }
+        };
+    useEffect(getData, []);
     return (
         <>
             <Head>
                 <link rel="stylesheet" href={fontFamily} />
             </Head>
-            {false ? <div /> : (
-                <MuiTheme theme={muiTheme}>
-                    <Box display="flex" flexDirection="column" height="100vh" width="100vw">
-                        <Navigation />
-                        <CssBaseline />
-                        <div className={classes.appContainer}>
-                            {children}
-                        </div>
-                    </Box>
-                </MuiTheme>
-            )}
+            <MuiTheme theme={muiTheme}>
+                <Box display="flex" flexDirection="column" height="100vh" width="100vw">
+                    <Navigation />
+                    <CssBaseline />
+                    <div className={classes.appContainer}>
+                        {children}
+                    </div>
+                </Box>
+                <Fade in={true} timeout={{appear: 0, enter: 0, exit: 500}}>
+                    <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
+                </Fade>
+            </MuiTheme>
         </>
     );
 }

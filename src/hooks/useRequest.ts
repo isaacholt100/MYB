@@ -12,6 +12,7 @@ interface IOptions extends IFetchOptions {
     errors?: (data: IErrors) => void;
     done?: Handler;
     failed?: Handler;
+    fetchOptions?: RequestInit;
 }
 interface IErrors {
     errors: string | { [key: string]: string };

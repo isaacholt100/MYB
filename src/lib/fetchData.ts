@@ -1,11 +1,11 @@
 import type { IOptions, Handler } from "../types/fetch";
 
-export default async ({ serverUrl, url, method, file, body, accessToken, refreshToken, ...other }: IOptions, fn: Handler) => {
+export default async ({ serverUrl, url, method, file, body, accessToken, refreshToken, fetchOptions }: IOptions, fn: Handler) => {
     const res = await fetch(serverUrl + url, {
         credentials: "include",
         method,
         ...(body ? file ? { body: body as BodyInit } : { body: JSON.stringify(body) } : {}),
-        ...other,
+        ...(fetchOptions || {}),
         headers: {
             ...(file ? {} : { "Content-Type": "application/json" }),
             "authorization": "Bearer " + accessToken,
