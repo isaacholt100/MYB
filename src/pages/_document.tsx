@@ -8,7 +8,7 @@ const
     APP_NAME = "Squool",
     APP_DESC = "<Description Here>",
     APP_URL = "https://squool.vercel.app",
-    APP_COLOR = "#FFFFFF";
+    APP_COLOR = "#000000";
 
 export default class MyDocument extends Document {
     render() {
@@ -23,7 +23,7 @@ export default class MyDocument extends Document {
                     <meta name="format-detection" content="telephone=no" />
                     <meta name="mobile-web-app-capable" content="yes" />
                     <meta name="msapplication-config" content="/browserconfig.xml" />
-                    <meta name="msapplication-TileColor" content="#FFFFFF" />
+                    <meta name="msapplication-TileColor" content="#000000" />
                     <meta name="msapplication-tap-highlight" content="no" />
                     <meta name="theme-color" content={APP_COLOR} />
                             
@@ -32,7 +32,7 @@ export default class MyDocument extends Document {
                     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
                     <link rel="manifest" href="/manifest.json" />
                     <link rel="manifest" href="/site.webmanifest" />
-                    <link rel="mask-icon" href="/favicons/apple-icon-180x180.png" color="#FFFFFF" />
+                    <link rel="mask-icon" href="/favicons/apple-icon-180x180.png" color="#000000" />
                     <link rel="shortcut icon" href="/favicons/favicon.ico" />
                     <meta name="twitter:card" content="summary" />
                     <meta name="twitter:url" content={APP_URL} />
