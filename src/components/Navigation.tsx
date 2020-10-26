@@ -218,22 +218,27 @@ const Nav = memo(() => {
                     <NProgressBar />
                 </div>
             </AppBar>
-            <Drawer
+            <SwipeableDrawer
                 variant="temporary"
                 anchor="right"
                 open={notificationOpen}
                 onClose={() => setNotificationOpen(false)}
+                onOpen={() => setNotificationOpen(true)}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
                 ModalProps={{
                     keepMounted: true,
                 }}
+                disableDiscovery
+                hysteresis={0.32}
+                minFlingVelocity={256}
+                disableBackdropTransition={!iOS}
             >
                 <div className={classes.linksContainer}>
                     <Typography variant="h5">Notifications</Typography>
                 </div>
-            </Drawer>
+            </SwipeableDrawer>
             <Hidden mdUp>
                 <SwipeableDrawer
                     variant="temporary"
@@ -249,6 +254,8 @@ const Nav = memo(() => {
                     }}
                     disableBackdropTransition={!iOS}
                     disableDiscovery={iOS}
+                    hysteresis={0.32}
+                    minFlingVelocity={256}
                 >
                     {DrawerItems(true)}
                 </SwipeableDrawer>
