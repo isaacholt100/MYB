@@ -6,10 +6,12 @@ import useSnackbar from "./useSnackbar";
 export default () => {
     const isLoggedIn = useIsLoggedIn(), snackbar = useSnackbar(), router = useRouter();
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (isLoggedIn as any === "") {
+            router.replace("/");
+        } else if (!isLoggedIn) {
             router.replace("/login?to=" + router.pathname);
             snackbar.error("Please login first");
         }
     });
-    return isLoggedIn;
+    return Boolean(isLoggedIn);
 }

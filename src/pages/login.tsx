@@ -94,8 +94,8 @@ export default function Login() {
                             staySignedIn,
                             user_id: data.userInfo._id,
                         });
-                        //const q = router.query.to as string;
-                        //router.replace(q && q[0] === "/" ? q : "/");
+                        const q = router.query.to as string;
+                        router.replace(q && q[0] === "/" ? q : "/");
                         //socket.connect(`http://${serverUrl.split(":5000")[0]}`);
                     },
                     errors: data => setState({

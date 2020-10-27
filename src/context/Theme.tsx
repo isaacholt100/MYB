@@ -1,5 +1,4 @@
-import { IDBPDatabase, openDB } from "idb";
-import { createContext, ReactChild, ReactChildren, useContext, useEffect, useReducer, useState } from "react";
+import { createContext, ReactChild, useContext, useState } from "react";
 import useSWR from "swr";
 import defaultTheme from "../json/defaultTheme.json";
 interface ITheme {
@@ -9,29 +8,8 @@ interface ITheme {
     type: "light" | "dark";
 }
 export const ThemeContext = createContext({});
-function reducer(state: ITheme, action: { type: string; payload: ITheme }) {
-    switch (action.type) {
-        case "/theme":
-            return {
-                ...state,
-                ...action.payload,
-            }
-        default:
-            throw new Error("Unrecognised action type for theme reducer");
-    }
-}
-const useDB = async () => {
-    return openDB("data", 1, {
-        upgrade(db) {
-            db.createObjectStore("user");
-        }
-    });
-}
 export default function Theme({ children }: { children: ReactChild }) {
     const
-        { data, error, mutate } = useSWR("/api/user/settings/theme", url => fetch(url).then(res => res.json()), {
-            refreshInterval: 1000
-        }),
         [theme, setTheme] = useState(typeof(localStorage) !== "undefined" ? {
             primary: localStorage.getItem("theme-primary") || defaultTheme.primary,
             secondary: localStorage.getItem("theme-secondary") || defaultTheme.secondary,
@@ -39,20 +17,24 @@ export default function Theme({ children }: { children: ReactChild }) {
             fontFamily: localStorage.getItem("theme-fontFamily") || defaultTheme.fontFamily,
         } : defaultTheme),
         dispatch = (t: Partial<ITheme>) => {
-            const newTheme = {
+            const newTheme = t ? {
                 ...theme,
-                ...(t || defaultTheme),
-            }
-            mutate(newTheme, false);
+                ...t,
+            } : defaultTheme;
             setTheme(newTheme);
-            for (let key in t) {
-                localStorage.setItem("theme-" + key, t[key]);
+            if (t) {
+                for (let key in t) {
+                    localStorage.setItem("theme-" + key, t[key]);
+                }
+            } else {
+                localStorage.removeItem("theme-primary");
+                localStorage.removeItem("theme-secondary");
+                localStorage.removeItem("theme-type");
+                localStorage.removeItem("theme-fontFamily");
             }
         };
-        console.log({data});
-        
     return (
-        <ThemeContext.Provider value={[data?.theme || theme, dispatch]}>
+        <ThemeContext.Provider value={[theme, dispatch]}>
             {children}
         </ThemeContext.Provider>
     )

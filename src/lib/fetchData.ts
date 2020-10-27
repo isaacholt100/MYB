@@ -35,8 +35,6 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
         }
     } else {
         const data = await res.json();
-        console.log(data);
-        
         fn({
             type: "failed",
             data: "failed",

@@ -7,7 +7,7 @@ export default () => {
         onError: () => {},
         initialData: l,
     });
-    if (data !== undefined && !error) {
+    if (!error) {
         return data as boolean;
     }
     return l;

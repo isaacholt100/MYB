@@ -73,6 +73,7 @@ export default memo(() => {
                 primaryHue: "indigo",
                 secondaryHue: "indigo",
             });
+            setTheme(null);
             put("/user/settings/theme", {
                 failedMsg: "updating the theme",
                 body: {

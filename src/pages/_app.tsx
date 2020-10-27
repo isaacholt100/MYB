@@ -20,7 +20,7 @@ import LoadPreview from "../components/LoadPreview";
 import { useGet } from "../hooks/useRequest";
 import Cookies from "js-cookie";
 import "../css/global.css";
-const l = Boolean(Cookies.get("refreshToken") && Cookies.get("accessToken"));
+
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
         [get] = useGet(),
@@ -229,8 +229,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         }),
         getData = () => {
             if (!dataLoaded && isLoggedIn) {
-                console.log({dataLoaded});
-                
                 if (dataLoaded === undefined) {
                     setDataLoaded(false);
                 }
@@ -261,8 +259,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
             }
         };
     useEffect(getData, []);
-    console.log(isLoggedIn, dataLoaded);
-    
     return (
         <>
             <Head>
