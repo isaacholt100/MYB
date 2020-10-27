@@ -23,13 +23,11 @@ import "../css/global.css";
 const l = Boolean(Cookies.get("refreshToken") && Cookies.get("accessToken"));
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
-        //[mounted, setMounted] = useState(true),
         [get] = useGet(),
         dispatch = useDispatch(),
         isLoggedIn = useIsLoggedIn(),
         [dataLoaded, setDataLoaded] = useState(false),
-        [test, setTest] = useState(false),
-        [theme] = useTheme(),
+        [theme, setTheme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
         level1Bg = theme.type === "light" ? "#ddd" : "#333",
@@ -244,6 +242,8 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     failed: () => setDataLoaded(undefined),
                     done: (data: any) => {
                         setDataLoaded(true);
+                        console.log(data);
+                        setTheme(data.theme);
                         /*dispatch({
                             type: "UPLOAD_DATA",
                             payload: {

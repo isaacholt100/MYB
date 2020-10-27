@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, memo, ReactChildren, ReactNode, useEffect } from "react";
+import React, { useState, memo, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,7 +19,7 @@ import { Box } from "@material-ui/core";
 import clsx from "clsx";
 import usePathname from "../hooks/usePathname";
 import Icon from "./Icon";
-import { mdiAccountGroup, mdiAccountPlus, mdiBell, mdiBook, mdiCalendar, mdiChat, mdiCog, mdiDotsHorizontal, mdiFormatListChecks, mdiGroup, mdiHome, mdiLogin, mdiMenu, mdiSchool, mdiTimetable, mdiWrench } from "@mdi/js";
+import { mdiAccountGroup, mdiBell, mdiBook, mdiCalendar, mdiChat, mdiCog, mdiDotsHorizontal, mdiFormatListChecks, mdiHome, mdiMenu, mdiSchool, mdiTimetable, mdiWrench } from "@mdi/js";
 import Link from "next/link";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import NProgress from "nprogress";
@@ -231,7 +231,7 @@ const Nav = memo(() => {
                     keepMounted: true,
                 }}
                 disableDiscovery
-                hysteresis={0.32}
+                hysteresis={0.25}
                 minFlingVelocity={256}
                 disableBackdropTransition={!iOS}
             >
@@ -254,7 +254,7 @@ const Nav = memo(() => {
                     }}
                     disableBackdropTransition={!iOS}
                     disableDiscovery={iOS}
-                    hysteresis={0.32}
+                    hysteresis={0.25}
                     minFlingVelocity={256}
                 >
                     {DrawerItems(true)}
