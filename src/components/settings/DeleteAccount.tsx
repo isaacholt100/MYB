@@ -9,6 +9,7 @@ import LoadBtn from "../LoadBtn";
 import Cookies from "js-cookie";
 import { useTheme } from "../../context/Theme";
 import { mutate } from "swr";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(({ palette, breakpoints }) => ({
     highlighted: {
@@ -49,8 +50,8 @@ export default memo(() => {
     const
         request = useRequest(),
         [del, loading] = useDelete(),
-        cookies = useCookies(),
-        confirm = useConfirm(),
+        router = useRouter(),
+        [ConfirmDialog, confirm] = useConfirm(loading),
         [passwordState, setPasswordState] = useState({
             confirmPassword: "",
             confirmPasswordError: "",
@@ -66,12 +67,13 @@ export default memo(() => {
             del("/login", {
                 setLoading: true,
                 done: () => {
+
                     Cookies.remove("refreshToken");
                     Cookies.remove("accessToken");
+                    Cookies.remove("user_id");
                     localStorage.clear();
                     setTheme(null);
-                    mutate("/api/login", false, false);
-                    //router.push("/");
+                    mutate("/api/login", "", false);
                 }
             });
         },
@@ -142,6 +144,7 @@ export default memo(() => {
                     Delete Account
                 </Button>
             </div>
+            {ConfirmDialog}
             <Dialog
                 open={state.deleteDialogOpen}
                 onClose={closeDeleteDialog}

@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import useRequest from "../../hooks/useRequest";
+import useRequest, { usePut } from "../../hooks/useRequest";
 import useSnackbar from "../../hooks/useSnackbar";
 import useConfirm from "../../hooks/useConfirm";
 import { Typography, TextField, Button } from "@material-ui/core";
@@ -7,16 +7,16 @@ import MarginDivider from "../MarginDivider";
 import useCookies from "../../hooks/useCookies";
 export default memo(() => {
     const
-        request = useRequest(),
+        [put, loading] = usePut(),
         snackbar = useSnackbar(),
         cookies = useCookies(),
-        confirm = useConfirm(),
+        [ConfirmDialog, confirm] = useConfirm(loading),
         [state, setState] = useState({
             _id: "",
             helper: "",
         }),
         change = () => {
-            request.put("/user/school", {
+            put("/user/school", {
                 failedMsg: "updating your school",
                 body: { school_id: state._id },
                 done: data => {
@@ -26,27 +26,11 @@ export default memo(() => {
                     });
                     snackbar.success("School updated");
                 },
-                errors: data =>  setState({
+                errors: data => setState({
                     ...state,
                     helper: data.errors as string,
                 })
             });
-            /*request("/user/school", "PUT", false, data => {
-                setState({
-                    ...state,
-                    _id: "",
-                });
-                showSnackbar("School updated", {
-                    variant: "success",
-                });
-            }, "updating your school", {
-                school_id: state._id, 
-            }, data => {
-                setState({
-                    ...state,
-                    helper: data.errors,
-                });
-            });*/
         },
         submit = e => {
             e.preventDefault();
@@ -84,6 +68,7 @@ export default memo(() => {
                 Change
             </Button>
             <MarginDivider />
+            {ConfirmDialog}
         </form>
     );
 });

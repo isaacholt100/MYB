@@ -6,8 +6,6 @@ import styles from "../../css/colorPicker.module.css";
 
 export default (({ intent, shade, hue, ...props }: {[key: string]: any}) => {
     const contrastText = useContraxtText();
-    console.log(shade, hue);
-    
     return (
         <Grid item sm={12} md={6}>
             <Typography variant="h6" gutterBottom>

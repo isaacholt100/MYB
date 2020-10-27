@@ -6,10 +6,12 @@ import Timetable from "../components/settings/Timetable";
 import School from "../components/settings/School";
 import DeleteAccount from "../components/settings/DeleteAccount";
 import Theme from "../components/settings/Theme";
+import useRedirect from "../hooks/useRedirect";
 
 export default () => {
+    const isLoggedIn = useRedirect();
     const [page, setPage] = useState(0);
-    return (
+    return !isLoggedIn ? null : (
         <div>
             <Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
                 <AppBar position="relative" color="default">
