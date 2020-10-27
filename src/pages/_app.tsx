@@ -262,7 +262,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
     return (
         <>
             <Head>
-                <link rel="preload" href={fontFamily} />
+                <link rel="stylesheet" href={fontFamily} />
             </Head>
             <MuiTheme theme={muiTheme}>
                 <div className={"flex flex_col full_screen"}>
@@ -375,7 +375,7 @@ export default ({ Component, pageProps }: AppProps) => {
                     <Theme>
                         <Pickers utils={DateUtils}>
                             <Snackbar
-                                ref={snack}
+                                ref={snack as any}
                                 action={key => (
                                     <IconButton size="small" onClick={() => snack.current.closeSnackbar(key)}>
                                         <Icon path={mdiClose} />
