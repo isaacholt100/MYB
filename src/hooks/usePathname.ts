@@ -1,3 +1,5 @@
 import { useRouter } from "next/router";
 
-export default () => useRouter().pathname;
+export default function usePathname() {
+    return useRouter().pathname;
+}

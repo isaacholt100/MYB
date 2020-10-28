@@ -1,4 +1,6 @@
 import React from "react";
 import { Divider } from "@material-ui/core";
 
-export default () => <Divider className={"my_16"} />;
+export default function MarginDivider() {
+    return <Divider className={"my_16"} />;
+}

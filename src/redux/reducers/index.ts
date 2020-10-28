@@ -6,8 +6,6 @@ import userInfo from "./userInfo";
 import userClasses from "./userClasses";
 import timetable from "./timetable";
 import reminders from "./reminders";
-import confirmDialog from "./confirmDialog";
-import ajaxLoading from "./ajaxLoading";
 import loadError from "./loadError";
 import moreActions from "./moreActions";
 import carouselView from "./carouselView";
@@ -19,5 +17,5 @@ import chats from "./chats";
 import books from "./books";
 
 export default combineReducers({
-    theme, snackbar, pageTitle, userInfo, userClasses, timetable, reminders, confirmDialog, ajaxLoading, loadError, moreActions, carouselView, contextMenu, helpDialog, users, usersDialog, chats, books,
+    theme, snackbar, pageTitle, userInfo, userClasses, timetable, reminders, loadError, moreActions, carouselView, contextMenu, helpDialog, users, usersDialog, chats, books,
 });

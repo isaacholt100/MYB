@@ -1,8 +1,8 @@
-import { useSnackbar } from "notistack";
+import { useSnackbar as useSnack } from "notistack";
 import { ReactNode } from "react";
 
-export default () => {
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+export default function useSnackbar() {
+    const { enqueueSnackbar, closeSnackbar } = useSnack();
     return {
         open: enqueueSnackbar,
         close: closeSnackbar,

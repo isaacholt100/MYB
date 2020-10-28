@@ -3,7 +3,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { AlertError } from "../components/AlertError"
 
-export default () => {
+export default function Page404() {
     const router = useRouter();
     return (
         <AlertError

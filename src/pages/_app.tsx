@@ -20,6 +20,7 @@ import LoadPreview from "../components/LoadPreview";
 import { useGet } from "../hooks/useRequest";
 import Cookies from "js-cookie";
 import "../css/global.css";
+import MoreActions from "../components/MoreActions";
 
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
@@ -263,6 +264,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         <>
             <Head>
                 <link rel="stylesheet" href={fontFamily} />
+                <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
             </Head>
             <MuiTheme theme={muiTheme}>
                 <div className={"flex flex_col full_screen"}>
