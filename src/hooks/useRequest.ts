@@ -104,7 +104,7 @@ export function useDelete(): FetchHook {
     }
     return [fn, loading];
 }
-export default () => {
+export default function useRequest() {
     const [f] = useFetch();
     return {
         get(url: string, options: PublicOptions) {

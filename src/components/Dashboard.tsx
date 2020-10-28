@@ -4,7 +4,7 @@ import { Button } from "@material-ui/core";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { useTheme } from "../context/Theme";
-export default () => {
+export default function Dashboard() {
     const [del, loading] = useDelete();
     const router = useRouter();
     const [, setTheme] = useTheme();

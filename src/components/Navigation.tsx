@@ -25,6 +25,7 @@ import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import NProgress from "nprogress";
 import NProgressBar from "./NProgressBar";
 import { useRouter } from "next/router";
+import MoreActions from "./MoreActions";
 NProgress.configure({
     parent: "#nprogress-parent",
 });
@@ -120,7 +121,7 @@ const Nav = memo(() => {
             "Reminders": mdiFormatListChecks,
             "Settings": mdiCog,
             "School": mdiSchool,
-            "Home": mdiHome
+            "Home": <img src="/icons/apple-icon-144x144.png" style={{margin: -8, userSelect: "none", msUserSelect: "none", MozUserSelect: "none", WebkitUserSelect: "none"}} height="40" width="40" draggable="false" />
         },
         links = () => {
             switch (role) {
@@ -151,7 +152,7 @@ const Nav = memo(() => {
                                         //color: link.toLowerCase() === pathname.split("/")[1] ? "primary.main" : "text.primary"
                                     }}
                                 >
-                                    <Icon path={icons[link]} />
+                                    {link === "Home" ? icons[link] : <Icon path={icons[link]} />}
                                     {small && (
                                         <ListItemText primary={link} className={"ml_16"} />
                                     )}
@@ -201,15 +202,7 @@ const Nav = memo(() => {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="More Options">
-                            <IconButton
-                                className={classes.mr}
-                                onClick={() => dispatch({
-                                    type: "/moreActions/open",
-                                })}
-                                color="inherit"
-                            >
-                                <Icon path={mdiDotsHorizontal} />
-                            </IconButton>
+                            <MoreActions className={classes.mr} />
                         </Tooltip>
                     </div>
                 </Toolbar>
@@ -274,7 +267,7 @@ const Nav = memo(() => {
         </>
     );
 });
-export default () => {
+export default function Navigation() {
     const loggedIn = useIsLoggedIn();
     return loggedIn ? <Nav /> : null;
 }

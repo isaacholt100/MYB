@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import useIsLoggedIn from "./useIsLoggedIn"
 
-export default () => {
+export default function useAuthRedirect() {
     const isLoggedIn = useIsLoggedIn(), router = useRouter();
     useEffect(() => {
         if (isLoggedIn) {

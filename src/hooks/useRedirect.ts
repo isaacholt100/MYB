@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import useIsLoggedIn from "./useIsLoggedIn"
 import useSnackbar from "./useSnackbar";
 
-export default () => {
+export default function useRedirect() {
     const isLoggedIn = useIsLoggedIn(), snackbar = useSnackbar(), router = useRouter();
     useEffect(() => {
         if (isLoggedIn as any === "") {

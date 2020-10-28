@@ -28,29 +28,28 @@ export default class MyDocument extends Document {
                     <meta name="theme-color" content={APP_COLOR} />
                             
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-                    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-icon-180x180.png" />
-                    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
-                    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+                    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png" />
+                    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+                    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
                     <link rel="manifest" href="/manifest.json" />
                     <link rel="manifest" href="/site.webmanifest" />
-                    <link rel="mask-icon" href="/favicons/apple-icon-180x180.png" color="#000000" />
-                    <link rel="shortcut icon" href="/favicons/favicon.ico" />
+                    <link rel="mask-icon" href="/icons/apple-icon-180x180.png" color="#000000" />
+                    <link rel="shortcut icon" href="/icons/favicon.ico" />
 
                     <meta name="twitter:card" content="summary" />
                     <meta name="twitter:url" content={APP_URL} />
                     <meta name="twitter:title" content={APP_NAME} />
                     <meta name="twitter:description" content={APP_DESC} />
-                    <meta name="twitter:image" content={APP_URL + "/favicons/android-icon-192x192.png"} />
+                    <meta name="twitter:image" content={APP_URL + "/icons/android-icon-192x192.png"} />
                     {/*<meta name="twitter:creator" content="@DavidWShadow" />*/}
                     <meta property="og:type" content="website" />
                     <meta property="og:title" content={APP_NAME} />
                     <meta property="og:description" content={APP_DESC} />
                     <meta property="og:site_name" content={APP_NAME} />
                     <meta property="og:url" content={APP_URL} />
-                    <meta property="og:image" content={APP_URL + "/favicons/apple-icon.png"} />
+                    <meta property="og:image" content={APP_URL + "/icons/apple-icon.png"} />
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-                    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
                     <meta name="keywords" content="<Keywords here>" />
                 </Head>
                 <body>

@@ -16,7 +16,7 @@ const getPosition = e => {
     }
     return [0, 0];
 };
-export default () => {
+export default function useContextMenu() {
     const dispatch = useDispatch();
     return items => e => {
         e.preventDefault();

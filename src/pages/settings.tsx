@@ -8,7 +8,7 @@ import DeleteAccount from "../components/settings/DeleteAccount";
 import Theme from "../components/settings/Theme";
 import useRedirect from "../hooks/useRedirect";
 
-export default () => {
+export default function Settings() {
     const isLoggedIn = useRedirect();
     const [page, setPage] = useState(0);
     return !isLoggedIn ? null : (

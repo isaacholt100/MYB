@@ -1,7 +1,7 @@
 import { Button, Card, Typography } from "@material-ui/core"
 import Link from "next/link";
 
-export default () => {
+export default function LandingPage() {
     return (
         <div>
             <Card>

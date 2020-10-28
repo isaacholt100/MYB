@@ -62,7 +62,7 @@ const
             marginLeft: 8,
         },
     }));
-export default () => {
+export default function Login() {
     const
         [post, loading] = usePost(),
         //socket = useSocket(),
