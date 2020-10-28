@@ -240,10 +240,12 @@ export default () => {
         backspace = () => {
             field.keystroke("Backspace");
         },
-        handleSubmit = e => {
+        handleSubmit = f => e => {
+            console.log(f);
+            
             e.preventDefault();
-            focus();
-            let expression = ma.text()
+            f.focus();
+            let expression = f.text()
                 .replace(/\bsin\(/g, "(sin(")
                 .replace(/\bcos\(/g, "(cos(")
                 .replace(/\btan\(/g, "(tan(")
@@ -392,13 +394,11 @@ export default () => {
                         expression.indexOf("=") > -1
                             ? ""
                             : " = " + answer;
-                            console.log("latex: ", ma.latex());
-                            
                     const newHistory = [
                         ...historyRef.current,
-                        {[ma.latex()]: historyEntry}
+                        {[f.latex()]: historyEntry}
                     ];
-                    ma.latex(answer);
+                    f.latex(answer);
                     //const promise = new Promise(res => {
                         //res(true);
                         setHistoryList(newHistory);
@@ -411,7 +411,7 @@ export default () => {
                     //})
                     let { current } = history;
                     //promise.then(() => (current as any).scrollTop = 100000);
-                    focus();
+                    f.focus();
                 } catch (error) {
                     console.error(error);
                     
@@ -483,7 +483,7 @@ export default () => {
                     break;
                 }
                 case "Enter": {
-                    handleSubmit(e);
+                    handleSubmit(ma)(e);
                     break;
                 }
             }
@@ -665,7 +665,7 @@ export default () => {
         <div className={`${classes.container} fadeup`}>
             <Card>
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit(field)}
                     autoComplete="off"
                 >
                     <Typography variant="h5" gutterBottom>
@@ -844,7 +844,7 @@ export default () => {
                                         variant="contained"
                                         color="primary"
                                         className={classes.button}
-                                        onClick={handleSubmit}
+                                        onClick={handleSubmit(field)}
                                         {...prevent}
                                     >
                                         =
