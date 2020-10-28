@@ -2,8 +2,10 @@
 import React, { useState, createRef, useRef, useEffect, useMemo, ElementRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ToggleButton from "@material-ui/lab/ToggleButton";
-import { create, all } from "mathjs";
-import { addStyles, EditableMathField } from "react-mathquill";
+import { create, all, import as importMath } from "mathjs";
+import dynamic from "next/dynamic";
+//import { addStyles } from "react-mathquill";
+import "mathquill/build/mathquill.css";
 import AnimateHeight from "react-animate-height";
 import katex from "katex";
 import {
@@ -25,7 +27,18 @@ import clsx from "clsx";
 import Icon from "../../components/Icon";
 import { mdiBackspace, mdiHistory } from "@mdi/js";
 
-addStyles();
+const EditableMathField: any = dynamic(
+    () => import("react-mathquill").then(mod => mod.EditableMathField) as any,
+    {
+        ssr: false
+    }
+);
+const StaticMathField = dynamic(
+    () => import("react-mathquill").then(mod => mod.StaticMathField) as any,
+    {
+        ssr: false
+    }
+);
 let replacements = {}, scope={};
 const
     { PI } = Math,
@@ -111,7 +124,7 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
         "& *:not(h5)": {
-            fontFamily: "Cambria Math",
+            //fontFamily: 'Cambria, Georgia, sans-serif',
         },
         flex: 1,
         width: "100%",
@@ -163,31 +176,29 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 export default () => {
+    let ma = null;
+    let historyArrow = 0, oldLatex = "", currentShown = true;
     const
         [state, setState] = useState({
             expression: "",
             message: "",
             invFuncs: false,
             radians: false,
-            focused: false,
-            history: [],
             error: false,
             scope: {},
-            historyArrow: 0,
-            oldExpression: "",
             latex: "",
-            text: "",
             fns: false,
+            historyRefs: [],
+        }),
+        [showHistory, setShowHistory] = useState({
             showHistory: false,
             height: 0,
             historyHeight: 299,
-            historyRefs: [],
-            currentShown: true,
-            historyArrowStart: 0,
-            oldLatex: "",
         }),
+        [field, setField] = useState(null),
+        [historyList, setHistoryList] = useState([]),
+        historyRef = useRef(historyList),
         classes = useStyles(),
-        calculator = useRef(null),
         calcContainer = useRef(null),
         history = createRef(),
         isSmall = useMediaQuery("(max-width: 599px)"),
@@ -211,7 +222,7 @@ export default () => {
             e.preventDefault();
         },
         focus = () => {
-            calculator.current.mathField.focus();
+            ma && ma.focus();
         },
         update = value => {
             focus();
@@ -224,15 +235,15 @@ export default () => {
             if (value === "sqrt(") {
                 value = "sqrt";
             }
-            calculator.current.mathField.typedText(value.toString());
+            field.typedText(value.toString());
         },
         backspace = () => {
-            calculator.current.mathField.keystroke("Backspace");
+            field.keystroke("Backspace");
         },
         handleSubmit = e => {
             e.preventDefault();
             focus();
-            let expression = state.text
+            let expression = ma.text()
                 .replace(/\bsin\(/g, "(sin(")
                 .replace(/\bcos\(/g, "(cos(")
                 .replace(/\btan\(/g, "(tan(")
@@ -381,27 +392,26 @@ export default () => {
                         expression.indexOf("=") > -1
                             ? ""
                             : " = " + answer;
+                            console.log("latex: ", ma.latex());
+                            
                     const newHistory = [
-                        ...state.history,
-                        {[state.latex]: historyEntry}
+                        ...historyRef.current,
+                        {[ma.latex()]: historyEntry}
                     ];
-                    const { mathField } = calculator.current;
-                    mathField.latex(answer);
-                    const promise = new Promise(res => {
-                        res(true);
+                    ma.latex(answer);
+                    //const promise = new Promise(res => {
+                        //res(true);
+                        setHistoryList(newHistory);
+                        historyArrow = newHistory.length, oldLatex = answer;
                         setState({
                             ...state,
                             error: false,
                             latex: answer,
-                            history: newHistory,
-                            historyArrowStart: newHistory.length,
-                            historyArrow: newHistory.length,
-                            oldLatex: answer,
                         });
-                    })
+                    //})
                     let { current } = history;
-                    promise.then(() => (current as any).scrollTop = 100000);
-                    mathField.focus();
+                    //promise.then(() => (current as any).scrollTop = 100000);
+                    focus();
                 } catch (error) {
                     console.error(error);
                     
@@ -414,63 +424,68 @@ export default () => {
         },
         clear = () => {
             focus();
-            calculator.current.mathField.latex("");
+            ma.latex("");
         },
         toggleHistory = () => {
-            if (state.history.length > 0) {
-                setState({
-                    ...state,
-                    showHistory: !state.showHistory,
-                    height: state.height === 0 ? "auto" as any : 0,
+            if (historyList.length > 0) {
+                setShowHistory({
+                    ...showHistory,
+                    showHistory: !showHistory.showHistory,
+                    height: showHistory.height === 0 ? "auto" as any : 0,
                 });
             }
         },
         replaceExpression = (expression, index) => {
-            calculator.current.mathField.latex(expression);
+            ma.latex(expression);
             focus();
+            historyArrow = index, currentShown = false;
             setState({
                 ...state,
                 latex: expression,
-                historyArrowStart: index,
-                historyArrow: index,
-                currentShown: false,
             });
         },
         change = e => {
-            if (e.key === "ArrowUp") {
-                e.preventDefault();
-                if (state.historyArrow > 0) {
-                    if (state.currentShown !== false) {
-                        calculator.current.mathField.latex(keys(state.history[state.history.length - 1])[0]);
+            focus();
+            const h = historyRef.current;
+            switch (e.key) {
+                case "ArrowUp": {
+                    e.preventDefault();
+                    if (historyArrow > 0) {
+                        if (currentShown !== false) {
+                            ma.latex(Object.keys(h[h.length - 1])[0]);
+                            ma.focus();
+                            historyArrow = h.length - 1;
+                            setState({
+                                ...state,
+                                latex: keys(h[h.length - 1])[0],
+                            });
+                            currentShown = false;
+                        } else {
+                            replaceExpression(Object.keys(h[historyArrow - 1])[0], historyArrow - 1);
+                        }
+                    }
+                    break;
+                }
+                case "ArrowDown": {
+                    e.preventDefault();
+                    if (historyArrow < h.length - 1) {
+                        replaceExpression(keys(h[historyArrow + 1])[0], historyArrow + 1);
+                    } else {
+                        ma.latex(oldLatex);
                         focus();
+                        historyArrow = historyArrow + 1;
                         setState({
                             ...state,
-                            latex: keys(state.history[state.history.length - 1])[0],
-                            historyArrow: state.history.length - 1,
-                            currentShown: false,
+                            latex: oldLatex,
                         });
-                    } else {
-                        replaceExpression(keys(state.history[state.historyArrow - 1])[0], state.historyArrow - 1);
+                        currentShown = true;
                     }
+                    break;
                 }
-            }
-            if (e.key === "ArrowDown") {
-                e.preventDefault();
-                if (state.historyArrow < state.history.length - 1) {
-                    replaceExpression(keys(state.history[state.historyArrow + 1])[0], state.historyArrow + 1);
-                } else {
-                    calculator.current.mathField.latex(state.oldLatex);
-                    focus();
-                    setState({
-                        ...state,
-                        latex: state.oldLatex,
-                        currentShown: true,
-                        historyArrow: state.historyArrow + 1
-                    });
+                case "Enter": {
+                    handleSubmit(e);
+                    break;
                 }
-            }
-            if (e.key === "Enter") {
-                handleSubmit(e);
             }
         },
         prevent = {
@@ -567,12 +582,12 @@ export default () => {
                 component="nav"
                 aria-label="History"
                 className={clsx(
-                    (state.showHistory || isMedium) ? classes.historyBox : null,
+                    (showHistory.showHistory || isMedium) ? classes.historyBox : null,
                     "historyBox"
                 )}
                 ref={history as any}
             >
-                {state.history.map((key, index) => (
+                {historyList.map((key, index) => (
                     <ListItem
                         button
                         onClick={() => replaceExpression(keys(key)[0], index)}
@@ -582,14 +597,18 @@ export default () => {
                             primary={
                                 <span
                                     dangerouslySetInnerHTML={{
-                                        __html: katex.renderToString(keys(key)[0])
+                                        __html: katex.renderToString(keys(key)[0], {
+                                            output: "mathml",
+                                        })
                                     }}
                                 />
                             }
                             secondary={
                             <span
                                 dangerouslySetInnerHTML={{
-                                    __html: katex.renderToString(values(key)[0] as any)
+                                    __html: katex.renderToString(values(key)[0] as any, {
+                                        output: "mathml",
+                                    })
                                 }}
                             />
                         }
@@ -599,13 +618,15 @@ export default () => {
             </List>
         );
     useEffect(() => {
-        setState({
-            ...state,
+        setShowHistory({
+            ...showHistory,
             historyHeight: calcContainer.current.offsetHeight,
         });
     }, [state.latex, state.error]);
+    console.log(historyList);
+    
     /*useEffect(() => {
-        if (state.history.length > 0) {
+        if (historyList.length > 0) {
             const expression = state.text;
             let evaluated = math.evaluate(expression, scope).toString();
             let answer = /*!expression.includes("=") && state.simplify ? math.simplify(expression, scope).toString() : evaluated;
@@ -627,10 +648,19 @@ export default () => {
             answer = answer.replace(/pi/g, "\\pi")
             setState({
                 ...state,
-                history: state.history.filter((x, i) => i === state.historyArrow ? {[state.latex]: answer} : x),
+                history: historyList.filter((x, i) => i === historyArrow ? {[state.latex]: answer} : x),
             });
         }
     }, [state.simplify]);*/
+    useEffect(() => {
+        document.addEventListener("keydown", change);
+        return () => document.removeEventListener("keydown", change);
+    }, []);
+    useEffect(() => {
+        historyRef.current = historyList;
+    }, [historyList]);
+    console.log(showHistory.showHistory);
+    
     return (
         <div className={`${classes.container} fadeup`}>
             <Card>
@@ -643,29 +673,29 @@ export default () => {
                     </Typography>
                     <div style={{display: isMedium ? "block" : "flex"}}>
                         <div style={{
-                            width: isMedium ? "100%" : state.showHistory ? "calc(75% - 8px)" : "100%",
+                            width: isMedium ? "100%" : showHistory.showHistory ? "calc(75% - 8px)" : "100%",
                             height: "100%",
-                            marginRight: state.showHistory ? 8 : 0,
+                            marginRight: showHistory.showHistory ? 8 : 0,
                             transition: "width 500ms",
                         }} ref={calcContainer}>
                             <FormControl fullWidth error={state.error}>
                                 {useMemo(() => (
                                     <EditableMathField
-                                        ref={calculator}
                                         className={classes.mathField}
                                         latex={state.latex}
                                         onChange={mathField => {
                                             const
-                                                latex = mathField.latex(),
-                                                text = mathField.text();
+                                                latex = mathField.latex();
+                                              //  oldLatex = latex;
                                             setState({
                                                 ...state,
                                                 latex,
-                                                oldLatex: latex,
-                                                text,
                                             });
                                         }}
-                                        onKeyDown={change}
+                                        mathquillDidMount={m => {
+                                            ma = m;
+                                            setField(m);
+                                        }}
                                         config={{
                                             autoCommands: "pi sqrt",
                                             autoOperatorNames: "sin cos tan arcsin arccos arctan sinh cosh tanh arcsinh arccosh arctanh log ln dim Re Im floor ceil round csc sec cot acsc",
@@ -842,19 +872,24 @@ export default () => {
                                 </Grid></>}
                             </Grid>
                         </div>
-                        {isMedium && <><AnimateHeight duration={500} height={state.height} style={{marginTop: 8,}}>
-                            {historyBox}
-                        </AnimateHeight></>}
-
-                       {!isMedium && <div style={{
-            width: "25%",
-            height: state.historyHeight,
-             transition: "width 500ms",
-             opacity: 1,
-         }} className={!state.showHistory ? classes.containerLarge : null}>
-                            {historyBox}
-                        </div>}
-                        </div>
+                        {isMedium && (
+                            <>
+                                <AnimateHeight duration={500} height={showHistory.height} style={{marginTop: 8,}}>
+                                    {historyBox}
+                                </AnimateHeight>
+                            </>
+                        )}
+                       {!isMedium && (
+                            <div style={{
+                                width: "25%",
+                                height: showHistory.historyHeight,
+                                transition: "width 500ms",
+                                opacity: 1,
+                            }} className={!showHistory.showHistory ? classes.containerLarge : null}>
+                                {historyBox}
+                            </div>
+                        )}
+                    </div>
                 </form>
             </Card>
         </div>
