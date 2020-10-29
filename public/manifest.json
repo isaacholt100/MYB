@@ -54,6 +54,13 @@
             "sizes": "1858x1858",
             "type": "image/png",
             "density": "10.0"
+        },
+        {
+            "src": "/icons/android-icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "density": "4.0",
+            "purpose": "any maskable"
         }
     ],
     "url": "https://squool.vercel.app",
