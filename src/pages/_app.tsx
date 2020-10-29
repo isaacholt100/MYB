@@ -32,7 +32,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
         level1Bg = theme.type === "light" ? "#ddd" : "#333",
-        fontFamily = `https://fonts.googleapis.com/css?family=${theme.fontFamily.toLowerCase().split(" ").map((s: string) => s.charAt(0).toUpperCase() + s.substring(1)).join("+")}:300,400,500`,
+        fontFamily = `https://fonts.googleapis.com/css?family=${theme.fontFamily.toLowerCase().split(" ").map((s: string) => s.charAt(0).toUpperCase() + s.substring(1)).join("+")}:300,400,500&display=swap`,
         classes = useContainerStyles(isLoggedIn),
         muiTheme = createMuiTheme({
             palette: {
@@ -264,7 +264,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         <>
             <Head>
                 <link rel="stylesheet" href={fontFamily} />
-                <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+                <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5" />
             </Head>
             <MuiTheme theme={muiTheme}>
                 <div className={"flex flex_col full_screen"}>
