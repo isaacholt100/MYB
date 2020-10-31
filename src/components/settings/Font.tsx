@@ -1,7 +1,6 @@
 import React, { memo } from "react";
 import useRequest, { usePut } from "../../hooks/useRequest";
 import { useSelector } from "react-redux";
-import useThemeUpdate from "../../hooks/useThemeUpdate";
 import { Typography, TextField } from "@material-ui/core";
 import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 import MarginDivider from "../MarginDivider";
