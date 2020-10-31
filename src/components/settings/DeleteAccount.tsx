@@ -4,7 +4,6 @@ import useConfirm from "../../hooks/useConfirm";
 import { useDispatch } from "react-redux";
 //import socket from "../../api/socket";
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, makeStyles } from "@material-ui/core";
-import useCookies from "../../hooks/useCookies";
 import LoadBtn from "../LoadBtn";
 import Cookies from "js-cookie";
 import { useTheme } from "../../context/Theme";

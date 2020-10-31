@@ -4,12 +4,12 @@ import useSnackbar from "../../hooks/useSnackbar";
 import useConfirm from "../../hooks/useConfirm";
 import { Typography, TextField, Button } from "@material-ui/core";
 import MarginDivider from "../MarginDivider";
-import useCookies from "../../hooks/useCookies";
+import Cookies from "js-cookie";
+
 export default memo(() => {
     const
         [put, loading] = usePut(),
         snackbar = useSnackbar(),
-        cookies = useCookies(),
         [ConfirmDialog, confirm] = useConfirm(loading),
         [state, setState] = useState({
             _id: "",
@@ -35,9 +35,9 @@ export default memo(() => {
         submit = e => {
             e.preventDefault();
             if (state._id !== "") {
-                if (cookies.exists("school_id")) {
+                if (Cookies.get("school_id")) {
                     confirm("change your school? You'll leave all your classes.", change);
-                } else if (state._id === cookies.get("school_id")) {
+                } else if (state._id === Cookies.get("school_id")) {
                     setState({
                         ...state,
                         _id: "",
