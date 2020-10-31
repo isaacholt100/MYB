@@ -51,8 +51,8 @@ export default memo(({ className }: {className: string}) => {
                 }}
             >
                 <Actions actions={moreActions.actions.map(a => ({ ...a, fn: exec(a.fn) }))} />
-                <MenuItem onClick={exec(typeof(window) === "undefined" ? () => {} : () => console.log(window.history, history))}>Back</MenuItem>
-                <MenuItem onClick={exec(typeof(window) === "undefined" ? () => {} : history.forward)}>Forward</MenuItem>
+                <MenuItem onClick={exec(!process.browser ? () => {} : () => console.log(window.history, history))}>Back</MenuItem>
+                <MenuItem onClick={exec(!process.browser ? () => {} : history.forward)}>Forward</MenuItem>
                 <MenuItem onClick={openHelp}>Help</MenuItem>
                 <Link href="/feedback">
                     <MenuItem onClick={close}>Feedback</MenuItem>

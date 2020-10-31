@@ -1,11 +1,8 @@
+import Cookies from "js-cookie";
 import IAction from "../../types/action";
 
 export default function userInfo(state = {
-    email: 'getCookie("email")',
-    name: 'getCookie("name")',
-    icon: 'getCookie("icon")',
-    _id: 'getCookie("user_id")',
-    role: 'getCookie("role")',
+    _id: Cookies.get("user_id"),
 }, action: IAction) {
     switch (action.type) {
         case "/user/info/update":
@@ -15,8 +12,11 @@ export default function userInfo(state = {
             };
         case "UPLOAD_DATA":
             return {
-                ...state,
-                ...action.payload.userInfo,
+                email: action.payload.email,
+                name: action.payload.name,
+                icon: action.payload.icon,
+                _id: action.payload._id,
+                role: action.payload.role,
             };
         case "LOGOUT":
             return {

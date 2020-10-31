@@ -232,8 +232,6 @@ export default function Calculator() {
             field.keystroke("Backspace");
         },
         handleSubmit = f => e => {
-            console.log(f);
-            
             e.preventDefault();
             f.focus();
             let expression = f.text()
@@ -614,8 +612,6 @@ export default function Calculator() {
             historyHeight: calcContainer.current.offsetHeight,
         });
     }, [state.latex, state.error]);
-    console.log(historyList);
-    
     /*useEffect(() => {
         if (historyList.length > 0) {
             const expression = state.text;
@@ -650,8 +646,6 @@ export default function Calculator() {
     useEffect(() => {
         historyRef.current = historyList;
     }, [historyList]);
-    console.log(showHistory.showHistory);
-    
     return (
         <div className={`${classes.container} fadeup`}>
             <Card>

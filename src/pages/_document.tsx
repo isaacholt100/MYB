@@ -68,7 +68,6 @@ MyDocument.getInitialProps = async ctx => {
         enhanceApp: App => props => sheets.collect(<App {...props} />),
     });
     const initialProps = await Document.getInitialProps(ctx);
-    console.log([ctx, initialProps, cookies(ctx)]);
     return {
         ...initialProps,
         styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],

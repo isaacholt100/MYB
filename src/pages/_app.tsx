@@ -227,8 +227,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
             },
         }),
         getData = () => {
-            console.log("dataLoaded: " + dataLoaded + ", isLoggedIn:" + isLoggedIn);
-            
             if (!dataLoaded && isLoggedIn) {
                 if (dataLoaded === undefined) {
                     setDataLoaded(false);
@@ -241,18 +239,11 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     failed: () => setDataLoaded(undefined),
                     done: (data: any) => {
                         setDataLoaded(true);
-                        console.log(data);
                         setTheme(data.theme);
-                        /*dispatch({
+                        dispatch({
                             type: "UPLOAD_DATA",
-                            payload: {
-                                userInfo: {
-                                    icon: data.icon,
-                                },
-                                ...data,
-                            },
+                            payload: data,
                         });
-                        sessionStorage.setItem("visited", "1");*/
                     }
                 });
             } else {
@@ -260,7 +251,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
             }
         };
     useEffect(getData, []);
-    console.log({ isLoggedIn, dataLoaded})
     return (
         <>
             <Head>

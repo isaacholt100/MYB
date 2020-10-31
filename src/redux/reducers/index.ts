@@ -13,6 +13,7 @@ import usersDialog from "./usersDialog";
 import chats from "./chats";
 import books from "./books";
 import moreActions from "./moreActions";
+
 export default combineReducers({
     pageTitle, userInfo, userClasses, timetable, reminders, loadError, carouselView, contextMenu, helpDialog, users, usersDialog, chats, books, moreActions,
 });
