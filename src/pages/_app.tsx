@@ -265,9 +265,11 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         <>
             <Head>
                 <link rel="stylesheet" href={fontFamily} />
-                <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5" />
             </Head>
             <MuiTheme theme={muiTheme}>
+                <Fade in={true} timeout={0}>
+                    <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
+                </Fade>
                 <div className={"flex flex_col full_screen"}>
                     {dataLoaded && <Navigation />}
                     <CssBaseline />
@@ -275,9 +277,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         {children}
                     </div>
                 </div>
-                <Fade in={true} timeout={{appear: 0, enter: 0, exit: 500}}>
-                    <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
-                </Fade>
             </MuiTheme>
         </>
     );
@@ -374,6 +373,7 @@ export default function App({ Component, pageProps }) {
             >
                 <Head>
                     <title>Squool</title>
+                    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5" />
                 </Head>
                     <Theme>
                         <Pickers utils={DateUtils}>
