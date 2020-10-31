@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, createRef, useRef, useEffect, useMemo, ElementRef } from "react";
+import React, { useState, createRef, useRef, useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ToggleButton from "@material-ui/lab/ToggleButton";
-import { create, all, import as importMath } from "mathjs";
+import { create, all } from "mathjs";
 import dynamic from "next/dynamic";
 //import { addStyles } from "react-mathquill";
 import "mathquill/build/mathquill.css";
@@ -10,7 +10,6 @@ import AnimateHeight from "react-animate-height";
 import katex from "katex";
 import {
     Button,
-    Paper,
     Typography,
     Grid,
     List,
@@ -19,8 +18,6 @@ import {
     FormControl,
     FormHelperText,
     useMediaQuery,
-    FormControlLabel,
-    Switch,
     Card,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -29,12 +26,6 @@ import { mdiBackspace, mdiHistory } from "@mdi/js";
 
 const EditableMathField: any = dynamic(
     () => import("react-mathquill").then(mod => mod.EditableMathField) as any,
-    {
-        ssr: false
-    }
-);
-const StaticMathField = dynamic(
-    () => import("react-mathquill").then(mod => mod.StaticMathField) as any,
     {
         ssr: false
     }
@@ -175,7 +166,7 @@ const useStyles = makeStyles(theme => ({
         opacity: "0 !important",
     },
 }));
-export default () => {
+export default function Calculator() {
     let ma = null;
     let historyArrow = 0, oldLatex = "", currentShown = true;
     const
@@ -409,7 +400,7 @@ export default () => {
                             latex: answer,
                         });
                     //})
-                    let { current } = history;
+                    //let { current } = history;
                     //promise.then(() => (current as any).scrollTop = 100000);
                     f.focus();
                 } catch (error) {

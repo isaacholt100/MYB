@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
         padding: 4,
     }
 }));
-export default () => {
+export default function PrimeTest() {
     const
         [number, setNumber] = useState(""),
         [message, setMessage] = useState(""),

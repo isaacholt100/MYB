@@ -1,7 +1,7 @@
 //import { ObjectId } from "mongodb";
 import IAction from "../../types/action";
 
-export default (state = [], action: IAction) => {
+export default function reminders(state = [], action: IAction) {
     switch(action.type) {
         case "/reminder/create":
             return [action.payload, ...state];

@@ -10,7 +10,7 @@ const Content = memo(({ msg }: { msg: string }) => (
     </DialogContent>
 ), (prev, next) => prev.msg === next.msg || next.msg === "");
 
-export default ({ loading, msg, fn, close }: { loading: boolean, msg: string, fn: () => void, close: () => void }) => {
+export default function ConfirmDialog({ loading, msg, fn, close }: { loading: boolean, msg: string, fn: () => void, close: () => void }) {
     return (
         <Dialog
             open={msg !== ""}

@@ -1,6 +1,6 @@
 import type { IOptions, Handler } from "../types/fetch";
 
-export default async ({ serverUrl, url, method, file, body, accessToken, refreshToken, fetchOptions }: IOptions, fn: Handler) => {
+export default async function fetchData({ serverUrl, url, method, file, body, accessToken, refreshToken, fetchOptions }: IOptions, fn: Handler) {
     const res = await fetch(serverUrl + url, {
         credentials: "include",
         method,
@@ -34,7 +34,6 @@ export default async ({ serverUrl, url, method, file, body, accessToken, refresh
             });
         }
     } else {
-        const data = await res.json();
         fn({
             type: "failed",
             data: "failed",

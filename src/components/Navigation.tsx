@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, memo, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
 import {
     SwipeableDrawer,
     Drawer,
@@ -17,9 +16,8 @@ import {
 } from "@material-ui/core";
 import { Box } from "@material-ui/core";
 import clsx from "clsx";
-import usePathname from "../hooks/usePathname";
 import Icon from "./Icon";
-import { mdiAccountGroup, mdiBell, mdiBook, mdiCalendar, mdiChat, mdiCog, mdiDotsHorizontal, mdiFormatListChecks, mdiHome, mdiMenu, mdiSchool, mdiTimetable, mdiWrench } from "@mdi/js";
+import { mdiAccountGroup, mdiBell, mdiBook, mdiCalendar, mdiChat, mdiCog, mdiFormatListChecks, mdiHome, mdiMenu, mdiSchool, mdiTimetable, mdiWrench } from "@mdi/js";
 import Link from "next/link";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import NProgress from "nprogress";
@@ -103,11 +101,9 @@ const
     }));
 const Nav = memo(() => {
     const
-        pathname = usePathname(),
         router = useRouter(),
         [mobileOpen, setMobileOpen] = useState(false),
         [notificationOpen, setNotificationOpen] = useState(false),
-        dispatch = useDispatch(),
         classes = useStyles(),
         role = ["student", "teacher"][0],//useSelector(s => s.userInfo.role),
         iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent),

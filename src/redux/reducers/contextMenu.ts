@@ -1,6 +1,6 @@
 import IAction from "../../types/action";
 
-export default (state = {mouse: [null, null], items: []}, action: IAction) => {
+export default function contextMenu(state = {mouse: [null, null], items: []}, action: IAction) {
     switch (action.type) {
         case "OPEN_CONTEXT_MENU":
             return action.payload;

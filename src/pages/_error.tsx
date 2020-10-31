@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
-import type { NextApiResponse, NextPageContext } from "next";
+import type { NextPageContext } from "next";
 import Link from "next/link";
-import { AlertError } from "../components/AlertError";
+import AlertError from "../components/AlertError";
 
 export default function Error({ statusCode }) {
     return (

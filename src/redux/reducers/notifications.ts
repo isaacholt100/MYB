@@ -1,6 +1,6 @@
 import IAction from "../../types/action";
 
-export default (state = [], action: IAction) => {
+export default function notifications(state = [], action: IAction) {
     if (!action.notify) {
         return state;
     }

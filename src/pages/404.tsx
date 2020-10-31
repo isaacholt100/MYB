@@ -1,7 +1,6 @@
-import { Button } from "@material-ui/core"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { AlertError } from "../components/AlertError"
+import { Button } from "@material-ui/core";
+import { useRouter } from "next/router";
+import AlertError from "../components/AlertError";
 
 export default function Page404() {
     const router = useRouter();
