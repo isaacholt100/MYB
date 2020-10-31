@@ -14,7 +14,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
         case "POST": {
             //throw new Error("Test error");
             const
-                db = await getDB("data"),
+                db = await getDB(),
                 users = db.collection("users"),
                 { password, staySignedIn, email } = req.body,
                 isUser = await users.findOne({ email }, { projection: { password: 1 } });
@@ -34,22 +34,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     const refreshToken = jwt.sign(jwtInfo, process.env.REFRESH_TOKEN);
                     setRefreshToken(res, refreshToken);
                     res.json({
-                        userInfo: {
-                            role: user.role,
-                            _id: user._id,
-                            //name: user.firstName + (user.role === "student" ? "" : " " + user.lastName),
-                            icon: user.icon,
-                            name: user.firstName + " " + user.lastName,
-                            email,
-                        },
-                        timetable: user.timetable,
-                        theme: user.theme,
-                        carouselView: user.carouselView,
-                        reminders: user.reminders,
-                        classes: user.classes,
-                        chats: user.chats,
-                        books: user.books,
-                        users: user.users,
+                        ...user,
                         accessToken: jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
                             expiresIn: "20m",
                         }),
@@ -68,11 +53,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             break;
         }
         case "DELETE": {
-            res.setHeader("Set-Cookie", [serialize("httpRefreshToken", "", {
+            res.setHeader("Set-Cookie", serialize("httpRefreshToken", "", {
                 maxAge: -1,
                 httpOnly: true,
                 sameSite: "strict",
-            })]);
+            }));
             done(res);
             break;
         }

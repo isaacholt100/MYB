@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, memo, useEffect } from "react";
+import React, { useState, memo, useEffect, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     SwipeableDrawer,
@@ -24,6 +24,7 @@ import NProgress from "nprogress";
 import NProgressBar from "./NProgressBar";
 import { useRouter } from "next/router";
 import MoreActions from "./MoreActions";
+
 NProgress.configure({
     parent: "#nprogress-parent",
 });
@@ -35,15 +36,11 @@ const
                 width: `calc(100% - ${65}px)`,
                 marginLeft: 65,
             },
-            //boxShadow: "none",
-            //position: "fixed",
             backgroundColor: theme.palette.background.default,
-            //color: theme.palette.text.primary,
             padding: 0,
             borderRadius: 0,
             zIndex: 1200,
             height: 60,
-            //borderBottom: `4px solid ${theme.palette.primary.main}`,
         },
         navIconHide: {
             [theme.breakpoints.up("md")]: {
@@ -59,25 +56,11 @@ const
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen
             }),
-            //backgroundColor: theme.palette.background.paper,
-            //color: theme.palette.text.primary,
-            //"& *": {
-                //fontFamily: theme.typography.fontFamily,
-            //},
             padding: 0,
             borderRadius: 0,
         },
         drawerLarge: {
             width: 65,
-        },
-        mr: {
-            marginRight: 4,
-            position: "relative",
-        },
-        linksContainer: {
-            padding: 8,
-            display: "flex",
-            flexDirection: "column",
         },
         navItem: {
             whiteSpace: "nowrap",
@@ -97,7 +80,14 @@ const
         homeDivider: {
             marginTop: -4,
             marginBottom: 4,
-        }
+        },
+        logo: {
+            margin: -8,
+            userSelect: "none",
+            msUserSelect: "none",
+            MozUserSelect: "none",
+            WebkitUserSelect: "none",
+        },
     }));
 const Nav = memo(() => {
     const
@@ -117,7 +107,7 @@ const Nav = memo(() => {
             "Reminders": mdiFormatListChecks,
             "Settings": mdiCog,
             "School": mdiSchool,
-            "Home": <img src="/icons/apple-icon-144x144.png" style={{margin: -8, userSelect: "none", msUserSelect: "none", MozUserSelect: "none", WebkitUserSelect: "none"}} height="40" width="40" draggable="false" />
+            "Home": <img src="/icons/android-icon-48x48.png" height="40" width="40" draggable="false" className={classes.logo} />
         },
         links = () => {
             switch (role) {
@@ -130,38 +120,31 @@ const Nav = memo(() => {
             }
         },
         DrawerItems = (small: boolean) => (
-            <>
-                <Box p={"8px 8px 0px 8px"}>
-                    {links().map(link => (
-                        <Link href={"/" + link.toLowerCase()} key={link}>
+            <Box p={"8px 8px 0px 8px"}>
+                {links().map(link => (
+                    <Fragment key={link}>
+                        <Link href={"/" + link.toLowerCase()}>
                             <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
-                                <div>
                                 <ListItem
                                     button
-                                    //component={BtnLink}
                                     href={"/" + link.toLowerCase()}
-                                    selected={link.toLowerCase() === location.pathname.split("/")[1]}
-                                    //selected={link === "Home"}
+                                    selected={link.toLowerCase() === router.pathname.split("/")[1] || (link === "Home" && router.pathname === "/")}
                                     className={classes.navItem}
                                     onClick={() => setMobileOpen(false)}
-                                    style={{
-                                        //color: link.toLowerCase() === pathname.split("/")[1] ? "primary.main" : "text.primary"
-                                    }}
                                 >
                                     {link === "Home" ? icons[link] : <Icon path={icons[link]} />}
                                     {small && (
                                         <ListItemText primary={link} className={"ml_16"} />
                                     )}
                                 </ListItem>
-                                {link === "Home" && (
-                                    <Divider className={classes.homeDivider} />
-                                )}
-                                </div>
-                        </Tooltip>
+                            </Tooltip>
                         </Link>
-                    ))}
-                </Box>
-            </>
+                        {link === "Home" && (
+                            <Divider className={classes.homeDivider} />
+                        )}
+                    </Fragment>
+                ))}
+            </Box>
         );
     useEffect(() => {
         router.events.on("routeChangeStart", NProgress.start);
@@ -190,7 +173,7 @@ const Nav = memo(() => {
                     <div className={"ml_auto"}>
                         <Tooltip title="Notifications">
                             <IconButton
-                                className={clsx(classes.mr, "ml_auto")}
+                                className={"mr_4 ml_auto"}
                                 onClick={() => setNotificationOpen(true)}
                                 color="inherit"
                             >
@@ -198,7 +181,7 @@ const Nav = memo(() => {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="More Options">
-                            <MoreActions className={classes.mr} />
+                            <MoreActions className={"mr_4"} />
                         </Tooltip>
                     </div>
                 </Toolbar>
@@ -224,7 +207,7 @@ const Nav = memo(() => {
                 minFlingVelocity={256}
                 disableBackdropTransition={!iOS}
             >
-                <div className={classes.linksContainer}>
+                <div className={"flex flex_col p_8"}>
                     <Typography variant="h5">Notifications</Typography>
                 </div>
             </SwipeableDrawer>

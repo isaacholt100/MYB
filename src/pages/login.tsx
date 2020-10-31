@@ -80,19 +80,13 @@ export default function Login() {
                         setTheme(data.theme);
                         dispatch({
                             type: "UPLOAD_DATA",
-                            payload: {
-                                userInfo: {
-                                    ...data.userInfo,
-                                    email,
-                                },
-                                ...data,
-                            },
+                            payload: data,
                         });
                         jwtCookies({
                             accessToken: data.accessToken,
                             refreshToken: data.refreshToken,
                             staySignedIn,
-                            user_id: data.userInfo._id,
+                            user_id: data._id,
                         });
                         const q = router.query.to as string;
                         router.replace(q && q[0] === "/" ? q : "/");

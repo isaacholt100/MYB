@@ -1,6 +1,11 @@
-import { Db, MongoClient } from "mongodb";
+import { Db } from "mongodb";
+import connectDB from "./connectDB"
+
+/*import { ClientSession, Db, MongoClient } from "mongodb";
+
 let cachedDb: Db = null;
-export default async (name: string) => {
+
+export default async (name: string): Promise<Db> => {
     if (cachedDb) {
         return cachedDb;
     }
@@ -17,4 +22,7 @@ export default async (name: string) => {
     const db = client.db(name);
     cachedDb = db;
     return db;
+}*/
+export default async (): Promise<Db> => {
+    return (await connectDB()).db;
 }
