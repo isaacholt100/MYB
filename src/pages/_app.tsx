@@ -267,9 +267,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 <link rel="stylesheet" href={fontFamily} />
             </Head>
             <MuiTheme theme={muiTheme}>
-                <Fade in={true} timeout={0}>
                     <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
-                </Fade>
                 <div className={"flex flex_col full_screen"}>
                     {dataLoaded && <Navigation />}
                     <CssBaseline />
