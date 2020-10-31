@@ -19,14 +19,13 @@ import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import LoadPreview from "../components/LoadPreview";
 import { useGet } from "../hooks/useRequest";
 import "../css/global.css";
-import cookies from "next-cookies";
 
-function ThemeWrapper({ children, isLoggedIn: l }: { children: ReactChild, isLoggedIn: boolean }) {
+function ThemeWrapper({ children }: { children: ReactChild }) {
     const
         [get] = useGet(),
         dispatch = useDispatch(),
         isLoggedIn = useIsLoggedIn(),
-        [dataLoaded, setDataLoaded] = useState(!l),
+        [dataLoaded, setDataLoaded] = useState(false),
         [theme, setTheme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
@@ -228,6 +227,8 @@ function ThemeWrapper({ children, isLoggedIn: l }: { children: ReactChild, isLog
             },
         }),
         getData = () => {
+            console.log("dataLoaded: " + dataLoaded + ", isLoggedIn:" + isLoggedIn);
+            
             if (!dataLoaded && isLoggedIn) {
                 if (dataLoaded === undefined) {
                     setDataLoaded(false);
@@ -259,7 +260,7 @@ function ThemeWrapper({ children, isLoggedIn: l }: { children: ReactChild, isLog
             }
         };
     useEffect(getData, []);
-    console.log({l, isLoggedIn, dataLoaded})
+    console.log({ isLoggedIn, dataLoaded})
     return (
         <>
             <Head>
@@ -350,7 +351,7 @@ const useStyles = makeStyles(({ palette }) => ({
         right: 8,
     },
 }));
-export default function App({ Component, pageProps, ...other }) {
+export default function App({ Component, pageProps }) {
     const snack: MutableRefObject<ProviderContext> = useRef();
     const classes = useStyles();
     useEffect(() => {
@@ -400,7 +401,7 @@ export default function App({ Component, pageProps, ...other }) {
                                 }}
                                 maxSnack={4}
                             >
-                                <ThemeWrapper isLoggedIn={other.isLoggedIn}>
+                                <ThemeWrapper>
                                     <Component {...pageProps} />
                                 </ThemeWrapper>
                             </Snackbar>
@@ -409,11 +410,4 @@ export default function App({ Component, pageProps, ...other }) {
             </SWRConfig>
         </Redux>
     );
-}
-App.getInitialProps = (ctx: AppContext) => {
-    console.log({ctx}, cookies(ctx.ctx));
-    const { accessToken, refreshToken } = cookies(ctx.ctx);
-    return {
-        isLoggedIn: Boolean(accessToken && refreshToken),
-    };
 }
