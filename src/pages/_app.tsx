@@ -256,7 +256,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     }
                 });
             } else {
-                //setDataLoaded(true);
+                setDataLoaded(true);
             }
         };
     useEffect(getData, []);
@@ -267,9 +267,11 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 <link rel="stylesheet" href={fontFamily} />
             </Head>
             <MuiTheme theme={muiTheme}>
+                {!dataLoaded && (
                     <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
+                )}
                 <div className={"flex flex_col full_screen"}>
-                    {dataLoaded && <Navigation />}
+                    <Navigation />
                     <CssBaseline />
                     <div className={classes.appContainer}>
                         {children}
