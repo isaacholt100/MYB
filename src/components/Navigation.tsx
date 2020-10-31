@@ -124,20 +124,22 @@ const Nav = memo(() => {
                 {links().map(link => (
                     <Fragment key={link}>
                         <Link href={"/" + link.toLowerCase()}>
-                            <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
-                                <ListItem
-                                    button
-                                    href={"/" + link.toLowerCase()}
-                                    selected={link.toLowerCase() === router.pathname.split("/")[1] || (link === "Home" && router.pathname === "/")}
-                                    className={classes.navItem}
-                                    onClick={() => setMobileOpen(false)}
-                                >
-                                    {link === "Home" ? icons[link] : <Icon path={icons[link]} />}
-                                    {small && (
-                                        <ListItemText primary={link} className={"ml_16"} />
-                                    )}
-                                </ListItem>
-                            </Tooltip>
+                            <div>
+                                <Tooltip placement="left" title={link} {...(small ? {open: false} : {})}>
+                                    <ListItem
+                                        button
+                                        href={"/" + link.toLowerCase()}
+                                        selected={link.toLowerCase() === router.pathname.split("/")[1] || (link === "Home" && router.pathname === "/")}
+                                        className={classes.navItem}
+                                        onClick={() => setMobileOpen(false)}
+                                    >
+                                        {link === "Home" ? icons[link] : <Icon path={icons[link]} />}
+                                        {small && (
+                                            <ListItemText primary={link} className={"ml_16"} />
+                                        )}
+                                    </ListItem>
+                                </Tooltip>
+                            </div>
                         </Link>
                         {link === "Home" && (
                             <Divider className={classes.homeDivider} />

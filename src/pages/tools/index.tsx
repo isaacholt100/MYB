@@ -7,13 +7,13 @@ import {
 } from "@material-ui/core";
 import ListView from "../../components/ListView";
 import Icon from "../../components/Icon";
-import { mdiApps, mdiBook, mdiHelp } from "@mdi/js";
+import { mdiApps, mdiBook, mdiCalculatorVariant, mdiHelp } from "@mdi/js";
 import Link from "next/link";
 
 export default function Tools() {
     const tools = [
-        [<Box fontSize={24} textAlign="center">=</Box>, "Calculator", "/calculator"],
-        [<Icon path={mdiHelp} color="inherit" />, "Prime Tester", "/primetest"],
+        [<Icon path={mdiCalculatorVariant} />, "Calculator", "/calculator"],
+        [<Icon path={mdiHelp} />, "Prime Tester", "/primetest"],
         [<Icon path={mdiApps} />, "Periodic table", "/periodictable"],
         [<Icon path={mdiBook} />, "Dictionary", "/dictionary"],
     ];
@@ -40,7 +40,7 @@ export default function Tools() {
                             >
                                 {t[0]}
                             </Box>
-                            <Typography variant="h6">{t[1]}</Typography>
+                            <Typography variant="h6" className={"flex align_items_center"}>{t[1]}</Typography>
                         </Box>
                     </CardActionArea>
                 </Link>
