@@ -275,7 +275,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         {children}
                     </div>
                 </div>
-                <Fade in={!dataLoaded} timeout={{appear: 0, enter: 0, exit: 500}}>
+                <Fade in={true} timeout={{appear: 0, enter: 0, exit: 500}}>
                     <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
                 </Fade>
             </MuiTheme>
