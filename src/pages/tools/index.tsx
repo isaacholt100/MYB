@@ -1,19 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import {
-    Grid,
     Typography,
-    Card,
     CardActionArea,
     Box
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import ListView from "../../components/ListView";
 import Icon from "../../components/Icon";
 import { mdiApps, mdiBook, mdiHelp } from "@mdi/js";
 import Link from "next/link";
 
-export default () => {
+export default function Tools() {
     const tools = [
         [<Box fontSize={24} textAlign="center">=</Box>, "Calculator", "/calculator"],
         [<Icon path={mdiHelp} color="inherit" />, "Prime Tester", "/primetest"],

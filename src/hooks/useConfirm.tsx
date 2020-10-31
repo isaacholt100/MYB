@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import ConfirmDialog from "../components/ConfirmDialog";
 
-export default (loading: boolean): [JSX.Element, (msg: string, fn: () => void) => void] => {
+export default function useConfirm(loading: boolean): [JSX.Element, (msg: string, fn: () => void) => void] {
     const [{ msg, fn }, setState] = useState({ msg: "", fn: null });
     const Dialog = <ConfirmDialog loading={loading} msg={msg} fn={fn} close={() => setState({ msg: "", fn: null })} />;
     const confirm = (msg: string, fn: () => void) => {

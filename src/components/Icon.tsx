@@ -1,5 +1,5 @@
-import Icon from "@mdi/react"
+import MdiIcon from "@mdi/react"
 import { IconProps } from "@mdi/react/dist/IconProps"
-export default (props: IconProps) => {
-    return <Icon color="currentColor" size="24px" {...props} />
+export default function Icon(props: IconProps) {
+    return <MdiIcon color="currentColor" size="24px" {...props} />
 }

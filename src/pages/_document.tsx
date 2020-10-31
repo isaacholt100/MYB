@@ -3,7 +3,7 @@ import Document, {
     Html, Main, NextScript, Head
 } from "next/document";
 import { ServerStyleSheets } from "@material-ui/core/styles";
-
+import cookies from "next-cookies";
 const
     APP_NAME = "Squool",
     APP_DESC = "<Description Here>",
@@ -61,12 +61,14 @@ export default class MyDocument extends Document {
     }
 }
 MyDocument.getInitialProps = async ctx => {
+    
     const sheets = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
     ctx.renderPage = () => originalRenderPage({
         enhanceApp: App => props => sheets.collect(<App {...props} />),
     });
     const initialProps = await Document.getInitialProps(ctx);
+    console.log([ctx, initialProps, cookies(ctx)]);
     return {
         ...initialProps,
         styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],

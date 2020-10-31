@@ -1,3 +1,5 @@
 import IAction from "../../types/action";
 
-export default (state = null, action: IAction) => action.type === "USERS_DIALOG" ? action.payload : state;
+export default function usersDialog(state = null, action: IAction) {
+    return action.type === "USERS_DIALOG" ? action.payload : state;
+}

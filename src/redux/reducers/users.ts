@@ -1,6 +1,6 @@
 import IAction from "../../types/action";
 
-export default (state = [], action: IAction) => {
+export default function users(state = [], action: IAction) {
     switch (action.type) {
         case "UPLOAD_USERS":
             return action.payload;

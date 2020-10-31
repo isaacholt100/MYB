@@ -1,7 +1,7 @@
 import React from "react";
-import { Typography, Button, CircularProgress, makeStyles } from "@material-ui/core";
+import { Typography, Button, CircularProgress } from "@material-ui/core";
 import styles from "../css/loadPreview.module.css";
-export default ({ status, getData, ...props }) => {
+export default function LoadPreview ({ status, getData, ...props }) {
     return (
         <div className={styles.root} {...props}>
             {status === "loading" ? (

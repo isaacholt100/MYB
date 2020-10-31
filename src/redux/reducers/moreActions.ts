@@ -1,6 +1,6 @@
 import IAction from "../../types/action";
 
-export default (state = { open: false, actions: [] }, action: IAction) => {
+export default function moreActions(state = { open: false, actions: [] }, action: IAction) {
     switch (action.type) {
         case "/moreActions/close":
             return {

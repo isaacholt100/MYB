@@ -2,13 +2,13 @@ import { useState, useEffect, ReactChild, useRef, MutableRefObject } from "react
 import Head from "next/head";
 import { createMuiTheme, makeStyles, ThemeProvider as MuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import type { AppProps } from "next/app";
+import type { AppContext, AppProps } from "next/app";
 import { Provider as Redux, useDispatch } from "react-redux";
 import { MuiPickersUtilsProvider as Pickers } from "@material-ui/pickers";
 import DateUtils from "@date-io/date-fns";
 import "date-fns";
 import { ProviderContext, SnackbarProvider as Snackbar } from "notistack";
-import { Box, Fade, Grow, IconButton } from "@material-ui/core";
+import { Fade, Grow, IconButton } from "@material-ui/core";
 import Icon from "../components/Icon";
 import { mdiClose } from "@mdi/js";
 import store from "../redux/store";
@@ -18,16 +18,15 @@ import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import LoadPreview from "../components/LoadPreview";
 import { useGet } from "../hooks/useRequest";
-import Cookies from "js-cookie";
 import "../css/global.css";
-import MoreActions from "../components/MoreActions";
+import cookies from "next-cookies";
 
-function ThemeWrapper({ children }: { children: ReactChild }) {
+function ThemeWrapper({ children, isLoggedIn: l }: { children: ReactChild, isLoggedIn: boolean }) {
     const
         [get] = useGet(),
         dispatch = useDispatch(),
         isLoggedIn = useIsLoggedIn(),
-        [dataLoaded, setDataLoaded] = useState(false),
+        [dataLoaded, setDataLoaded] = useState(!l),
         [theme, setTheme] = useTheme(),
         paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
         defaultBg = theme.type === "light" ? "#fff" : "#121212",
@@ -256,7 +255,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     }
                 });
             } else {
-                setDataLoaded(true);
+                //setDataLoaded(true);
             }
         };
     useEffect(getData, []);
@@ -309,7 +308,7 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
         minHeight: 0,
     },
 }));
-const useStyles = makeStyles(({ palette, typography }) => ({
+const useStyles = makeStyles(({ palette }) => ({
     snackbar: {
         "& > div": {
             borderRadius: 8,
@@ -350,7 +349,7 @@ const useStyles = makeStyles(({ palette, typography }) => ({
         right: 8,
     },
 }));
-export default ({ Component, pageProps }: AppProps) => {
+export default function App({ Component, pageProps, ...other }) {
     const snack: MutableRefObject<ProviderContext> = useRef();
     const classes = useStyles();
     useEffect(() => {
@@ -400,7 +399,7 @@ export default ({ Component, pageProps }: AppProps) => {
                                 }}
                                 maxSnack={4}
                             >
-                                <ThemeWrapper>
+                                <ThemeWrapper isLoggedIn={other.isLoggedIn}>
                                     <Component {...pageProps} />
                                 </ThemeWrapper>
                             </Snackbar>
@@ -409,4 +408,11 @@ export default ({ Component, pageProps }: AppProps) => {
             </SWRConfig>
         </Redux>
     );
+}
+App.getInitialProps = (ctx: AppContext) => {
+    console.log({ctx}, cookies(ctx.ctx));
+    const { accessToken, refreshToken } = cookies(ctx.ctx);
+    return {
+        isLoggedIn: Boolean(accessToken && refreshToken),
+    };
 }

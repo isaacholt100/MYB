@@ -13,9 +13,9 @@ export const setCookies = (res: NextApiResponse, ...cs: [string, string, CookieS
     })));
 }
 export const setRefreshToken = (res: NextApiResponse, refreshToken: string) => {
-    res.setHeader("Set-Cookie", [serialize("httpRefreshToken", refreshToken, {
+    res.setHeader("Set-Cookie", serialize("httpRefreshToken", refreshToken, {
         httpOnly: true,
         sameSite: "strict",
         maxAge: 1000000000000000
-    })]);
+    }));
 }

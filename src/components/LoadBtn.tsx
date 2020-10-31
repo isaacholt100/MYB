@@ -1,6 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { Button, CircularProgress, Box } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import styles from "../css/loadBtn.module.css";
 interface IProps {
     label: string;
@@ -8,7 +7,7 @@ interface IProps {
     loading: boolean;
     [key: string]: any;
 }
-export default ({ label, disabled, loading, ...other }: IProps) => {
+export default function LoadBtn({ label, disabled, loading, ...other }: IProps) {
     return (
         <div className={styles.root}>
             <Button
