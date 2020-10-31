@@ -259,6 +259,7 @@ function ThemeWrapper({ children, isLoggedIn: l }: { children: ReactChild, isLog
             }
         };
     useEffect(getData, []);
+    console.log({l, isLoggedIn, dataLoaded})
     return (
         <>
             <Head>
