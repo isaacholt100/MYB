@@ -8,39 +8,37 @@ import { MuiPickersUtilsProvider as Pickers } from "@material-ui/pickers";
 import DateUtils from "@date-io/date-fns";
 import "date-fns";
 import { ProviderContext, SnackbarProvider as Snackbar } from "notistack";
-import { Fade, Grow, IconButton } from "@material-ui/core";
+import { Grow, IconButton } from "@material-ui/core";
 import Icon from "../components/Icon";
 import { mdiClose } from "@mdi/js";
 import store from "../redux/store";
-import Theme, { useTheme } from "../context/Theme";
 import { SWRConfig } from "swr";
 import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
-import LoadPreview from "../components/LoadPreview";
-import { useGet } from "../hooks/useRequest";
 import "../css/global.css";
+import useUser from "../hooks/useUser";
+import Cookies from "js-cookie";
+
+const PRIMARY = "#1976D2";
+const SECONDARY = "#0097A7";
+const TYPE = "light";
 
 function ThemeWrapper({ children }: { children: ReactChild }) {
     const
-        [get] = useGet(),
-        dispatch = useDispatch(),
         isLoggedIn = useIsLoggedIn(),
-        [dataLoaded, setDataLoaded] = useState(false),
-        [theme, setTheme] = useTheme(),
-        paperBg = theme.type === "light" ? "#f1f3f4" : "#424242",
-        defaultBg = theme.type === "light" ? "#fff" : "#121212",
-        level1Bg = theme.type === "light" ? "#ddd" : "#333",
-        fontFamily = `https://fonts.googleapis.com/css?family=${theme.fontFamily.toLowerCase().split(" ").map((s: string) => s.charAt(0).toUpperCase() + s.substring(1)).join("+")}:300,400,500&display=swap`,
         classes = useContainerStyles(isLoggedIn),
+        paperBg = TYPE === "light" ? "#f1f3f4" : "#424242",
+        defaultBg = TYPE === "light" ? "#fff" : "#121212",
+        level1Bg = TYPE === "light" ? "#ddd" : "#333",
         muiTheme = createMuiTheme({
             palette: {
                 primary: {
-                    main: theme.primary,
+                    main: PRIMARY,
                 },
                 secondary: {
-                    main: theme.secondary,
+                    main: SECONDARY,
                 },
-                type: theme.type as any,
+                type: "light",
                 background: {
                     default: defaultBg,
                     paper: paperBg,
@@ -48,7 +46,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 } as any,
             },
             typography: {
-                fontFamily: `"${theme.fontFamily}", "Helvetica", "Arial", sans-serif`,
+                fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`,
             },
             overrides: {
                 MuiCssBaseline: {
@@ -56,7 +54,6 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         "html, body, body > #__next": {
                             width: "100vw",
                             height: "100vh",
-                            fontFamily: theme.fontFamily,
                         },
                     }
                 },
@@ -208,7 +205,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 MuiDialogTitle: {
                     root: {
                         textTransform: "capitalize",
-                        borderBottom: `4px solid ${theme.primary}`,
+                        borderBottom: `4px solid ${PRIMARY}`,
                     },
                 },
             } as any,
@@ -225,41 +222,11 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                     size: "small",
                 },
             },
-        }),
-        getData = () => {
-            if (!dataLoaded && isLoggedIn) {
-                if (dataLoaded === undefined) {
-                    setDataLoaded(false);
-                }
-                get("/user", {
-                    setLoading: false,
-                    fetchOptions: {
-                        cache: "no-cache",
-                    },
-                    failed: () => setDataLoaded(undefined),
-                    done: (data: any) => {
-                        setDataLoaded(true);
-                        setTheme(data.theme);
-                        dispatch({
-                            type: "UPLOAD_DATA",
-                            payload: data,
-                        });
-                    }
-                });
-            } else {
-                setDataLoaded(true);
-            }
-        };
-    useEffect(getData, []);
+        });
     return (
         <>
-            <Head>
-                <link rel="stylesheet" href={fontFamily} />
-            </Head>
+            {isLoggedIn && <Listener />}
             <MuiTheme theme={muiTheme}>
-                {!dataLoaded && (
-                    <LoadPreview status={dataLoaded === undefined ? "error" : "loading"} getData={getData} />
-                )}
                 <div className={"flex flex_col full_screen"}>
                     <Navigation />
                     <CssBaseline />
@@ -271,6 +238,15 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         </>
     );
 }
+const Listener = (): null => {
+    const user = useUser();
+    process.browser && window.addEventListener("beforeunload", () => {
+        for (let key in user) {
+            localStorage.setItem(key, user[key]);
+        }
+    });
+    return null;
+}
 const useContainerStyles = makeStyles(({ breakpoints }) => ({
     appContainer: {
         width: "100vw",
@@ -278,9 +254,11 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        [breakpoints.up("md")]: {
+        marginBottom: 56,
+        [breakpoints.up("sm")]: {
             marginLeft: props => (props as any) ? 65 : 0,
             width: props => (props as any) ? "calc(100vw - 65px)" : "100vw",
+            marginBottom: 0,
         },
         "& > *": {
             width: "100%",
@@ -355,48 +333,61 @@ export default function App({ Component, pageProps }) {
                 value={{
                     onError: (err, key, config) => {
                         console.error(err);
-                        snack.current.enqueueSnackbar("There was an error loading", {
+                        snack.current.enqueueSnackbar("There was an error loading a request", {
                             variant: "error",
                         });
-                    }
+                    },
+                    fetcher: (url, options) => fetch(url, {
+                        ...options,
+                        headers: {
+                            "authorization": "Bearer " + Cookies.get("accessToken"),
+                            "authorization-refresh": "Bearer " + Cookies.get("accessToken"),
+                            "Access-Control-Expose-Headers": "authorization",
+                            "Access-Control-Allow-Headers": "authorization",
+                        },
+                    }).then(res => {
+                        const header = res?.headers?.get("authorization");
+                        if (header) {
+                            Cookies.set("accessToken", header, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});
+                        }
+                        return res.json();
+                    })
                 }}
             >
                 <Head>
-                    <title>Squool</title>
+                    <title>MYB</title>
                     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5" />
                 </Head>
-                    <Theme>
-                        <Pickers utils={DateUtils}>
-                            <Snackbar
-                                ref={snack as any}
-                                action={key => (
-                                    <IconButton size="small" onClick={() => snack.current.closeSnackbar(key)}>
-                                        <Icon path={mdiClose} />
-                                    </IconButton>
-                                )}
-                                anchorOrigin={{
-                                    vertical: "bottom",
-                                    horizontal: "right",
-                                }}
-                                preventDuplicate
-                                autoHideDuration={8192}
-                                TransitionComponent={Grow as any}
-                                classes={{
-                                    variantError: classes.error,
-                                    variantSuccess: classes.success,
-                                    variantInfo: classes.info,
-                                    variantWarning: classes.warning,
-                                    root: classes.snackbar,
-                                    containerAnchorOriginBottomRight: classes.bottom,
-                                }}
-                                maxSnack={4}
-                            >
-                                <ThemeWrapper>
-                                    <Component {...pageProps} />
-                                </ThemeWrapper>
-                            </Snackbar>
-                        </Pickers>
-                    </Theme>
+                <Pickers utils={DateUtils}>
+                    <Snackbar
+                        ref={snack as any}
+                        action={key => (
+                            <IconButton size="small" onClick={() => snack.current.closeSnackbar(key)}>
+                                <Icon path={mdiClose} />
+                            </IconButton>
+                        )}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                        preventDuplicate
+                        autoHideDuration={8192}
+                        TransitionComponent={Grow as any}
+                        classes={{
+                            variantError: classes.error,
+                            variantSuccess: classes.success,
+                            variantInfo: classes.info,
+                            variantWarning: classes.warning,
+                            root: classes.snackbar,
+                            containerAnchorOriginBottomRight: classes.bottom,
+                        }}
+                        maxSnack={4}
+                    >
+                        <ThemeWrapper>
+                            <Component {...pageProps} />
+                        </ThemeWrapper>
+                    </Snackbar>
+                </Pickers>
             </SWRConfig>
         </Redux>
     );

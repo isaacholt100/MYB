@@ -16,7 +16,7 @@ export default function userInfo(state = {
                 name: action.payload.name,
                 icon: action.payload.icon,
                 _id: action.payload._id,
-                role: action.payload.role,
+                admin: action.payload.admin,
             };
         case "LOGOUT":
             return {
@@ -24,7 +24,7 @@ export default function userInfo(state = {
                 name: "",
                 icon: "",
                 _id: "",
-                role: "",
+                admin: false,
             };
         default:
             return state;

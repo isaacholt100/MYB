@@ -42,7 +42,7 @@ export default async (user_id: ObjectId, users: Collection<any>) => await users.
     ...returnQuery(user_id, "class"),
     { $project: {"users": { $setUnion: [{ $ifNull: ["$class_members.member_ids", []] }, { $ifNull: ["$chat_members.member_ids", []] }] }, email: 1, icon: 1, timetable: 1, theme: 1, "name": {
         "$concat": ["$firstName", " ", "$lastName"]
-    }, carouselView: 1, role: 1, /*name: {$concat: ["$firstName", " ", "$lastName"]}*/ } },
+    }, carouselView: 1, admin: 1, /*name: {$concat: ["$firstName", " ", "$lastName"]}*/ } },
     {
         $project: {
             "users": {
@@ -53,7 +53,7 @@ export default async (user_id: ObjectId, users: Collection<any>) => await users.
                         $ne: [user_id, "$$id"]
                     },
                 }
-            }, email: 1, icon: 1, timetable: 1, theme: 1, name: 1, carouselView: 1, role: 1
+            }, email: 1, icon: 1, timetable: 1, theme: 1, name: 1, carouselView: 1, admin: 1
         }
     },
     {
@@ -104,7 +104,7 @@ export default async (user_id: ObjectId, users: Collection<any>) => await users.
             { $project: {
                 "email": 1,
                 "icon": 1,
-                "role": 1,
+                "admin": 1,
                 "name": {
                     "$concat": ["$firstName", " ", "$lastName"]
                 }

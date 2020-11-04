@@ -1,19 +1,58 @@
-import React, { useState } from "react";
-import { Tabs, Tab, AppBar, Card, Box } from "@material-ui/core";
-import Icon from "../components/settings/Icon";
-import Password from "../components/settings/Password";
-import Timetable from "../components/settings/Timetable";
-import School from "../components/settings/School";
-import DeleteAccount from "../components/settings/DeleteAccount";
-import Theme from "../components/settings/Theme";
+import React, { useEffect, useState } from "react";
+import { Tabs, Tab, AppBar, Card, Box, TextField, Typography } from "@material-ui/core";
 import useRedirect from "../hooks/useRedirect";
+import useUser from "../hooks/useUser";
+import { usePut } from "../hooks/useRequest";
+import LoadBtn from "../components/LoadBtn";
+import DeleteAccount from "../components/settings/DeleteAccount";
+import Password from "../components/settings/Password";
+import { startCase } from "lodash";
+
+const FieldSettings = ({ name, limit }: { name: "quote" | "name", limit: number }) => {
+    const user = useUser();
+    const [val, setVal] = useState(user[name]);
+    const [put, loading] = usePut();
+    const error = val.length > limit;
+    const updateQuote = e => {
+        e.preventDefault();
+        if (!loading) {
+            put("/user/settings/" + name, {
+                setLoading: true,
+                failedMsg: "changing your " + name,
+                body: {
+                    [name]: val,
+                },
+                doneMsg: startCase(name) + " updated",
+            })
+        }
+    }
+    useEffect(() => {
+        setVal(user[name]);
+    }, [user[name]]);
+    return (
+        <div className={"mb_16"}>
+            <form onSubmit={updateQuote}>
+                <TextField
+                    value={val}
+                    onChange={e => setVal(e.target.value)}
+                    label={startCase(name)}
+                    multiline={name === "quote"}
+                    fullWidth
+                    helperText={error ? startCase(name) + " too long" : " "}
+                    error={error}
+                />
+                <LoadBtn label={"Update " + name} loading={loading} disabled={error} />
+            </form>
+        </div>
+    );
+}
 
 export default function Settings() {
+    //const [page, setPage] = useState(0);
     const isLoggedIn = useRedirect();
-    const [page, setPage] = useState(0);
     return !isLoggedIn ? null : (
         <div>
-            <Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
+            {/*<Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
                 <AppBar position="relative" color="default">
                     <Tabs
                         value={page}
@@ -34,19 +73,13 @@ export default function Settings() {
                         ))}
                     </Tabs>
                 </AppBar>
-            </Box>
-            <Box component={Card} mb={{ xs: 1, lg: 2, }} className="fadeup">
-                {page === 0 && (
-                    <>
-                        <Icon />
-                        <Password />
-                        <Timetable />
-                        <School />
-                        <DeleteAccount />
-                    </>
-                )}
-                {page === 1 && <Theme />}
-            </Box>
+            </Box>*/}
+            <Typography variant="h4" gutterBottom>Profile Settings</Typography>
+            <FieldSettings name="name" limit={50} />
+            <FieldSettings name="quote" limit={150} />
+            <Typography variant="h4" gutterBottom>Account Settings</Typography>
+            <Password />
+            <DeleteAccount />
         </div>
     );
 };

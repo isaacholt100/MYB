@@ -23,20 +23,20 @@ import Link from "next/link";
 import Head from "next/head";
 import jwtCookies from "../lib/jwtCookies";
 import styles from "../css/signup.module.css";
+import { useRouter } from "next/router";
+import useAuthRedirect from "../hooks/useAuthRedirect";
 interface IFields {
-    firstName: string;
-    surname: string;
+    name: string;
     email: string;
-    schoolID: string;
+    groupID: string;
     password: string;
     repeatPassword: string;
 }
 const
     initialValues: IFields = {
-        firstName: "",
-        surname: "",
+        name: "",
         email: "",
-        schoolID: "",
+        groupID: "",
         password: "",
         repeatPassword: "",
     },
@@ -63,16 +63,18 @@ const
         },
     }));
 export default function Login() {
+    //const id = process.browser ? window.location.search.split("id=")[1]?.split("&")[0] : "";
     const
         [post, loading] = usePost(),
         //socket = useSocket(),
         //title = useTitle(),
-        [values, setValues] = useState(initialValues),
+        [values, setValues] = useState({...initialValues}),
         [helpers, setHelpers] = useState(initialValues),
-        [role, setRole] = useState("student"),
         [staySignedIn, setStaySignedIn] = useState(true),
         dispatch = useDispatch(),
         classes = useStyles(),
+        [create, setCreate] = useState(false),
+        router = useRouter(),
         //history = useHistory(),
         signup = (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
@@ -82,12 +84,11 @@ export default function Login() {
                 failedMsg:  "signing you up",
                 body: {
                     email,
-                    firstName: values.firstName.trim(),
-                    surname: values.surname.trim(),
-                    schoolID: values.schoolID.trim(),
+                    name: values.name.trim(),
+                    groupID: values.groupID.trim(),
                     password: values.password,
                     repeatPassword: values.repeatPassword,
-                    role,
+                    create,
                     staySignedIn,
                 },
                 done: (data: any) => {
@@ -97,21 +98,7 @@ export default function Login() {
                         staySignedIn,
                         user_id: data.user_id,
                     });
-                    /*sessionStorage.setItem("visited", "1");
-                    localStorage.setItem("role", role);
-                    setCookie("refresh", data.refreshToken, staySignedIn);
-                    setCookie("accessToken", data.accessToken, true);
-                    dispatch({
-                        type: "/user/info/update",
-                        payload: {
-                            email,
-                            name: values.firstName + " " + values.surname,
-                            role,
-                            user_id: data.user_id,
-                        },
-                    });
-                    history.push(redirect());
-                    socket.connect(`http://${serverUrl.split(":5000")[0]}`);*/
+                    router.replace("/");
                 },
                 errors: data => setHelpers({
                     ...helpers,
@@ -166,14 +153,14 @@ export default function Login() {
                         repeatPassword: "Passwords must match",
                     };
                 }
-            } else if (field === "schoolID") {
-                if (role === "admin" && value.trim() === "") {
+            } else if (field === "groupID") {
+                if (value.trim() === "") {
                     newState = {
-                        schoolID: "Please enter your school name",
+                        groupID: "Please enter your group " + (create ? "name" : "ID"),
                     };
                 } else {
                     newState = {
-                        schoolID: "",
+                        groupID: "",
                     };
                 }
             } else if (field === "email") {
@@ -183,7 +170,7 @@ export default function Login() {
                         email: "Email address invalid",
                     };
                 }
-            } else if (field === "firstName" || field === "surname") {
+            } else if (field === "name") {
                 setValues({
                     ...values,
                     [field]: value
@@ -198,81 +185,55 @@ export default function Login() {
                 ...newState,
             });
         },
-        changePosition = (e: ChangeEvent<HTMLInputElement>, val: string) => {
-            if (values.schoolID === "" && helpers.schoolID !== "") {
-                setHelpers({
-                    ...helpers,
-                    schoolID: "",
-                });
-            }
-            setRole(val);
-        },
         disabled =
             helpers.email !== "" ||
             helpers.password !== "" ||
             helpers.repeatPassword !== "" ||
-            helpers.firstName !== "" ||
-            helpers.surname !== "" ||
-            (role === "admin" && helpers.schoolID !== "") ||
+            helpers.name !== "" ||
+            helpers.groupID !== "" ||
             values.email === "" ||
             values.password === "" ||
             values.repeatPassword === "" ||
-            values.firstName === "" ||
-            values.surname === "" ||
-            (role === "admin" && values.schoolID === "");
-    return (
+            values.name === "" ||
+            values.groupID === "";
+    useEffect(() => {
+        const id = window.location.search.split("id=")[1]?.split("&")[0];
+        if (id) {
+            setValues({
+                ...values,
+                groupID: id,
+            });
+        }
+    }, []);
+    const isLoggedIn = useAuthRedirect();
+    return isLoggedIn ? null : (
         <>
             <Head>
                 <title>Signup</title>
             </Head>
             <div>
-                <Box maxWidth={600} /*className={effects.fadeup}*/ mx="auto" component={Card}>
+                <Box maxWidth={600} mx="auto" component={Card}>
                     <Typography variant="h5" gutterBottom>
-                        Sign up to Squool
+                        Sign Up
                     </Typography>
                     <form noValidate autoComplete="off" onSubmit={signup}>
-                        <Typography>I am a...</Typography>
-                        <FormGroup row>
-                            <RadioGroup
-                                aria-label="Position"
-                                name="role"
-                                value={role}
-                                onChange={changePosition}
-                                row
-                            >
-                                <FormControlLabel
-                                    value="student"
-                                    control={<Radio />}
-                                    label="Student"
-                                />
-                                <FormControlLabel
-                                    value="teacher"
-                                    control={<Radio />}
-                                    label="Teacher"
-                                />
-                                <FormControlLabel
-                                    value="admin"
-                                    control={<Radio />}
-                                    label="Admin"
-                                />
-                            </RadioGroup>
-                        </FormGroup>
+                        <FormControlLabel
+                            control={<Checkbox checked={create} onChange={e => setCreate(e.target.checked)} name="create" />}
+                            label="Create Group"
+                        />
                         {Object.keys(initialValues).map((field: keyof IFields, i) => (
                             <TextField
                                 autoFocus={i === 0}
                                 key={field}
                                 id={field}
-                                required={field !== "schoolID" || role === "admin"}
-                                error={helpers[field] !== "" && (role !== "admin" ? field !== "schoolID" || helpers[field] === "School not found" : true)}
+                                required
+                                error={helpers[field] !== ""}
                                 autoComplete={`new-${field}`}
                                 variant="outlined"
                                 type={field.includes("assword") ? "password" : "text"}
-                                label={
-                                    field === "firstName" && role !== "student"
-                                        ? "Title"
-                                        : field === "schoolID" && role === "admin"
-                                            ? "Create School (Enter Name)"
-                                            : startCase(field)
+                                label={field === "groupID" && create
+                                    ? "Group Name"
+                                    : startCase(field)
                                 }
                                 value={values[field]}
                                 onChange={handleChange(field)}

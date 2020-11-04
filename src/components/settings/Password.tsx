@@ -1,8 +1,9 @@
 import React, { memo, useState } from "react";
-import useRequest from "../../hooks/useRequest";
+import useRequest, { usePut } from "../../hooks/useRequest";
 import { Typography, Grid, TextField, Button } from "@material-ui/core";
 import { startCase } from "lodash";
 import MarginDivider from "../MarginDivider";
+import LoadBtn from "../LoadBtn";
 interface IFields {
     oldPassword: string;
     newPassword: string;
@@ -13,7 +14,7 @@ interface IFields {
 }
 export default memo(() => {
     const
-        request = useRequest(),
+        [put, loading] = usePut(),
         [state, setState] = useState<IFields>({
             oldPassword: "",
             newPassword: "",
@@ -26,7 +27,8 @@ export default memo(() => {
         changePassword = e => {
             e.preventDefault();
             if (enabled) {
-                request.put("/user/password", {
+                put("/user/password", {
+                    setLoading: true,
                     failedMsg: "changing your password",
                     body: {
                         newPassword: state.newPassword,
@@ -125,14 +127,11 @@ export default memo(() => {
                     </Grid>
                 ))}
             </Grid>
-            <Button
-                color="secondary"
-                type="submit"
-                variant="contained"
+            <LoadBtn
+                label="Change"
                 disabled={!enabled}
-            >
-                Change
-            </Button>
+                loading={loading}
+            />
             <MarginDivider />
         </form>
     );

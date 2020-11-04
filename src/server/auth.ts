@@ -3,8 +3,8 @@ import { ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 export interface IUSer {
     _id: ObjectId;
-    school_id: ObjectId;
-    role: "student" | "teacher" | "admin";
+    group_id: ObjectId;
+    admin: boolean;
 }
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     const accessHeader = req.headers["authorization"];
@@ -32,26 +32,21 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                     if (user && user._id !== payload._id) {
                         throw err;
                     }
-                    const jwtInfo: IUSer = {
-                        _id: payload._id,
-                        school_id: payload.school_id,
-                        role: payload.role,
-                    }
-                    res.setHeader("authorization", jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
+                    res.setHeader("authorization", jwt.sign(payload, process.env.ACCESS_TOKEN, {
                         expiresIn: "20m",
                     }));
                     token = {
-                        role: payload.role,
+                        admin: payload.admin,
                         _id: new ObjectId(payload._id),
-                        school_id: payload.school_id ? new ObjectId(payload.school_id) : undefined,
+                        group_id: payload.group_id ? new ObjectId(payload.group_id) : undefined,
                     };
                 } else {
                     throw err;
                 }
             } else {
                 token = {
-                    role: user.role,
-                    school_id: user.school_id ? new ObjectId(user.school_id) : undefined,
+                    admin: user.admin,
+                    group_id: user.group_id ? new ObjectId(user.group_id) : undefined,
                     _id: new ObjectId(user._id),
                 };
             }
@@ -59,5 +54,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } catch (err) {
         throw new Error("403");
     }
+    console.log(token);
+    
     return token;
 }
