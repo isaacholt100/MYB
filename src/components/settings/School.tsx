@@ -10,7 +10,7 @@ export default memo(() => {
     const
         [put, loading] = usePut(),
         snackbar = useSnackbar(),
-        [ConfirmDialog, confirm] = useConfirm(loading),
+        [ConfirmDialog, confirm, close] = useConfirm(loading),
         [state, setState] = useState({
             _id: "",
             helper: "",
@@ -19,7 +19,8 @@ export default memo(() => {
             put("/user/school", {
                 failedMsg: "updating your school",
                 body: { school_id: state._id },
-                done: data => {
+                done(data) {
+                    close();
                     setState({
                         helper: "",
                         _id: "",

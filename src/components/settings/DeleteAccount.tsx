@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, makeStyles } from "@material-ui/core";
 import LoadBtn from "../LoadBtn";
 import Cookies from "js-cookie";
-import { useTheme } from "../../context/Theme";
 import { mutate } from "swr";
 import { useRouter } from "next/router";
 
@@ -61,17 +60,14 @@ export default memo(() => {
         }),
         classes = useStyles(),
         timer = useRef<NodeJS.Timeout>(),
-        [, setTheme] = useTheme(),
         logout = () => {
             del("/login", {
                 setLoading: true,
-                done: () => {
-
+                done() {
                     Cookies.remove("refreshToken");
                     Cookies.remove("accessToken");
                     Cookies.remove("user_id");
                     localStorage.clear();
-                    setTheme(null);
                     mutate("/api/login", "", false);
                 }
             });
@@ -110,7 +106,7 @@ export default memo(() => {
         deleteAccount = (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             if (!state.deleteDisabled && passwordState.confirmPassword !== "") {
-                request.delete("/user", {
+                del("/user", {
                     setLoading: true,
                     failedMsg: "deleting your account",
                     body: { password: passwordState.confirmPassword },

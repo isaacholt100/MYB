@@ -26,7 +26,6 @@ import Icon from "../components/Icon";
 import { mdiEye, mdiEyeOff } from "@mdi/js";
 import Link from "next/link";
 import effects from "../css/effects.module.css";
-import { useTheme } from "../context/Theme";
 import LoadBtn from "../components/LoadBtn";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
@@ -49,7 +48,6 @@ export default function Login() {
         router = useRouter(),
         [post, loading] = usePost(),
         //request = useRequest(),
-        [, setTheme] = useTheme(),
         [show, setShow] = useState(false),
         [staySignedIn, setStaySignedIn] = useState(true),
         [state, setState] = useState(initialState),
@@ -77,11 +75,6 @@ export default function Login() {
                         staySignedIn,
                     },
                     done(data: any) {
-                        setTheme(data.theme);
-                        dispatch({
-                            type: "UPLOAD_DATA",
-                            payload: data,
-                        });
                         jwtCookies({
                             accessToken: data.accessToken,
                             refreshToken: data.refreshToken,
@@ -103,7 +96,7 @@ export default function Login() {
         <div>
             <Box maxWidth={600} mx="auto" /*className={effects.fadeup}*/ component={Card}>
                 <Typography variant="h5" gutterBottom>
-                    Login to Squool
+                    Login
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <div className={"my_8"}>

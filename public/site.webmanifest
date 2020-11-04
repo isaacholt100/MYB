@@ -1,8 +1,8 @@
 {
     "dir": "ltr",
     "lang": "English",
-    "name": "Squool",
-    "short_name": "Squool",
+    "name": "My Year Book",
+    "short_name": "MYB",
     "scope": "/",
     "display": "standalone",
     "start_url": "/",
@@ -56,6 +56,6 @@
             "density": "10.0"
         }
     ],
-    "url": "https://squool.vercel.app",
+    "url": "https://myyearbook.vercel.app",
     "screenshots": []
 }

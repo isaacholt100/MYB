@@ -12,36 +12,35 @@ import getUser from "../../../server/getUser";
 import { setRefreshToken } from "../../../server/cookies";
 import getSession from "../../../server/getSession";
 
-const saltRounds = 12;
-export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
+const SALT_ROUNDS = 12;
+
+export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "POST": {
-            type Errors = Partial<Record<"schoolID" | "repeatPassword" | "password" | "firstName" | "surname" | "email", string>>;
+            type Errors = Partial<Record<"groupID" | "repeatPassword" | "password" | "name" | "email", string>>;
             const
                 db = await getDB(),
                 users = db.collection("users"),
-                schools = db.collection("schools"), {
+                groups = db.collection("groups"),
+                {
                     password,
-                    firstName,
-                    surname: lastName,
-                    role,
+                    name,
+                    create,
                     repeatPassword,
-                    staySignedIn,
-                    schoolID,
+                    groupID,
                     email
                 } = req.body,
-                admin = role === "admin",
-                emailCount = await users.countDocuments({email}),
+                emailCount = await users.countDocuments({ email }),
                 errors: Errors = {};
-            const school_idCount = admin || schoolID === ""
+            const group_idCount = create
                 ? 1
-                : await schools.countDocuments({
-                    _id: ObjectId.isValid(schoolID)
-                        ? new ObjectId(schoolID)
+                : await groups.countDocuments({
+                    _id: ObjectId.isValid(groupID)
+                        ? new ObjectId(groupID)
                         : ""
                 });
-            if (schoolID && school_idCount === 0) {
-                errors.schoolID = "School not found";
+            if (groupID && group_idCount === 0) {
+                errors.groupID = "Group not found";
             }
             if (password !== repeatPassword) {
                 errors.repeatPassword = "Passwords must match";
@@ -49,11 +48,8 @@ export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async
             if (password.length < 6) {
                 errors.password = "Password must at least 6 characters";
             }
-            if (firstName === "") {
-                errors.firstName = "Field required";
-            }
-            if (lastName === "") {
-                errors.surname = "Field required";
+            if (name === "") {
+                errors.name = "Field required";
             }
             if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
                 errors.email = "Email address invalid";
@@ -65,81 +61,27 @@ export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async
                 let success = false;
                 try {
                     await session.withTransaction(async () => {
-                        const hash = await bcrypt.hash(password, saltRounds);
-                        const r1 = admin
-                        ? await schools.insertOne({ admin: email, name: schoolID }, { session })
+                        const hash = await bcrypt.hash(password, SALT_ROUNDS);
+                        const r1 = create
+                        ? await groups.insertOne({ admin: email, name: groupID }, { session })
                         : {
-                            insertedCount: 1
+                            insertedCount: 1,
+                            insertedId: new ObjectId(groupID),
                         },
                         r = await users.insertOne({
-                            school_id: new ObjectId(schoolID),
+                            group_id: r1.insertedId,
                             email,
-                            icon: "",
-                            role,
-                            firstName,
-                            lastName,
+                            pic: "",
+                            admin: create,
+                            name,
                             password: hash,
                             theme: {}
                         });
                         if (r.insertedCount === 1 && r1.insertedCount === 1) {
-                            const
-                                transporter = nodemailer.createTransport({
-                                    service: "gmail",
-                                    secure: false,
-                                    auth: {
-                                        user: "ntf12358@gmail.com",
-                                        pass: "15aac805598Magazine"
-                                    },
-                                    tls: {
-                                        rejectUnauthorized: false
-                                    }
-                                }),
-                                mailOptions = {
-                                    from: "edyoucate",
-                                    to: email,
-                                    subject: "Validate edyoucate account",
-                                    text: "",
-                                    html: `
-                                        <div style="background-color: #fff; font-family: Roboto sans-serif">
-                                            <h1>
-                                                <strong>Welcome to edyoucate!!!</strong>
-                                            </h1>
-                                            <p>
-                                                We're really chuffed you signed up, ${firstName} ${lastName}. There's one more step to go: click on the link below to make sure it"s really you who signed up with this email.
-                                            </p>
-                                            <a
-                                                href="http://localhost:3000"
-                                                style="
-                                                    background-color: #3f51b5;
-                                                    color: #fff;
-                                                    padding: 8px 16px;
-                                                    font-size: 0.875rem;
-                                                    min-width: 64px;
-                                                    box-sizing: border-box;
-                                                    min-height: 36px;
-                                                    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-                                                    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-                                                    font-weight: 500;
-                                                    line-height: 1.5;
-                                                    border-radius: 4px;
-                                                    letter-spacing: 0.02857em;
-                                                    text-transform: uppercase;
-                                                    outline: none;
-                                                    cursor: default;
-                                                    -webkit-appearance: none;
-                                                    -webkit-tap-highlight-color: transparent;
-                                                    user-select: none;
-                                                "
-                                            >
-                                                validate account
-                                            </a>
-                                        </div>
-                                    `
-                                };
                             const jwtInfo: IUSer = {
-                                role,
+                                admin: create,
                                 _id: r.insertedId,
-                                school_id: admin ? (r1 as InsertOneWriteOpResult<any>).insertedId : new ObjectId(schoolID),
+                                group_id: create ? (r1 as InsertOneWriteOpResult<any>).insertedId : new ObjectId(groupID),
                             };
                             const refreshToken = jwt.sign(jwtInfo, process.env.REFRESH_TOKEN);
                             setRefreshToken(res, refreshToken);
@@ -150,7 +92,6 @@ export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async
                                 refreshToken,
                                 user_id: r.insertedId
                             });
-                            //transporter.sendMail(mailOptions);
                         } else {
                             throw new Error("");
                         }
@@ -171,10 +112,12 @@ export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async
             const { _id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
-            const user = await getUser(_id, users);
+            const user = await users.findOne({ _id });
             if (!user) {
                 throw new Error("User not found");
             }
+            console.log(user);
+            
             res.json(user);
             break;
         }
@@ -183,13 +126,13 @@ export default(req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async
             const db = await getDB();
             const users = db.collection("users");
             const valid = await bcrypt.compare(req.body.password, (await users.findOne({
-                _i: user._id
+                _id: user._id
             }, {
                 projection: {
                     password: 1,
                     _id: 0
                 }
-            })).password);
+            }))?.password);
             if (valid) {
                 const r = await users.deleteOne({_id: user._id});
                 didUpdate(res, r.deletedCount);

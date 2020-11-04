@@ -5,9 +5,9 @@ import Document, {
 import { ServerStyleSheets } from "@material-ui/core/styles";
 import cookies from "next-cookies";
 const
-    APP_NAME = "Squool",
+    APP_NAME = "My Year Book",
     APP_DESC = "<Description Here>",
-    APP_URL = "https://squool.vercel.app",
+    APP_URL = "https://myyearbook.vercel.app",
     APP_COLOR = "#000000";
 
 export default class MyDocument extends Document {

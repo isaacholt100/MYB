@@ -17,19 +17,18 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 db = await getDB(),
                 users = db.collection("users"),
                 { password, staySignedIn, email } = req.body,
-                isUser = await users.findOne({ email }, { projection: { password: 1 } });
-            if (!isUser) {
+                user = await users.findOne({ email });
+            if (!user) {
                 errors(res, {
                     emailError: "Email not found",
                 });
             } else {
-                const valid = await bcrypt.compare(password, isUser.password);
+                const valid = await bcrypt.compare(password, user.password);
                 if (valid) {
-                    const user = await getUser(isUser._id, users);
                     const jwtInfo: IUSer = {
-                        role: user.role,
+                        admin: user.admin,
                         _id: user._id,
-                        school_id: user.school_id,
+                        group_id: user.group_id,
                     };
                     const refreshToken = jwt.sign(jwtInfo, process.env.REFRESH_TOKEN);
                     setRefreshToken(res, refreshToken);
