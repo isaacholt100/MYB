@@ -30,7 +30,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 });
             });*/
             const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + ".name".replace(/ /g, "-");
-            const dirs = [await getDirectories("."), await getDirectories("./"), await getDirectories("../"), await getDirectories("../../")];
+            const dirs = [await getDirectories("."), await getDirectories("../"), await getDirectories("./.next")];
             /*await fs.rename(f.path, "./uploads/" + name);
             const { _id } = await auth(req, res);
             const db = await getDB();
