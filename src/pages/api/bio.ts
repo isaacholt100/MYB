@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import auth from "../../server/auth";
 import getDB from "../../server/getDB";
@@ -10,8 +11,11 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             const { group_id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
-            const members = await users.find({ group_id }, { projection: { group_id: 0, email: 0, password: 0, }}).toArray();
-            res.json(members);
+            const user = await users.findOne({ group_id, _id: new ObjectId(req.query.id as string) });
+            if (!user) {
+                throw new Error("User not found");
+            }
+            res.json(user);
             break;
         }
         default: {

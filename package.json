@@ -26,6 +26,7 @@
     "date-fns": "^2.16.1",
     "dgram": "^1.0.1",
     "dns": "^0.2.2",
+    "formidable": "^1.2.2",
     "gray-matter": "^4.0.2",
     "idb": "^5.0.7",
     "is-hotkey": "^0.1.6",
@@ -53,6 +54,7 @@
     "react-swipeable-views": "^0.13.9",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
+    "sharp": "^0.26.2",
     "swr": "^0.3.7",
     "worker-loader": "^3.0.5"
   },
@@ -61,6 +63,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/color": "^3.0.1",
     "@types/cookie": "^0.4.0",
+    "@types/formidable": "^1.0.31",
     "@types/js-cookie": "^2.2.6",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.163",

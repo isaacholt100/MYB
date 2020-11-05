@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, Tab, AppBar, Card, Box, TextField, Typography } from "@material-ui/core";
+import { Tabs, Tab, AppBar, Card, Box, TextField, Typography, Button } from "@material-ui/core";
 import useRedirect from "../hooks/useRedirect";
 import useUser from "../hooks/useUser";
-import { usePut } from "../hooks/useRequest";
+import { usePost, usePut } from "../hooks/useRequest";
 import LoadBtn from "../components/LoadBtn";
 import DeleteAccount from "../components/settings/DeleteAccount";
 import Password from "../components/settings/Password";
 import { startCase } from "lodash";
+import Image from "next/image";
+import { mutate } from "swr";
 
 const FieldSettings = ({ name, limit }: { name: "quote" | "name", limit: number }) => {
     const user = useUser();
@@ -46,6 +48,43 @@ const FieldSettings = ({ name, limit }: { name: "quote" | "name", limit: number 
         </div>
     );
 }
+const Pic = () => {
+    const user = useUser();
+    const [put, loading] = usePut();
+    return (
+        <div className="flex align_items_center">
+            <img src={"/uploads/" + user.pic} height={64} width={64} style={{borderRadius: "50%"}} />
+            <div className="ml_8">
+                <input
+                    accept="image/*"
+                    className={"display_none"}
+                    id="contained-button-file"
+                    type="file"
+                    onChange={e => {
+                        const form = new FormData();
+                        form.append("file", e.target.files[0]);
+                        put("/user/settings/pic", {
+                            file: true,
+                            setLoading: true,
+                            failedMsg: "uploading this image",
+                            done(data: any) {
+                                mutate("/api/user", {
+                                    ...user,
+                                    pic: data.name,
+                                }, true);
+                                mutate("/api/members");
+                            },
+                            body: form,
+                        });
+                    }}
+                />
+                <label htmlFor="contained-button-file">
+                    <LoadBtn loading={loading} label="Change Picture" disabled={false} component="span" />
+                </label>
+            </div>
+        </div>
+    );
+}
 
 export default function Settings() {
     //const [page, setPage] = useState(0);
@@ -77,6 +116,7 @@ export default function Settings() {
             <Typography variant="h4" gutterBottom>Profile Settings</Typography>
             <FieldSettings name="name" limit={50} />
             <FieldSettings name="quote" limit={150} />
+            <Pic />
             <Typography variant="h4" gutterBottom>Account Settings</Typography>
             <Password />
             <DeleteAccount />

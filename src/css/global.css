@@ -37,6 +37,9 @@
 .p_8 {
     padding: 8px !important;
 }
+.display_none {
+    display: none;
+}
 .progress_container {
     position: "relative";
     z-index: 1000000;

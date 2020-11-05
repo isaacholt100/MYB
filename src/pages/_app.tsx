@@ -339,15 +339,14 @@ export default function App({ Component, pageProps }) {
                     },
                     fetcher: (url, options) => fetch(url, {
                         ...options,
+                        credentials: "include",
                         headers: {
                             "authorization": "Bearer " + Cookies.get("accessToken"),
-                            "authorization-refresh": "Bearer " + Cookies.get("accessToken"),
+                            "authorization-refresh": "Bearer " + Cookies.get("refreshToken"),
                             "Access-Control-Expose-Headers": "authorization",
                             "Access-Control-Allow-Headers": "authorization",
                         },
                     }).then(res => {
-                        console.log(res);
-                        
                         const header = res?.headers?.get("authorization");
                         if (header) {
                             Cookies.set("accessToken", header, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});
