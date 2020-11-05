@@ -13,12 +13,14 @@ export default function useUser(): IMember & { group_id: string } {
             pic: localStorage.getItem("pic"),
             quote: localStorage.getItem("quote"),
             group_id: localStorage.getItem("group_id"),
+            admin: localStorage.getItem("admin") === "true",
         } : {
             name: "",
             _id: "",
             pic: "",
             quote: "",
             group_id: "",
+            admin: false,
         };
     }
     return user;

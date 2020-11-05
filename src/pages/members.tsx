@@ -16,11 +16,13 @@ const SAMPLE_MEMBERS: IMember[] = [{
     _id: "new ObjectId()",
     pic: "jjfjsk",
     quote: "Hello",
+    admin: false,
 }, {
     name: "Izak",
     _id: "new ObjectId()",
     pic: "jjfjsk",
     quote: "oi oi",
+    admin: false,
 }]
 
 const DialogInfo = memo(({ member }: any) => {
@@ -79,10 +81,10 @@ export default function Members() {
             />
             <List dense={false}>
                 {members.filter(m => m.name.toLowerCase().includes(val.toLowerCase())).map(m => (
-                    <Link href={"/bio/" + m._id}>
+                    <Link href={"/bio/" + m._id} key={m._id}>
                         <ListItem button>
                             <ListItemAvatar>
-                                <Avatar src={m.pic} />
+                                <Avatar src={"/uploads/" + m.pic} />
                             </ListItemAvatar>
                             <ListItemText primary={m.name} />
                             <ListItemSecondaryAction>

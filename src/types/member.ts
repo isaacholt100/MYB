@@ -3,4 +3,5 @@ export interface IMember {
     _id: string;//ObjectId;
     pic: string;
     quote: string;
+    admin: boolean;
 }

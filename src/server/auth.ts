@@ -21,7 +21,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             if (!user || err) {
                 if (err.name === "TokenExpiredError") {
                     const refreshHeader = req.headers["authorization-refresh"] as string;
-                    console.log(refreshHeader);
+                    //console.log(req.cookies.httpRefreshToken, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiX2lkIjoiNWZhMzFhZjkwYzkxMmYyZDI0NTBkOTNlIiwiZ3JvdXBfaWQiOiI1ZmEzMWFmOTBjOTEyZjJkMjQ1MGQ5M2QiLCJpYXQiOjE2MDQ1NjM3MzZ9.2a1wfnyLhisv4deXoeSSBQH_v3D17kYt5gFiIZHblDc");
                     
                     if (!refreshHeader) {
                         throw new Error("403");
@@ -35,7 +35,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                         throw err;
                     }
                     res.setHeader("authorization", jwt.sign(payload, process.env.ACCESS_TOKEN, {
-                        expiresIn: "20m",
+                        expiresIn: "1m",
                     }));
                     token = {
                         admin: payload.admin,

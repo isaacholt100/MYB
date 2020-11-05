@@ -87,7 +87,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                             setRefreshToken(res, refreshToken);
                             res.json({
                                 accessToken: jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {
-                                    expiresIn: "20m",
+                                    expiresIn: "1m",
                                 }),
                                 refreshToken,
                                 user_id: r.insertedId
