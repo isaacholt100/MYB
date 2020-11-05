@@ -35,7 +35,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             });*/
             
             const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + ".name".replace(/ /g, "-");
-            const dirs = [await getDirectories("."), (await getAll(".") as any).filter(x => x.includes("uploads")), await getDirectories("./.next"), await getAll("./.next")];
+            const dirs = [await getDirectories("."), (await getAll(getConfig().serverRuntimeConfig.PROJECT_ROOT) as any), await getDirectories("./.next"), await getAll("./.next")];
             /*await fs.rename(f.path, "./uploads/" + name);
             const { _id } = await auth(req, res);
             const db = await getDB();
