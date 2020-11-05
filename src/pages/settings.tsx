@@ -68,6 +68,8 @@ const Pic = () => {
                             setLoading: true,
                             failedMsg: "uploading this image",
                             done(data: any) {
+                                console.log(data);
+                                
                                 mutate("/api/user", {
                                     ...user,
                                     pic: data.name,
