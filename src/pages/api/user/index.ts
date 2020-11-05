@@ -75,7 +75,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                             admin: create,
                             name,
                             password: hash,
-                            theme: {}
+                            quote: "",
                         });
                         if (r.insertedCount === 1 && r1.insertedCount === 1) {
                             const jwtInfo: IUSer = {
@@ -116,8 +116,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             if (!user) {
                 throw new Error("User not found");
             }
-            console.log(user);
-            
             res.json(user);
             break;
         }

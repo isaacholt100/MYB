@@ -254,7 +254,7 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        marginBottom: 56,
+        marginBottom: 64,
         [breakpoints.up("sm")]: {
             marginLeft: props => (props as any) ? 65 : 0,
             width: props => (props as any) ? "calc(100vw - 65px)" : "100vw",
@@ -346,6 +346,8 @@ export default function App({ Component, pageProps }) {
                             "Access-Control-Allow-Headers": "authorization",
                         },
                     }).then(res => {
+                        console.log(res);
+                        
                         const header = res?.headers?.get("authorization");
                         if (header) {
                             Cookies.set("accessToken", header, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});

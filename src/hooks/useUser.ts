@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { IMember } from "../types/member";
 import Cookies from "js-cookie";
 
-export default function useUser(): IMember & { school_id: string } {
+export default function useUser(): IMember & { group_id: string } {
     const { data: user, error } = useSWR("/api/user", {
         refreshInterval: 1000,
     });
@@ -12,13 +12,13 @@ export default function useUser(): IMember & { school_id: string } {
             _id: Cookies.get("user_id"),
             pic: localStorage.getItem("pic"),
             quote: localStorage.getItem("quote"),
-            school_id: localStorage.getItem("school_id"),
+            group_id: localStorage.getItem("group_id"),
         } : {
             name: "",
             _id: "",
             pic: "",
             quote: "",
-            school_id: "",
+            group_id: "",
         };
     }
     return user;
