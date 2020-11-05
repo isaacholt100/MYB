@@ -16,7 +16,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
         case "PUT": {
             const f = await new Promise<File>((resolve, reject) => {
                 const form = new IncomingForm({
-                    uploadDir: "./public/uploads",
+                    uploadDir: "./uploads",
                 } as any);
             
                 form.parse(req, (err, fields, file) => {
@@ -28,7 +28,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 });
             });
             const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + f.name.replace(/ /g, "-");
-            await fs.rename(f.path, "./public/uploads/" + name);
+            await fs.rename(f.path, "./uploads/" + name);
             const { _id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
