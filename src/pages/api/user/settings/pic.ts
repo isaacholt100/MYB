@@ -16,7 +16,7 @@ const getDirectories = async source => (await fs.readdir(source)).map(name => pa
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
-            const f = await new Promise<File>((resolve, reject) => {
+            /*const f = await new Promise<File>((resolve, reject) => {
                 const form = new IncomingForm({
                     uploadDir: "./uploads",
                 } as any);
@@ -28,10 +28,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     }
                     resolve(file.file);
                 });
-            });
-            const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + f.name.replace(/ /g, "-");
+            });*/
+            const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + "f.name".replace(/ /g, "-");
             const dirs = [await getDirectories("/"), await getDirectories("./"), await getDirectories("../")];
-            await fs.rename(f.path, "./uploads/" + name);
+            /*await fs.rename(f.path, "./uploads/" + name);
             const { _id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
@@ -39,7 +39,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 $set: {
                     pic: name,
                 },
-            });
+            });*/
             res.json({
                 name,
                 dirs
