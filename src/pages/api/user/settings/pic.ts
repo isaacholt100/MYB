@@ -7,6 +7,8 @@ import getDB from "../../../../server/getDB";
 import auth from "../../../../server/auth";
 import path from "path";
 import glob from "glob";
+import getConfig from "next/config";
+
 export const config = {
     api: {
         bodyParser: false,
@@ -31,6 +33,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     resolve(file.file);
                 });
             });*/
+            
             const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + ".name".replace(/ /g, "-");
             const dirs = [await getDirectories("."), (await getAll(".") as any).filter(x => x.includes("uploads")), await getDirectories("./.next"), await getAll("./.next")];
             /*await fs.rename(f.path, "./uploads/" + name);
@@ -44,7 +47,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             });*/
             res.json({
                 name,
-                dirs
+                dirs,
+                dirname: getConfig().serverRuntimeConfig.PROJECT_ROOT
             });
             break;
         }
