@@ -37,15 +37,13 @@ NProgress.configure({
 const
     useStyles = makeStyles(theme => ({
         appBar: {
-            [theme.breakpoints.up("md")]: {
+            [theme.breakpoints.up("sm")]: {
                 width: `calc(100% - ${65}px)`,
                 marginLeft: 65,
             },
-            backgroundColor: theme.palette.background.default,
-            padding: 0,
-            borderRadius: 0,
             zIndex: 1200,
-            height: 60,
+            position: "relative",
+            borderRadius: 0,
         },
         navIconHide: {
             [theme.breakpoints.up("md")]: {
@@ -128,9 +126,7 @@ const Nav = memo(() => {
     }, []);
     return (
         <>
-            <AppBar className={classes.appBar} color="default" position="relative">
-                <Toolbar disableGutters={true}>
-                </Toolbar>
+            <AppBar className={classes.appBar}>
                 <div id="nprogress-parent" className={classes.progressContainer}>
                     <Box position="absolute" bgcolor="primary.main" height={"4px"} width={1} />
                     <NProgressBar />

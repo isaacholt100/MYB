@@ -11,8 +11,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             const db = await getDB();
             const users = db.collection("users");
             const members = await users.find({ group_id }).toArray();
-            console.log(group_id);
-            
             res.json(members);
             break;
         }

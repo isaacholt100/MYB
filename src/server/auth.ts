@@ -21,6 +21,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             if (!user || err) {
                 if (err.name === "TokenExpiredError") {
                     const refreshHeader = req.headers["authorization-refresh"] as string;
+                    console.log(refreshHeader);
+                    
                     if (!refreshHeader) {
                         throw new Error("403");
                     }
@@ -54,7 +56,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     } catch (err) {
         throw new Error("403");
     }
-    console.log(token);
-    
     return token;
 }
