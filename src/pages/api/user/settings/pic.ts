@@ -5,7 +5,7 @@ import { File, Files, IncomingForm } from "formidable";
 import { lstatSync, promises as fs, readdirSync } from "fs";
 import getDB from "../../../../server/getDB";
 import auth from "../../../../server/auth";
-import path from "path";
+import path, { join } from "path";
 export const config = {
     api: {
         bodyParser: false,
@@ -14,11 +14,11 @@ export const config = {
 }
 const isDirectory = path => lstatSync(path).isDirectory();
 const getDirectories = path =>
-    readdirSync(path).map(name => path.join(path, name)).filter(isDirectory);
+    readdirSync(path).map(name => join(path, name)).filter(isDirectory);
 
 const isFile = path => lstatSync(path).isFile();  
 const getFiles = path =>
-    readdirSync(path).map(name => path.join(path, name)).filter(isFile);
+    readdirSync(path).map(name => join(path, name)).filter(isFile);
 
 const getFilesRecursively = (path) => {
     let dirs = getDirectories(path);
