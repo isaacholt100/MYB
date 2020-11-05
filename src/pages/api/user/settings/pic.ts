@@ -2,24 +2,17 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { notAllowed } from "../../../../server/helpers";
 import tryCatch from "../../../../server/tryCatch";
 import { File, Files, IncomingForm } from "formidable";
-import { lstatSync, promises as fs, readdirSync } from "fs";
+import { promises as fs } from "fs";
 import getDB from "../../../../server/getDB";
 import auth from "../../../../server/auth";
-import path, { join } from "path";
-import glob from "glob";
+import path from "path";
 export const config = {
     api: {
         bodyParser: false,
         sizeLimit: "10mb",
     }
 }
-const getDirectories = async src => {
-    return await new Promise(res => {
-        glob(src + "/**/*", (err, data) => {
-            res(data);
-        });
-    });
-}
+const getDirectories = async source => (await fs.readdir(source)).map(name => path.join(source, name));
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
@@ -36,8 +29,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     resolve(file.file);
                 });
             });*/
-            const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + "f.name".replace(/ /g, "-");
-            const dirs = [await getDirectories("/"), await getDirectories("")];
+            const name = (Math.random() + "").slice(2) + "-" + new Date().getTime() + "-" + ".name".replace(/ /g, "-");
+            const dirs = [await getDirectories("."), await getDirectories("./"), await getDirectories("../"), await getDirectories("../../")];
             /*await fs.rename(f.path, "./uploads/" + name);
             const { _id } = await auth(req, res);
             const db = await getDB();
