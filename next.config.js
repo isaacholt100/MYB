@@ -19,4 +19,7 @@ module.exports = withPWA({
         }
         return config;
     },
+    images: {
+        domains: ["res.cloudinary.com"]
+    }
 });

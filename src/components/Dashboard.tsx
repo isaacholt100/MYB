@@ -6,6 +6,7 @@ import { mutate } from "swr";
 import useUser from "../hooks/useUser";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useGroup from "../hooks/useGroup";
+import Image from "next/image";
 
 export default function Dashboard() {
     const user = useUser();
@@ -13,7 +14,7 @@ export default function Dashboard() {
     return (
         <div>
             <div className={"flex flex_wrap align_items_center mb_8"}>
-                <img src={group.pic || "/images/default_school.png"} height={128} width={128} style={{borderRadius: "50%"}} />
+                <Image src={group.pic || "/images/default_school.png"} height={128} width={128} className={"br_50"} key={group.pic} />
                 <Typography variant="h4" className={"ml_16"}>{group.name}</Typography>
             </div>
             <Typography>Invite people from your year to join: <Typography color="secondary" component="span">{process.browser && (window.location.origin + "/signup?id=" + user.group_id)}</Typography></Typography>

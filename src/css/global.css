@@ -47,6 +47,9 @@
     z-index: 1000000;
     height: 4px;
 }
+.br_50 {
+    border-radius: 50%;
+}
 .flex {
     display: flex;
 }

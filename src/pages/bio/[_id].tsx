@@ -32,7 +32,7 @@ export default function Bio() {
     ) : (
         <div>
             <div className={"flex flex_wrap align_items_center"}>
-                <img src={member.pic || "/images/default_user.png"} height={128} width={128} style={{borderRadius: "50%"}} />
+                <Image src={member.pic || "/images/default_user.png"} height={128} width={128} className={"br_50"} key={member.pic} />
                 <Typography variant="h4" className={"ml_16"}>{member.name}</Typography>
             </div>
             <div className={"mt_8"}>

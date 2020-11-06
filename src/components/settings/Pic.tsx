@@ -1,11 +1,12 @@
 import { usePut } from "../../hooks/useRequest";
 import LoadBtn from "../LoadBtn";
+import Image from "next/image";
 
 export default function Pic({ route, done, pic }: { route: string, done: (data: any) => void, pic: string }) {
     const [put, loading] = usePut();
     return (
         <div className="flex align_items_center">
-            <img src={pic || "/images/default_" + (route.includes("group") ? "group" : "user")+ ".png"} height={64} width={64} style={{borderRadius: "50%"}} />
+            <Image src={pic || "/images/default_" + (route.includes("group") ? "group" : "user")+ ".png"} height={64} width={64} className={"br_50"} />
             <div className="ml_8">
                 <input
                     accept="image/*"
