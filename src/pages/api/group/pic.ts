@@ -38,8 +38,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     resolve(data.secure_url);
                 });
             });
-            //await fs.rm(f.path);
-            const { group_id, _id } = await auth(req, res);
+            //fs.rm && await fs.rm(f.path);
+            const { _id, group_id } = await auth(req, res);
             const db = await getDB();
             const groups = db.collection("groups");
             groups.updateOne({ _id: group_id, admin_id: _id }, {
