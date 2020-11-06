@@ -151,7 +151,7 @@ export default function Settings() {
             </Box>*/}
             <Typography variant="h4" gutterBottom>Profile Settings</Typography>
             <FieldSettings name="name" limit={50} route="/user/settings/" initial={user.name} />
-            <FieldSettings name="quote" limit={150} route="/user/settings/" initial={user.name} />
+            <FieldSettings name="quote" limit={150} route="/user/settings/" initial={user.quote} />
             <Pic route="/user/settings/pic" done={(data) => {
                 console.log(data);
                                 

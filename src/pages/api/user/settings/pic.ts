@@ -49,7 +49,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     resolve(data.url);
                 });
             });
-            await fs.rm(f.path);
+            fs.rmdir && await fs.rmdir(f.path);
             const { _id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
