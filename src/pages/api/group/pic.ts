@@ -35,7 +35,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         reject(err);
                         throw err;
                     }
-                    resolve(data.url);
+                    resolve(data.secure_url);
                 });
             });
             await fs.rm(f.path);

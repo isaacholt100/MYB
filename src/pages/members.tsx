@@ -4,6 +4,7 @@ import { mdiAccountRemove, mdiFormatQuoteClose } from "@mdi/js";
 import Link from "next/link";
 import { memo, useState } from "react";
 import Icon from "../components/Icon";
+import Quote from "../components/Quote";
 import useConfirm from "../hooks/useConfirm";
 import useIsAdmin from "../hooks/useIsAdmin";
 import useMembers from "../hooks/useMembers";
@@ -16,9 +17,7 @@ const DialogInfo = memo(({ member }: any) => {
         <>
             <DialogTitle id="quote-title">{member?.name + "'s"} Quote</DialogTitle>
             <DialogContent>
-                <DialogContentText id="quote">
-                    {member?.quote}
-                </DialogContentText>
+                <Quote quote={member?.quote} />
             </DialogContent>
         </>
     );
@@ -70,7 +69,7 @@ export default function Members() {
                     <Link href={"/bio/" + m._id} key={i}>
                         <ListItem button>
                             <ListItemAvatar>
-                                <Avatar src={m.pic} />
+                                <Avatar src={m.pic || "/images/default_user.png"} />
                             </ListItemAvatar>
                             <ListItemText primary={m.name} />
                             <ListItemSecondaryAction>

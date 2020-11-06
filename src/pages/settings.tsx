@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, Tab, AppBar, Card, Box, TextField, Typography, Button } from "@material-ui/core";
+import { Tabs, Tab, AppBar, Card, Box, TextField, Typography, Button, Divider } from "@material-ui/core";
 import useRedirect from "../hooks/useRedirect";
 import useUser from "../hooks/useUser";
 import useGroup from "../hooks/useGroup";
@@ -13,14 +13,16 @@ import useSWR, { mutate } from "swr";
 import FieldSettings from "../components/settings/FieldSettings";
 import Pic from "../components/settings/Pic";
 import Group from "../components/settings/Group";
+import ChangeGroup from "../components/settings/ChangeGroup";
+import Link from "next/link";
 
 export default function Settings() {
-    //const [page, setPage] = useState(0);
+    const [page, setPage] = useState(0);
     const user = useUser();
     const isLoggedIn = useRedirect();
     return !isLoggedIn ? null : (
         <div>
-            {/*<Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
+            <Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
                 <AppBar position="relative" color="default">
                     <Tabs
                         value={page}
@@ -31,7 +33,7 @@ export default function Settings() {
                         scrollButtons="auto"
                         aria-label="scrollable tabs"
                     >
-                        {["account", "theme"].map((tab, i) => (
+                        {(user.admin ? ["Profile", "Account", "Group"] : ["Profile", "Account"]).map((tab, i) => (
                             <Tab
                                 key={i}
                                 id={`scrollable-auto-tab-${i}`}
@@ -41,24 +43,32 @@ export default function Settings() {
                         ))}
                     </Tabs>
                 </AppBar>
-            </Box>*/}
-            <Typography variant="h4" gutterBottom>Profile Settings</Typography>
-            <FieldSettings name="name" limit={50} route="/user/settings/" initial={user.name} />
-            <FieldSettings name="quote" limit={150} route="/user/settings/" initial={user.quote} />
-            <Pic route="/user/settings/pic" done={(data) => {
-                console.log(data);
-                                
-                mutate("/api/user", {
-                    ...user,
-                    pic: data.name,
-                }, true);
-                mutate("/api/members");
-            }} pic={user.pic} />
-            <br />
-            {user.admin && <Group />}
-            <Typography variant="h4" gutterBottom>Account Settings</Typography>
-            <Password />
-            <DeleteAccount />
+            </Box>
+            {page === 0 && (
+                <div className={"mt_16"}>
+                    <FieldSettings name="name" limit={50} route="/user/settings/" initial={user.name} />
+                    <FieldSettings name="quote" limit={150} route="/user/settings/" initial={user.quote} />
+                    <Pic route="/user/settings/pic" done={(data) => {
+                        mutate("/api/user", {
+                            ...user,
+                            pic: data.name,
+                        }, true);
+                        mutate("/api/members");
+                    }} pic={user.pic} />
+                    <Divider className={"my_16"} />
+                    <Link href={"/bio/" + user._id}>
+                        <Button color="secondary">View Profile</Button>
+                    </Link>
+                </div>
+            )}
+            {page === 1 && (
+                <>
+                    {!user.group_id && <ChangeGroup />}
+                    <Password />
+                    <DeleteAccount />
+                </>
+            )}
+            {page === 2 && user.admin && <Group />}
         </div>
     );
 };

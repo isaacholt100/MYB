@@ -6,7 +6,7 @@ export default function useAuthRedirect() {
     const isLoggedIn = useIsLoggedIn(), router = useRouter();
     useEffect(() => {
         if (isLoggedIn) {
-            router.replace("/");
+            router.replace("/home");
         }
     });
     return isLoggedIn;

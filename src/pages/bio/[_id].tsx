@@ -9,6 +9,7 @@ import useSWR from "swr";
 import useMembers from "../../hooks/useMembers";
 import AlertError from "../../components/AlertError";
 import Loader from "../../components/Loader";
+import Quote from "../../components/Quote";
 
 export default function Bio() {
     const router = useRouter();
@@ -30,18 +31,18 @@ export default function Bio() {
         <Loader />
     ) : (
         <div>
-            <div className={"flex flex_wrap"}>
-                <Image src={"/" + member.pic} height={128} width={128} />
-                <Typography variant="h4" className={"ml_8"}>{member.name}</Typography>
+            <div className={"flex flex_wrap align_items_center"}>
+                <img src={member.pic || "/images/default_user.png"} height={128} width={128} style={{borderRadius: "50%"}} />
+                <Typography variant="h4" className={"ml_16"}>{member.name}</Typography>
             </div>
             <div className={"mt_8"}>
                 <Typography>
-                    {member.quote}
+                    <Quote quote={member.quote} />
                 </Typography>
             </div>
             {user._id === _id && (
                 <Link href="/settings">
-                    <Button>
+                    <Button className={"mt_8"}>
                         Edit Profile
                     </Button>
                 </Link>

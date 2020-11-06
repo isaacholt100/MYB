@@ -95,6 +95,9 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                         paddingTop: 0,
                         paddingBottom: 0,
                     },
+                    root: {
+                        borderRadius: 8,
+                    }
                 },
                 MuiButton: {
                     root: {

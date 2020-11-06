@@ -98,7 +98,7 @@ export default function Login() {
                         staySignedIn,
                         user_id: data.user_id,
                     });
-                    router.replace("/");
+                    router.replace("/home");
                 },
                 errors: data => setHelpers({
                     ...helpers,

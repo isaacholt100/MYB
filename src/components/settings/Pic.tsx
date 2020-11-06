@@ -5,7 +5,7 @@ export default function Pic({ route, done, pic }: { route: string, done: (data: 
     const [put, loading] = usePut();
     return (
         <div className="flex align_items_center">
-            <img src={pic} height={64} width={64} style={{borderRadius: "50%"}} />
+            <img src={pic || "/images/default_" + (route.includes("group") ? "group" : "user")+ ".png"} height={64} width={64} style={{borderRadius: "50%"}} />
             <div className="ml_8">
                 <input
                     accept="image/*"
