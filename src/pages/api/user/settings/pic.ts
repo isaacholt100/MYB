@@ -46,10 +46,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         reject(err);
                         throw err;
                     }
-                    resolve(data.url);
+                    resolve(data.secure_url);
                 });
             });
-            fs.rmdir && await fs.rmdir(f.path);
+            console.log(name);
+            
+            fs.rm && await fs.rm(f.path);
             const { _id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
