@@ -105,7 +105,7 @@ const BottomNav = memo(() => {
     return (
         <BottomNavigation value={icons[pathname] ? pathname : ""} className={styles.bottom_nav}>
             {Object.keys(icons).map(link => (
-                <BottomNavigationAction label={link} value={link} icon={<Icon path={icons[link]} />} selected onClick={() => router.push("/" + link.toLowerCase())} />
+                <BottomNavigationAction label={link} value={link} icon={<Icon path={icons[link]} />} onClick={() => router.push("/" + link.toLowerCase())} />
             ))}
         </BottomNavigation>
     );

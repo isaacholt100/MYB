@@ -1,31 +1,37 @@
 import React, { memo, useState } from "react";
 import useRequest, { usePut } from "../../hooks/useRequest";
-import useSnackbar from "../../hooks/useSnackbar";
 import useConfirm from "../../hooks/useConfirm";
 import { Typography, TextField, Button } from "@material-ui/core";
 import MarginDivider from "../MarginDivider";
 import Cookies from "js-cookie";
+import LoadBtn from "../LoadBtn";
+import { mutate } from "swr";
 
-export default memo(() => {
+export default function ChangeGroup() {
     const
         [put, loading] = usePut(),
-        snackbar = useSnackbar(),
         [ConfirmDialog, confirm, close] = useConfirm(loading),
         [state, setState] = useState({
             _id: "",
             helper: "",
         }),
         change = () => {
-            put("/user/school", {
-                failedMsg: "updating your school",
+            put("/user/group", {
+                failedMsg: "updating your group",
                 body: { school_id: state._id },
+                doneMsg: "School updated",
+                setLoading: true,
                 done(data) {
                     close();
                     setState({
                         helper: "",
                         _id: "",
                     });
-                    snackbar.success("School updated");
+                    Cookies.remove("refreshToken");
+                    Cookies.remove("accessToken");
+                    Cookies.remove("user_id");
+                    localStorage.clear();
+                    mutate("/api/login", "", false);
                 },
                 errors: data => setState({
                     ...state,
@@ -36,8 +42,8 @@ export default memo(() => {
         submit = e => {
             e.preventDefault();
             if (state._id !== "") {
-                if (Cookies.get("school_id")) {
-                    confirm("change your school? You'll leave all your classes.", change);
+                if (localStorage.getItem("group_id")) {
+                    confirm("change your school? You will be logged out and will have to login again.", change);
                 } else if (state._id === Cookies.get("school_id")) {
                     setState({
                         ...state,
@@ -50,26 +56,22 @@ export default memo(() => {
         };
     return (
         <form onSubmit={submit}>
-            <Typography variant="h6" gutterBottom>
-                School
-            </Typography>
             <TextField
                 value={state._id}
                 variant="outlined"
-                label="New school ID"
+                label="New group ID"
                 onChange={e => setState({ _id: e.target.value, helper: "" })}
                 error={state.helper !== ""}
                 helperText={state.helper + " "}
                 fullWidth
             />
-            <Button
-                color="secondary"
-                type="submit"
-            >
-                Change
-            </Button>
+            <LoadBtn
+                loading={loading}
+                disabled={state.helper !== ""}
+                label="Change Group"
+            />
             <MarginDivider />
             {ConfirmDialog}
         </form>
     );
-});
+};

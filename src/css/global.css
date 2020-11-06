@@ -2,7 +2,10 @@
     margin-right: 4px;
 }
 .mt_8 {
-    margin-top: 8px;
+    margin-top: 8px !important;
+}
+.mb_8 {
+    margin-bottom: 8px !important;
 }
 .mb_16 {
     margin-bottom: 16px;
@@ -11,7 +14,7 @@
     margin-left: 8px !important;
 }
 .ml_16 {
-    margin-left: 16px;
+    margin-left: 16px !important;
 }
 .mr_8 {
     margin-right: 8px !important;
@@ -27,9 +30,8 @@
     margin-top: 16px !important;
     margin-bottom: 16px !important;
 }
-.my_8 {
-    margin-top: 8px !important;
-    margin-bottom: 8px !important;
+.mt_16 {
+    margin-top: 16px !important;
 }
 .p_0 {
     padding: 0;

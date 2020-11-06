@@ -1,0 +1,11 @@
+.root {
+    border-left: 4px solid gray;
+    padding: 8px;
+    color: gray !important;
+}
+.quote {
+    font-size: 32px !important;
+    color: gray;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}

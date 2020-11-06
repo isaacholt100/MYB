@@ -82,7 +82,7 @@ export default function Login() {
                             user_id: data._id,
                         });
                         const q = router.query.to as string;
-                        router.replace(q && q[0] === "/" ? q : "/");
+                        router.replace(q && q[0] === "/" ? q : "/home");
                         //socket.connect(`http://${serverUrl.split(":5000")[0]}`);
                     },
                     errors: data => setState({
