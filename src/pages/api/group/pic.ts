@@ -1,20 +1,11 @@
+import { File, IncomingForm } from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
-import { notAllowed } from "../../../../server/helpers";
-import tryCatch from "../../../../server/tryCatch";
-import { File, Files, IncomingForm } from "formidable";
+import { notAllowed } from "../../../server/helpers";
+import tryCatch from "../../../server/tryCatch";
 import { promises as fs } from "fs";
-import getDB from "../../../../server/getDB";
-import auth from "../../../../server/auth";
-import path from "path";
-import glob from "glob";
-import getConfig from "next/config";
+import auth from "../../../server/auth";
+import getDB from "../../../server/getDB";
 import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-    cloud_name: "dv9qm574l", 
-    api_key: "947231894266752", 
-    api_secret: "m-9PvepteXbQAWzNrEJimnMxzZ0",
-});
 
 export const config = {
     api: {
@@ -22,8 +13,6 @@ export const config = {
         sizeLimit: "10mb",
     }
 }
-const getDirectories = async source => (await fs.readdir(source)).map(name => path.join(source, name));
-const getAll = (str) => new Promise(res => glob(str + "/**/*", (err, data) => res(data)));
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
@@ -52,8 +41,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             await fs.rm(f.path);
             const { _id } = await auth(req, res);
             const db = await getDB();
-            const users = db.collection("users");
-            users.updateOne({ _id }, {
+            const groups = db.collection("groups");
+            groups.updateOne({ _id }, {
                 $set: {
                     pic: name,
                 },

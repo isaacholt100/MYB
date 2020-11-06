@@ -11,20 +11,6 @@ import useRedirect from "../hooks/useRedirect";
 import { useDelete } from "../hooks/useRequest";
 import { IMember } from "../types/member";
 
-const SAMPLE_MEMBERS: IMember[] = [{
-    name: "Isaac",
-    _id: "new ObjectId()",
-    pic: "jjfjsk",
-    quote: "Hello",
-    admin: false,
-}, {
-    name: "Izak",
-    _id: "new ObjectId()",
-    pic: "jjfjsk",
-    quote: "oi oi",
-    admin: false,
-}]
-
 const DialogInfo = memo(({ member }: any) => {
     return (
         <>
@@ -80,11 +66,11 @@ export default function Members() {
                 fullWidth
             />
             <List dense={false}>
-                {members.filter(m => m.name.toLowerCase().includes(val.toLowerCase())).map(m => (
-                    <Link href={"/bio/" + m._id} key={m._id}>
+                {members.filter(m => m.name.toLowerCase().includes(val.toLowerCase())).map((m, i) => (
+                    <Link href={"/bio/" + m._id} key={i}>
                         <ListItem button>
                             <ListItemAvatar>
-                                <Avatar src={"/uploads/" + m.pic} />
+                                <Avatar src={m.pic} />
                             </ListItemAvatar>
                             <ListItemText primary={m.name} />
                             <ListItemSecondaryAction>

@@ -17,6 +17,7 @@ import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import "../css/global.css";
 import useUser from "../hooks/useUser";
+import useGroup from "../hooks/useGroup";
 import Cookies from "js-cookie";
 
 const PRIMARY = "#1976D2";
@@ -240,9 +241,13 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
 }
 const Listener = (): null => {
     const user = useUser();
+    const school = useGroup();
     process.browser && window.addEventListener("beforeunload", () => {
         for (let key in user) {
             localStorage.setItem(key, user[key]);
+        }
+        for (let key in school) {
+            localStorage.setItem("group_" + key, school[key]);
         }
     });
     return null;
