@@ -16,6 +16,7 @@ export const config = {
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
+            const { _id, group_id } = await auth(req, res);
             const f = await new Promise<File>((resolve, reject) => {
                 const form = new IncomingForm();
             
@@ -39,7 +40,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 });
             });
             //fs.rm && await fs.rm(f.path);
-            const { _id, group_id } = await auth(req, res);
             const db = await getDB();
             const groups = db.collection("groups");
             groups.updateOne({ _id: group_id, admin_id: _id }, {
