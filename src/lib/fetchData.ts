@@ -39,5 +39,7 @@ export default async function fetchData({ serverUrl, url, method, file, body, ac
             data: "failed",
             ...extra,
         });
+        console.log(await res.json());
+        
     }
 }
