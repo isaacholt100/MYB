@@ -39,10 +39,10 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 });
             });
             await fs.rm(f.path);
-            const { _id } = await auth(req, res);
+            const { group_id, _id } = await auth(req, res);
             const db = await getDB();
             const groups = db.collection("groups");
-            groups.updateOne({ _id }, {
+            groups.updateOne({ _id: group_id, admin_id: _id }, {
                 $set: {
                     pic: name,
                 },

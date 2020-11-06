@@ -22,8 +22,6 @@ export const config = {
         sizeLimit: "10mb",
     }
 }
-const getDirectories = async source => (await fs.readdir(source)).map(name => path.join(source, name));
-const getAll = (str) => new Promise(res => glob(str + "/**/*", (err, data) => res(data)));
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
