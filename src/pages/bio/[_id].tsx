@@ -10,14 +10,6 @@ import useMembers from "../../hooks/useMembers";
 import AlertError from "../../components/AlertError";
 import Loader from "../../components/Loader";
 
-const SAMPLE_MEMBER: IMember = {
-    name: "Isaac",
-    _id: "new ObjectId()",
-    pic: "jjfjsk",
-    quote: "Hello",
-    admin: false,
-}
-
 export default function Bio() {
     const router = useRouter();
     const { _id } = router.query;

@@ -2,23 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Tabs, Tab, AppBar, Card, Box, TextField, Typography, Button } from "@material-ui/core";
 import useRedirect from "../hooks/useRedirect";
 import useUser from "../hooks/useUser";
+import useGroup from "../hooks/useGroup";
 import { usePost, usePut } from "../hooks/useRequest";
 import LoadBtn from "../components/LoadBtn";
 import DeleteAccount from "../components/settings/DeleteAccount";
 import Password from "../components/settings/Password";
 import { startCase } from "lodash";
 import Image from "next/image";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 
-const FieldSettings = ({ name, limit }: { name: "quote" | "name", limit: number }) => {
+const FieldSettings = ({ name, limit, route, initial }: { name: "quote" | "name", limit: number, route: string, initial: string }) => {
     const user = useUser();
-    const [val, setVal] = useState(user[name]);
+    const [val, setVal] = useState(initial);
     const [put, loading] = usePut();
-    const error = val.length > limit;
+    const error = val?.length > limit;
     const updateQuote = e => {
         e.preventDefault();
         if (!loading) {
-            put("/user/settings/" + name, {
+            put(route + name, {
                 setLoading: true,
                 failedMsg: "changing your " + name,
                 body: {
@@ -29,8 +30,8 @@ const FieldSettings = ({ name, limit }: { name: "quote" | "name", limit: number 
         }
     }
     useEffect(() => {
-        setVal(user[name]);
-    }, [user[name]]);
+        setVal(initial);
+    }, [initial]);
     return (
         <div className={"mb_16"}>
             <form onSubmit={updateQuote}>
@@ -48,12 +49,11 @@ const FieldSettings = ({ name, limit }: { name: "quote" | "name", limit: number 
         </div>
     );
 }
-const Pic = () => {
-    const user = useUser();
+const Pic = ({ route, done, pic }: { route: string, done: (data: any) => void, pic: string }) => {
     const [put, loading] = usePut();
     return (
         <div className="flex align_items_center">
-            <img src={"/uploads/" + user.pic} height={64} width={64} style={{borderRadius: "50%"}} />
+            <img src={pic} height={64} width={64} style={{borderRadius: "50%"}} />
             <div className="ml_8">
                 <input
                     accept="image/*"
@@ -63,18 +63,12 @@ const Pic = () => {
                     onChange={e => {
                         const form = new FormData();
                         form.append("file", e.target.files[0]);
-                        put("/user/settings/pic", {
+                        put(route, {
                             file: true,
                             setLoading: true,
                             failedMsg: "uploading this image",
                             done(data: any) {
-                                console.log(data);
-                                
-                                mutate("/api/user", {
-                                    ...user,
-                                    pic: data.name,
-                                }, true);
-                                mutate("/api/members");
+                                done(data);
                             },
                             body: form,
                         });
@@ -87,9 +81,49 @@ const Pic = () => {
         </div>
     );
 }
+const Group = () => {
+    const group = useGroup();
+    const [put, loading] = usePut();
+    return (
+        <div className="mb_8">
+            <Typography variant="h4" gutterBottom>Group Settings</Typography>
+            <FieldSettings name="name" limit={50} route="/group/" initial={group.name} />
+            <img src={group.pic} height={256} />
+            <div className="ml_8">
+                <input
+                    accept="image/*"
+                    className={"display_none"}
+                    id="contained-button-file"
+                    type="file"
+                    onChange={e => {
+                        const form = new FormData();
+                        form.append("file", e.target.files[0]);
+                        put("/group/pic", {
+                            file: true,
+                            setLoading: true,
+                            failedMsg: "uploading this image",
+                            done(data: any) {
+                                mutate("/api/group", {
+                                    ...group,
+                                    pic: data.name,
+                                }, true);
+                            },
+                            body: form,
+                        });
+                    }}
+                />
+                <label htmlFor="contained-button-file">
+                    <LoadBtn loading={loading} label="Change Picture" disabled={false} component="span" />
+                </label>
+            </div>
+            <br />
+        </div>
+    );
+}
 
 export default function Settings() {
     //const [page, setPage] = useState(0);
+    const user = useUser();
     const isLoggedIn = useRedirect();
     return !isLoggedIn ? null : (
         <div>
@@ -116,9 +150,19 @@ export default function Settings() {
                 </AppBar>
             </Box>*/}
             <Typography variant="h4" gutterBottom>Profile Settings</Typography>
-            <FieldSettings name="name" limit={50} />
-            <FieldSettings name="quote" limit={150} />
-            <Pic />
+            <FieldSettings name="name" limit={50} route="/user/settings/" initial={user.name} />
+            <FieldSettings name="quote" limit={150} route="/user/settings/" initial={user.name} />
+            <Pic route="/user/settings/pic" done={(data) => {
+                console.log(data);
+                                
+                mutate("/api/user", {
+                    ...user,
+                    pic: data.name,
+                }, true);
+                mutate("/api/members");
+            }} pic={user.pic} />
+            <br />
+            {user.admin && <Group />}
             <Typography variant="h4" gutterBottom>Account Settings</Typography>
             <Password />
             <DeleteAccount />

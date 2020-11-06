@@ -62,8 +62,9 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 try {
                     await session.withTransaction(async () => {
                         const hash = await bcrypt.hash(password, SALT_ROUNDS);
+                        const user_id = new ObjectId();
                         const r1 = create
-                        ? await groups.insertOne({ admin: email, name: groupID }, { session })
+                        ? await groups.insertOne({ admin_id: user_id, name: groupID, pic: "" }, { session })
                         : {
                             insertedCount: 1,
                             insertedId: new ObjectId(groupID),
@@ -76,6 +77,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                             name,
                             password: hash,
                             quote: "",
+                            _id: user_id,
                         });
                         if (r.insertedCount === 1 && r1.insertedCount === 1) {
                             const jwtInfo: IUSer = {
