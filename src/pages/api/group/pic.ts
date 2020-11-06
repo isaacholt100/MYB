@@ -13,6 +13,12 @@ export const config = {
         sizeLimit: "10mb",
     }
 }
+cloudinary.config({
+    cloud_name: "dv9qm574l", 
+    api_key: "947231894266752", 
+    api_secret: "m-9PvepteXbQAWzNrEJimnMxzZ0",
+});
+
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
