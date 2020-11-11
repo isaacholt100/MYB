@@ -1,61 +1,39 @@
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, TextField, Tooltip } from "@material-ui/core";
-import { mdiAccountRemove, mdiFormatQuoteClose } from "@mdi/js";
+import { IconButton, List, TextField, Tooltip } from "@material-ui/core";
+import { mdiAccountRemove } from "@mdi/js";
 //import { ObjectId } from "mongodb";
-import Link from "next/link";
-import { memo, useState } from "react";
+import { useState } from "react";
+import { mutate } from "swr";
 import Icon from "../components/Icon";
-import Quote from "../components/Quote";
+import Loader from "../components/Loader";
+import MemberItem from "../components/MemberItem";
+import QuoteDialog from "../components/QuoteDialog";
 import useConfirm from "../hooks/useConfirm";
-import useIsAdmin from "../hooks/useIsAdmin";
 import useMembers from "../hooks/useMembers";
 import useRedirect from "../hooks/useRedirect";
 import { useDelete } from "../hooks/useRequest";
-import { IMember } from "../types/member";
+import useUser from "../hooks/useUser";
 
-const DialogInfo = memo(({ member }: any) => {
-    return (
-        <>
-            <DialogTitle id="quote-title">{member?.name + "'s"} Quote</DialogTitle>
-            <DialogContent>
-                <Quote quote={member?.quote} />
-            </DialogContent>
-        </>
-    );
-}, (prev, next) => next?.member === null || prev?.member?._id === next?.member?._id);
-const QuoteDialog = ({ member, close }: { member: IMember, close: () => void }) => {
-    return (
-        <Dialog
-            open={member !== null}
-            onClose={close}
-            aria-labelledby="quote-title"
-            aria-describedby="quote"
-        >
-            <DialogInfo member={member} />
-            <DialogActions>
-                <Link href={"/bio/" + member?._id}>
-                    <Button color="primary">
-                        View Bio
-                    </Button>
-                </Link>
-                <Button onClick={close} color="primary" autoFocus>
-                    Close
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
-}
 export default function Members() {
-    const members = useMembers();
+    const [members, getLoading] = useMembers();
     const [del, loading] = useDelete();
-    const isAdmin = useIsAdmin();
-    const [ConfirmDialog, confirm] = useConfirm(loading);
+    const isAdmin = useUser().admin;
+    const [ConfirmDialog, confirm, closeConfirm] = useConfirm(loading);
     const [val, setVal] = useState("");
     const [activeMember, setActiveMember] = useState(null);
-    const removeMember = (m: IMember) => {
-
+    const removeMember = (_id: string) => {
+        del("/members", {
+            setLoading: true,
+            body: {
+                _id,
+            },
+            done() {
+                closeConfirm();
+                mutate("/api/members", members.filter(m => m._id !== _id), true);
+            }
+        });
     };
     const isLoggedIn = useRedirect();
-    return !isLoggedIn ? null : (
+    return !isLoggedIn ? null : getLoading ? <Loader /> : (
         <div>
             <TextField
                 value={val}
@@ -66,28 +44,13 @@ export default function Members() {
             />
             <List dense={false}>
                 {members.filter(m => m.name.toLowerCase().includes(val.toLowerCase())).map((m, i) => (
-                    <Link href={"/bio/" + m._id} key={i}>
-                        <ListItem button>
-                            <ListItemAvatar>
-                                <Avatar src={m.pic || "/images/default_user.png"} />
-                            </ListItemAvatar>
-                            <ListItemText primary={m.name} />
-                            <ListItemSecondaryAction>
-                                <Tooltip title="Quote">
-                                    <IconButton edge="end" aria-label="quote" onClick={() => setActiveMember(m)}>
-                                        <Icon path={mdiFormatQuoteClose} />
-                                    </IconButton>
-                                </Tooltip>
-                                {isAdmin && (
-                                    <Tooltip title="Remove User">
-                                        <IconButton edge="end" aria-label="quote" onClick={() => confirm("remove " + m.name + " from this group?", () => removeMember(m))}>
-                                            <Icon path={mdiAccountRemove} />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    </Link>
+                    <MemberItem m={m} setActiveMember={setActiveMember} btn={isAdmin && (
+                        <Tooltip title="Remove User">
+                            <IconButton style={{marginLeft: 12}} edge="end" aria-label="quote" onClick={() => confirm("remove " + m.name + " from this group?", () => removeMember(m._id))}>
+                                <Icon path={mdiAccountRemove} />
+                            </IconButton>
+                        </Tooltip>
+                    )} />
                 ))}
             </List>
             <QuoteDialog member={activeMember} close={() => setActiveMember(null)} />
