@@ -18,6 +18,8 @@ export default async function fetchData({ serverUrl, url, method, file, body, ac
     const extra = header ? {
         accessToken: header,
     } : {};
+    console.log(res);
+    
     if (res?.ok) {
         const data = await res.json();
         if (data?.errors) {
@@ -39,7 +41,5 @@ export default async function fetchData({ serverUrl, url, method, file, body, ac
             data: "failed",
             ...extra,
         });
-        console.log(await res.json());
-        
     }
 }

@@ -152,7 +152,7 @@ const Nav = memo(() => {
                                             <ListItem
                                                 button
                                                 href={"/" + link.toLowerCase()}
-                                                selected={link.toLowerCase() === router.pathname.split("/")[1] || (link === "Home" && router.pathname === "/")}
+                                                selected={link.toLowerCase() === router.pathname.slice(1) || (link === "Home" && router.pathname === "/")}
                                                 className={classes.navItem}
                                             >
                                                 <Icon path={icons[link]} />

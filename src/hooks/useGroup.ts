@@ -7,6 +7,7 @@ interface IGroup {
     name: string;
     admin_id: string;
     pic: string;
+    can_vote: boolean;
 }
 export default function useGroup(): IGroup {
     const { data, error } = useSWR("/api/group", {
@@ -18,11 +19,13 @@ export default function useGroup(): IGroup {
             _id: localStorage.getItem("group__id"),
             pic: localStorage.getItem("group_pic"),
             admin_id: localStorage.getItem("group_admin_id"),
+            can_vote: localStorage.getItem("group_can_vote") === "true"
         } : {
             name: "",
             _id: "",
             pic: "",
             admin_id: "",
+            can_vote: false,
         };
     }
     return data;

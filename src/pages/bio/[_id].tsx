@@ -14,7 +14,7 @@ import Quote from "../../components/Quote";
 export default function Bio() {
     const router = useRouter();
     const { _id } = router.query;
-    const members = useMembers();
+    const [members] = useMembers();
     const member = members.find(m => m._id === _id);
     const user = useUser();
     const isLoggedIn = useRedirect();
@@ -42,11 +42,14 @@ export default function Bio() {
             </div>
             {user._id === _id && (
                 <Link href="/settings">
-                    <Button className={"mt_8"}>
+                    <Button className={"mt_8 mr_8"}>
                         Edit Profile
                     </Button>
                 </Link>
             )}
+            <Link href="/prizes">
+                <Button color="primary" className="mt_8">Go to Members</Button>
+            </Link>
         </div>
     );
 }

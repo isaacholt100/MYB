@@ -225,6 +225,9 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
                 MuiFormControl: {
                     size: "small",
                 },
+                MuiCircularProgress: {
+                    disableShrink: true,
+                }
             },
         });
     return (
