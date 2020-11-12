@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, TextField, Tooltip, Typography } from "@material-ui/core";
-import { mdiCheck, mdiDelete, mdiVote } from "@mdi/js";
+import { Avatar, Button, ButtonBase, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, TextField, Tooltip, Typography } from "@material-ui/core";
+import { mdiCheck, mdiDelete, mdiTrophy, mdiVote } from "@mdi/js";
 import Link from "next/link";
 import { useState } from "react";
 import { mutate } from "swr";
@@ -12,6 +12,28 @@ import usePrizes from "../../hooks/usePrizes";
 import useRedirect from "../../hooks/useRedirect";
 import { useDelete, usePost, usePut } from "../../hooks/useRequest";
 import useUser from "../../hooks/useUser";
+import prizeIcons from "../../lib/prizeIcons";
+import clsx from "clsx";
+
+const useStyles = makeStyles(theme => ({
+    avatar: {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+    },
+    iconOption: {
+        borderColor: theme.palette.secondary.main,
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.secondary.main,
+        margin: 2,
+        border: 2,
+        borderStyle: "solid",
+    },
+    iconOptionSelected: {
+        backgroundColor: theme.palette.secondary.main,
+        color: theme.palette.secondary.contrastText,
+        border: 0,
+    }
+}));
 
 export default function Prizes() {
     const isLoggedIn = useRedirect();
@@ -23,14 +45,17 @@ export default function Prizes() {
     const [err, setErr] = useState("");
     const [post, postLoading] = usePost();
     const [del, delLoading] = useDelete();
-    const [put, putLoading] = usePut();
+    const [put] = usePut();
     const user = useUser();
+    const classes = useStyles();
+    const [icon, setIcon] = useState("");
     const [ConfirmDialog, confirm, closeConfirm] = useConfirm(delLoading);
     const submitPrize = (e) => {
         e.preventDefault();
         post("/prizes", {
             body: {
                 name,
+                icon,
             },
             setLoading: true,
             done(data: any) {
@@ -78,33 +103,51 @@ export default function Prizes() {
                 aria-describedby="alert-dialog-description"
             >
                 <form onSubmit={submitPrize}>
-                <DialogTitle id="alert-dialog-title">{isAdmin ? "Create" : "Suggest"}{" "}Prize</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        value={name}
-                        onChange={e => {
-                            setName(e.target.value);
-                            setErr("");
-                        }}
-                        label="Prize Name"
-                        autoFocus
-                        helperText={err + " "}
-                        error={err !== ""}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                <Button onClick={() => setOpen(false)}>
-                    Close
-                </Button>
-                <LoadBtn loading={postLoading} label={isAdmin ? "Create" : "Suggest"} disabled={name === "" || err !== ""} />
-                </DialogActions>
+                    <DialogTitle id="alert-dialog-title">{isAdmin ? "Create" : "Suggest"}{" "}Prize</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            value={name}
+                            onChange={e => {
+                                setName(e.target.value);
+                                setErr("");
+                            }}
+                            label="Prize Name"
+                            autoFocus
+                            helperText={err + " "}
+                            error={err !== ""}
+                            fullWidth
+                        />
+                        <Typography variant="h6">Choose a custom prize icon</Typography>
+                        <div className="flex flex_wrap">
+                        {Object.keys(prizeIcons).map(i => (
+                            <Avatar
+                                component={ButtonBase}
+                                onClick={() => setIcon(i)}
+                                key={i}
+                                className={clsx(classes.iconOption, icon === i && classes.iconOptionSelected)}
+                            >
+                                <Icon path={prizeIcons[i]} />
+                            </Avatar>
+                        ))}
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpen(false)}>
+                            Close
+                        </Button>
+                        <LoadBtn loading={postLoading} label={isAdmin ? "Create" : "Suggest"} disabled={name === "" || err !== ""} />
+                    </DialogActions>
                 </form>
             </Dialog>
             <Typography variant="h6">Suggested Prizes</Typography>
             <List>
                 {prizes.filter(p => !p.accepted).map(p => (
                     <ListItem>
+                        <ListItemAvatar>
+                            <Avatar className={classes.avatar}>
+                                <Icon path={prizeIcons[p.icon] || mdiTrophy} />
+                            </Avatar>
+                        </ListItemAvatar>
                         <ListItemText primary={p.name} />
                         <ListItemSecondaryAction>
                             {isAdmin && (
@@ -130,6 +173,11 @@ export default function Prizes() {
                 {prizes.filter(p => p.accepted).map(p => (
                     <Link href={"/prizes/" + p._id} key={p._id}>
                         <ListItem button>
+                            <ListItemAvatar>
+                                <Avatar className={classes.avatar}>
+                                    <Icon path={prizeIcons[p.icon] || mdiTrophy} />
+                                </Avatar>
+                            </ListItemAvatar>
                             <ListItemText primary={p.name} />
                             <ListItemSecondaryAction>
                                 <Tooltip title="Vote">
@@ -139,7 +187,7 @@ export default function Prizes() {
                                 </Tooltip>
                                 {isAdmin && (
                                     <Tooltip title="Remove Prize">
-                                        <IconButton edge="end" aria-label="remove" onClick={() => confirm("remove the prize '" + p.name + "' from this group?", () => removePrize(p._id))} style={{marginLeft: 12}}>
+                                        <IconButton edge="end" aria-label="remove" onClick={() => confirm("remove the prize '" + p.name + "' from this group?", () => removePrize(p._id))} style={{marginLeft: 16}}>
                                             <Icon path={mdiDelete} />
                                         </IconButton>
                                     </Tooltip>

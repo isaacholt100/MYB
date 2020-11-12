@@ -30,6 +30,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         owner_id: _id,
                         accepted: admin ? true : null,
                         poll: [],
+                        icon: req.body.icon || "",
                     };
                     await prizes.insertOne(obj);
                     res.json(obj);

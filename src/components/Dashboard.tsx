@@ -1,8 +1,4 @@
-import { useDelete } from "../hooks/useRequest";
-import Cookies from "js-cookie";
 import { Button, Chip, Divider, Typography } from "@material-ui/core";
-import { useRouter } from "next/router";
-import { mutate } from "swr";
 import useUser from "../hooks/useUser";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useGroup from "../hooks/useGroup";

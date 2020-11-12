@@ -11,6 +11,7 @@ export interface IPrize {
     owner_id: string;
     accepted: boolean;
     poll: IPoll[];
+    icon: string;
 }
 export default function usePrizes(): [IPrize[], boolean] {
     const { data, error } = useSWR("/api/prizes", {

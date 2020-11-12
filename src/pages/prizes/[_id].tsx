@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Tooltip, Typography } from "@material-ui/core";
+import {  Avatar, Box, Button, List, makeStyles, Typography } from "@material-ui/core";
 import { useRouter } from "next/router";
 import AlertError from "../../components/AlertError";
 import Loader from "../../components/Loader";
@@ -12,9 +12,12 @@ import Link from "next/link";
 import useMembers from "../../hooks/useMembers";
 import MemberItem from "../../components/MemberItem";
 import QuoteDialog from "../../components/QuoteDialog";
+import Icon from "../../components/Icon";
+import { mdiTrophy } from "@mdi/js";
+import prizeIcons from "../../lib/prizeIcons";
 
 const getTopThree = (polls: IPoll[]) => {
-    if (polls.length === 0) {
+    if (!polls || polls.length === 0) {
         return [];
     }
     const list = [].concat(...polls.map(p => p.votes)) as string[];
@@ -25,6 +28,16 @@ const getTopThree = (polls: IPoll[]) => {
 const COLORS = ["gold", "silver", "#cd7f32"];
 const TEXT = ["#000", "#000", "#fff"];
 
+const useStyles = makeStyles(theme => ({
+    avatar: {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+        height: 64,
+        width: 64,
+        marginRight: 8
+    },
+}));
+
 export default function Prize() {
     const router = useRouter();
     const { _id } = router.query as { _id: string };
@@ -33,9 +46,10 @@ export default function Prize() {
     const user = useUser();
     const isLoggedIn = useRedirect();
     const [open, setOpen] = useState(false);
-    const topThree = getTopThree(prize.poll);
+    const topThree = getTopThree(prize?.poll);
     const [activeMember, setActiveMember] = useState(null);
     const [members, membersLoading] = useMembers();
+    const classes = useStyles();
     return !isLoggedIn ? null : !prize ? !prizesLoading && !membersLoading ? (
         <AlertError
             msg="Prize not found"
@@ -49,14 +63,19 @@ export default function Prize() {
         <Loader />
     ) : (
         <div>
-            <Typography variant="h4" gutterBottom>Prize: {prize.name}</Typography>
+            <div className={"flex flex_wrap align_items_center mb_8"}>
+                <Avatar className={classes.avatar}>
+                    <Icon path={prizeIcons[prize.icon] || mdiTrophy} />
+                </Avatar>
+                <Typography variant="h4">{prize.name}</Typography>
+            </div>
             {prize.poll.every(v => v.user_id !== user._id) ? (
                 <Button color="primary" onClick={() => setOpen(true)} className={"mr_8"}>Vote</Button>
             ) : (
                 <Typography>You've already voted for this prize</Typography>
             )}
             <Link href="/prizes">
-                <Button color="primary">Go to Prizes</Button>
+                <Button color="secondary">Go to Prizes</Button>
             </Link>
             <Typography variant="h6">Votes so far: {prize.poll.length} (waiting for {members.length - prize.poll.length} to vote)</Typography>
             <VoteDialog open={open} close={() => setOpen(false)} _id={_id} />

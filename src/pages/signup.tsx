@@ -1,17 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, ChangeEvent } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch } from "react-redux";
 import { startCase } from "lodash";
 import {
     Typography,
     Button,
     FormControlLabel,
     Checkbox,
-    FormGroup,
     TextField,
-    Radio,
-    RadioGroup,
     Divider,
     Box,
     Card,
@@ -22,7 +18,6 @@ import { usePost } from "../hooks/useRequest";
 import Link from "next/link";
 import Head from "next/head";
 import jwtCookies from "../lib/jwtCookies";
-import styles from "../css/signup.module.css";
 import { useRouter } from "next/router";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 interface IFields {
@@ -40,7 +35,7 @@ const
         password: "",
         repeatPassword: "",
     },
-    useStyles = makeStyles(theme => ({
+    useStyles = makeStyles({
         input: {
             width: "100%",
             margin: "4px 0",
@@ -61,7 +56,7 @@ const
             width: "calc(50% - 4px)",
             marginLeft: 8,
         },
-    }));
+    });
 export default function Login() {
     //const id = process.browser ? window.location.search.split("id=")[1]?.split("&")[0] : "";
     const
@@ -71,7 +66,6 @@ export default function Login() {
         [values, setValues] = useState({...initialValues}),
         [helpers, setHelpers] = useState(initialValues),
         [staySignedIn, setStaySignedIn] = useState(true),
-        dispatch = useDispatch(),
         classes = useStyles(),
         [create, setCreate] = useState(false),
         router = useRouter(),
