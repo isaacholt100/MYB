@@ -6,18 +6,17 @@ import Image from "next/image";
 import usePrizes from "../hooks/usePrizes";
 import Link from "next/link";
 import useMembers from "../hooks/useMembers";
+import Loader from "./Loader";
 
 export default function Dashboard() {
     const user = useUser();
     const group = useGroup();
-    const [prizes] = usePrizes();
-    const [members] = useMembers();
+    const [prizes, prizesLoading] = usePrizes();
+    const [members, membersLoading] = useMembers();
     const unvoted = prizes.filter(p => p.poll.every(v => v.user_id !== user._id));
     const totalUnvoted = prizes.filter(p => p.poll.length < members.length);
     const membersNotVoted = members.filter(m => prizes.some(p => p.poll.every(v => v.user_id !== m._id)));
-    console.log(totalUnvoted);
-    
-    return (
+    return prizesLoading || membersLoading ? <Loader /> : (
         <div>
             <div className={"flex flex_wrap align_items_center mb_8"}>
                 <Image src={group.pic || "/images/default_school.png"} height={128} width={128} className={"br_50"} key={group.pic} />
