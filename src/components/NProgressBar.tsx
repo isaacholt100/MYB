@@ -1,6 +1,5 @@
 import NProgress from "nprogress";
 import { withStyles } from "@material-ui/core/styles";
-import Color from "color";
 
 NProgress.configure({
     template: `<div class="nprogress-bar" role="bar"></div>`,

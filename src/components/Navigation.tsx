@@ -1,18 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, memo, useEffect, Fragment } from "react";
+import React, { memo, useEffect, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-    SwipeableDrawer,
     Drawer,
     AppBar,
-    Toolbar,
-    Typography,
-    IconButton,
     Hidden,
     Tooltip,
-    ListItemText,
     ListItem,
-    Divider,
     BottomNavigation,
     BottomNavigationAction,
 } from "@material-ui/core";
@@ -25,7 +19,6 @@ import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import NProgress from "nprogress";
 import NProgressBar from "./NProgressBar";
 import { useRouter } from "next/router";
-import MoreActions from "./MoreActions";
 import usePathname from "../hooks/usePathname";
 import { startCase } from "lodash";
 import styles from "../css/nav.module.css";

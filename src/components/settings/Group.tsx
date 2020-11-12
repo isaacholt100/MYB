@@ -1,8 +1,5 @@
-import { Typography } from "@material-ui/core";
 import { mutate } from "swr";
 import useGroup from "../../hooks/useGroup";
-import { usePut } from "../../hooks/useRequest";
-import LoadBtn from "../LoadBtn";
 import FieldSettings from "./FieldSettings";
 import Pic from "./Pic";
 

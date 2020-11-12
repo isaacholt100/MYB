@@ -4,11 +4,8 @@ import tryCatch from "../../../server/tryCatch";
 import bcrypt from "bcrypt";
 import getDB from "../../../server/getDB";
 import auth, { IUSer } from "../../../server/auth";
-import { Collection, InsertOneWriteOpResult, ObjectId } from "mongodb";
+import { InsertOneWriteOpResult, ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
-import cookie from "cookie";
-import getUser from "../../../server/getUser";
 import { setRefreshToken } from "../../../server/cookies";
 import getSession from "../../../server/getSession";
 
@@ -58,7 +55,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             }
             if (Object.keys(errors).length === 0) {
                 const session = await getSession();
-                let success = false;
+                //let success = false;
                 try {
                     await session.withTransaction(async () => {
                         const hash = await bcrypt.hash(password, SALT_ROUNDS);

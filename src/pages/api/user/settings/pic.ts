@@ -1,13 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { notAllowed } from "../../../../server/helpers";
 import tryCatch from "../../../../server/tryCatch";
-import { File, Files, IncomingForm } from "formidable";
-import { promises as fs } from "fs";
+import { File, IncomingForm } from "formidable";
 import getDB from "../../../../server/getDB";
 import auth from "../../../../server/auth";
-import path from "path";
-import glob from "glob";
-import getConfig from "next/config";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
