@@ -22,7 +22,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             if ((await prizes.countDocuments({ group_id, _id: new ObjectId(req.body._id), poll: { $elemMatch: {user_id: _id} } })) > 0) {
                 throw new Error("400");
             }
-            await prizes.updateOne({ group_id, _id: new ObjectId(req.body._id) }, {
+            await prizes.updateOne({ group_id, _id: new ObjectId(req.body._id), accepted: true }, {
                 $push: {
                     poll: obj
                 }

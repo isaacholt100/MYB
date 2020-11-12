@@ -14,9 +14,9 @@ export default function Dashboard() {
     const group = useGroup();
     const [prizes, prizesLoading] = usePrizes();
     const [members, membersLoading] = useMembers();
-    const unvoted = prizes.filter(p => p.poll.every(v => v.user_id !== user._id));
-    const totalUnvoted = prizes.filter(p => p.poll.length < members.length);
-    const membersNotVoted = members.filter(m => prizes.some(p => p.poll.every(v => v.user_id !== m._id)));
+    const unvoted = prizes.filter(p => p.accepted && p.poll.every(v => v.user_id !== user._id));
+    const totalUnvoted = prizes.filter(p => p.accepted &&  p.poll.length < members.length);
+    const membersNotVoted = members.filter(m => prizes.some(p => p.accepted && p.poll.every(v => v.user_id !== m._id)));
     return prizesLoading || membersLoading ? <Loader /> : (
         <div>
             <div className={"flex flex_wrap align_items_center mb_8"}>
@@ -42,7 +42,7 @@ export default function Dashboard() {
             </Typography>
             <div className="mb_8">
                 {unvoted.map(u => (
-                    <Chip avatar={<Avatar><PrizeIcon path={u.icon} /></Avatar>} variant="outlined" color="primary" label={u.name} key={u._id} />
+                    <Chip avatar={<Avatar><PrizeIcon path={u.icon} /></Avatar>} variant="outlined" color="primary" label={u.name} key={u._id} style={{marginRight: 4}} />
                 ))}
             </div>
             <Typography gutterBottom>There {totalUnvoted.length === 1 ? "is" : "are"} {totalUnvoted.length} prize{totalUnvoted.length === 1 ? "" : "s"} which haven't been voted for by everyone in your group yet.</Typography>
