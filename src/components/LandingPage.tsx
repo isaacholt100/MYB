@@ -1,4 +1,4 @@
-import { Button, Card, Typography } from "@material-ui/core"
+import { Button, Typography } from "@material-ui/core"
 import Link from "next/link";
 
 export default function LandingPage() {

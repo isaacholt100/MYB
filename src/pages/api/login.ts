@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import getDB from "../../server/getDB";
-import getUser from "../../server/getUser";
 import { done, errors, notAllowed } from "../../server/helpers";
 import tryCatch from "../../server/tryCatch";
 import bcrypt from "bcrypt";
@@ -16,7 +15,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             const
                 db = await getDB(),
                 users = db.collection("users"),
-                { password, staySignedIn, email } = req.body,
+                { password, email } = req.body,
                 user = await users.findOne({ email });
             if (!user) {
                 errors(res, {

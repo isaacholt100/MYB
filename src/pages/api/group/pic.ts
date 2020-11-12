@@ -2,7 +2,6 @@ import { File, IncomingForm } from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
 import { notAllowed } from "../../../server/helpers";
 import tryCatch from "../../../server/tryCatch";
-import { promises as fs } from "fs";
 import auth from "../../../server/auth";
 import getDB from "../../../server/getDB";
 import { v2 as cloudinary } from "cloudinary";

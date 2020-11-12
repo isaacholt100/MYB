@@ -1,5 +1,4 @@
 import { NextApiResponse } from "next";
-import { failed } from "./helpers";
 
 export default async (res: NextApiResponse, fn: (() => Promise<void>) | (() => void)) => {
     try {

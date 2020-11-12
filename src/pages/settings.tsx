@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Tabs, Tab, AppBar, Card, Box, TextField, Typography, Button, Divider } from "@material-ui/core";
+import React, { useState } from "react";
+import { Tabs, Tab, AppBar, Box, Button, Divider } from "@material-ui/core";
 import useRedirect from "../hooks/useRedirect";
 import useUser from "../hooks/useUser";
-import useGroup from "../hooks/useGroup";
-import { usePost, usePut } from "../hooks/useRequest";
-import LoadBtn from "../components/LoadBtn";
 import DeleteAccount from "../components/settings/DeleteAccount";
 import Password from "../components/settings/Password";
-import { startCase } from "lodash";
-import Image from "next/image";
-import useSWR, { mutate } from "swr";
+import { mutate } from "swr";
 import FieldSettings from "../components/settings/FieldSettings";
 import Pic from "../components/settings/Pic";
 import Group from "../components/settings/Group";

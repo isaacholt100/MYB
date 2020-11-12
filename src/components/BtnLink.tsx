@@ -1,5 +1,4 @@
-import Button, { ButtonProps } from "@material-ui/core/Button"
-import Link, { LinkProps } from "next/link";
+import Link from "next/link";
 import { forwardRef, ReactChildren } from "react";
 interface IProps {
     className: string;

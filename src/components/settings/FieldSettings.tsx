@@ -2,7 +2,6 @@ import { TextField } from "@material-ui/core";
 import { startCase } from "lodash";
 import { useEffect, useState } from "react";
 import { usePut } from "../../hooks/useRequest";
-import useUser from "../../hooks/useUser";
 import LoadBtn from "../LoadBtn";
 
 export default function FieldSettings({ name, limit, route, initial }: { name: "quote" | "name", limit: number, route: string, initial: string }) {
