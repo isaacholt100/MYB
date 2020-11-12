@@ -45,7 +45,7 @@ export default function Bio() {
                     </Button>
                 </Link>
             )}
-            <Link href="/prizes">
+            <Link href="/members">
                 <Button color="secondary" className="mt_8">Go to Members</Button>
             </Link>
         </div>
