@@ -259,7 +259,7 @@ export default function Login() {
                             </Button>
                         </Box>
                     </form>
-                    <Divider className={"my_8"} />
+                    <Divider className={"my_16"} />
                     <Typography variant="h6" gutterBottom>
                         Already have an account?
                     </Typography>

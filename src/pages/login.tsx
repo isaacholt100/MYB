@@ -159,7 +159,7 @@ export default function Login() {
                         </Button>
                     </div>
                 </form>
-                <Divider className={"my_8"} />
+                <Divider className={"my_16"} />
                 <Typography variant="h6" gutterBottom>Don't have an account yet?</Typography>
                 <Link href="/signup">
                     <Button
