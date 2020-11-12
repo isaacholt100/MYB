@@ -12,9 +12,7 @@ import Link from "next/link";
 import useMembers from "../../hooks/useMembers";
 import MemberItem from "../../components/MemberItem";
 import QuoteDialog from "../../components/QuoteDialog";
-import Icon from "../../components/Icon";
-import { mdiTrophy } from "@mdi/js";
-import prizeIcons from "../../lib/prizeIcons";
+import PrizeIcon from "../../components/PrizeIcon";
 
 const getTopThree = (polls: IPoll[]) => {
     if (!polls || polls.length === 0) {
@@ -34,7 +32,8 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.primary.contrastText,
         height: 64,
         width: 64,
-        marginRight: 8
+        marginRight: 8,
+        fontSize: 32,
     },
 }));
 
@@ -65,7 +64,7 @@ export default function Prize() {
         <div>
             <div className={"flex flex_wrap align_items_center mb_8"}>
                 <Avatar className={classes.avatar}>
-                    <Icon path={prizeIcons[prize.icon] || mdiTrophy} />
+                    <PrizeIcon path={prize.icon} />
                 </Avatar>
                 <Typography variant="h4">{prize.name}</Typography>
             </div>

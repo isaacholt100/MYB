@@ -1,5 +1,5 @@
 import { Avatar, Button, ButtonBase, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, makeStyles, TextField, Tooltip, Typography } from "@material-ui/core";
-import { mdiCheck, mdiDelete, mdiTrophy, mdiVote } from "@mdi/js";
+import { mdiCheck, mdiDelete, mdiVote } from "@mdi/js";
 import Link from "next/link";
 import { useState } from "react";
 import { mutate } from "swr";
@@ -14,6 +14,7 @@ import { useDelete, usePost, usePut } from "../../hooks/useRequest";
 import useUser from "../../hooks/useUser";
 import prizeIcons from "../../lib/prizeIcons";
 import clsx from "clsx";
+import PrizeIcon from "../../components/PrizeIcon";
 
 const useStyles = makeStyles(theme => ({
     avatar: {
@@ -145,7 +146,7 @@ export default function Prizes() {
                     <ListItem>
                         <ListItemAvatar>
                             <Avatar className={classes.avatar}>
-                                <Icon path={prizeIcons[p.icon] || mdiTrophy} />
+                                <PrizeIcon path={p.icon} />
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={p.name} />
@@ -175,7 +176,7 @@ export default function Prizes() {
                         <ListItem button>
                             <ListItemAvatar>
                                 <Avatar className={classes.avatar}>
-                                    <Icon path={prizeIcons[p.icon] || mdiTrophy} />
+                                    <PrizeIcon path={p.icon} />
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText primary={p.name} />
