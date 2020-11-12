@@ -1,4 +1,4 @@
-import { Button, Chip, Divider, Typography } from "@material-ui/core";
+import { Avatar, Button, Chip, Divider, Typography } from "@material-ui/core";
 import useUser from "../hooks/useUser";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useGroup from "../hooks/useGroup";
@@ -7,6 +7,7 @@ import usePrizes from "../hooks/usePrizes";
 import Link from "next/link";
 import useMembers from "../hooks/useMembers";
 import Loader from "./Loader";
+import PrizeIcon from "./PrizeIcon";
 
 export default function Dashboard() {
     const user = useUser();
@@ -41,7 +42,7 @@ export default function Dashboard() {
             </Typography>
             <div className="mb_8">
                 {unvoted.map(u => (
-                    <Chip variant="outlined" color="primary" label={u.name} key={u._id} />
+                    <Chip avatar={<Avatar><PrizeIcon path={u.icon} /></Avatar>} variant="outlined" color="primary" label={u.name} key={u._id} />
                 ))}
             </div>
             <Typography gutterBottom>There {totalUnvoted.length === 1 ? "is" : "are"} {totalUnvoted.length} prize{totalUnvoted.length === 1 ? "" : "s"} which haven't been voted for by everyone in your group yet.</Typography>
