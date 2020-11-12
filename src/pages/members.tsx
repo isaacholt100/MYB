@@ -46,7 +46,7 @@ export default function Members() {
                 {members.filter(m => m.name.toLowerCase().includes(val.toLowerCase())).map((m, i) => (
                     <MemberItem m={m} setActiveMember={setActiveMember} btn={isAdmin && (
                         <Tooltip title="Remove User">
-                            <IconButton style={{marginLeft: 12}} edge="end" aria-label="quote" onClick={() => confirm("remove " + m.name + " from this group?", () => removeMember(m._id))}>
+                            <IconButton style={{marginLeft: 16}} edge="end" aria-label="quote" onClick={() => confirm("remove " + m.name + " from this group?", () => removeMember(m._id))}>
                                 <Icon path={mdiAccountRemove} />
                             </IconButton>
                         </Tooltip>

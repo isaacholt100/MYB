@@ -1,11 +1,9 @@
 import { useRouter } from "next/router";
-import { IMember } from "../../types/member";
 import Image from "next/image";
 import { Button, Typography } from "@material-ui/core";
 import useRedirect from "../../hooks/useRedirect";
 import useUser from "../../hooks/useUser";
 import Link from "next/link";
-import useSWR from "swr";
 import useMembers from "../../hooks/useMembers";
 import AlertError from "../../components/AlertError";
 import Loader from "../../components/Loader";
@@ -42,13 +40,13 @@ export default function Bio() {
             </div>
             {user._id === _id && (
                 <Link href="/settings">
-                    <Button className={"mt_8 mr_8"}>
+                    <Button className={"mt_8 mr_8"} color="primary">
                         Edit Profile
                     </Button>
                 </Link>
             )}
             <Link href="/prizes">
-                <Button color="primary" className="mt_8">Go to Members</Button>
+                <Button color="secondary" className="mt_8">Go to Members</Button>
             </Link>
         </div>
     );

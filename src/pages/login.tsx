@@ -1,14 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 //Imports
 import React, { FormEvent, useState } from "react";
-//import { Link } from "react-router-dom";
-//import redirect from "../../api/redirect";
-//import { useDispatch } from "react-redux";
 import { usePost }/*, { usePost }*/ from "../hooks/useRequest";
-//import { useHistory } from "react-router-dom";
-//import serverUrl from "../../api/serverUrl";
-//import socket from "../../api/socket";
-import Cookies from "js-cookie";
 import {
     Typography,
     Divider,
@@ -25,12 +18,9 @@ import {
 import Icon from "../components/Icon";
 import { mdiEye, mdiEyeOff } from "@mdi/js";
 import Link from "next/link";
-import effects from "../css/effects.module.css";
 import LoadBtn from "../components/LoadBtn";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import { mutate } from "swr";
 import jwtCookies from "../lib/jwtCookies";
 //import AjaxBtn from "../../components/AjaxBtn";
 //import { setCookie } from "../../api/cookies";
@@ -51,7 +41,6 @@ export default function Login() {
         [show, setShow] = useState(false),
         [staySignedIn, setStaySignedIn] = useState(true),
         [state, setState] = useState(initialState),
-        dispatch = useDispatch(),
         //history = useHistory(),
         //socket = useSocket(),
         disabled = state.emailError !== "" || state.passwordError !== "" || state.email === "" || state.password === "",

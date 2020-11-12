@@ -1,9 +1,7 @@
-import { useState, useEffect, ReactChild, useRef, MutableRefObject } from "react";
+import { useEffect, ReactChild, useRef, MutableRefObject } from "react";
 import Head from "next/head";
 import { createMuiTheme, makeStyles, ThemeProvider as MuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import type { AppContext, AppProps } from "next/app";
-import { Provider as Redux, useDispatch } from "react-redux";
 import { MuiPickersUtilsProvider as Pickers } from "@material-ui/pickers";
 import DateUtils from "@date-io/date-fns";
 import "date-fns";
@@ -11,7 +9,6 @@ import { ProviderContext, SnackbarProvider as Snackbar } from "notistack";
 import { Grow, IconButton } from "@material-ui/core";
 import Icon from "../components/Icon";
 import { mdiClose } from "@mdi/js";
-import store from "../redux/store";
 import { SWRConfig } from "swr";
 import Navigation from "../components/Navigation";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
@@ -339,68 +336,66 @@ export default function App({ Component, pageProps }) {
         }
     }, []);
     return (
-        <Redux store={store}>
-            <SWRConfig
-                value={{
-                    onError: (err, key, config) => {
-                        console.error(err);
-                        snack.current.enqueueSnackbar("There was an error loading a request", {
-                            variant: "error",
-                        });
+        <SWRConfig
+            value={{
+                onError: (err) => {
+                    console.error(err);
+                    snack.current.enqueueSnackbar("There was an error loading a request", {
+                        variant: "error",
+                    });
+                },
+                fetcher: (url, options) => fetch(url, {
+                    ...options,
+                    credentials: "include",
+                    headers: {
+                        "authorization": "Bearer " + Cookies.get("accessToken"),
+                        "authorization-refresh": "Bearer " + Cookies.get("refreshToken"),
+                        "Access-Control-Expose-Headers": "authorization",
+                        "Access-Control-Allow-Headers": "authorization",
                     },
-                    fetcher: (url, options) => fetch(url, {
-                        ...options,
-                        credentials: "include",
-                        headers: {
-                            "authorization": "Bearer " + Cookies.get("accessToken"),
-                            "authorization-refresh": "Bearer " + Cookies.get("refreshToken"),
-                            "Access-Control-Expose-Headers": "authorization",
-                            "Access-Control-Allow-Headers": "authorization",
-                        },
-                    }).then(res => {
-                        const header = res?.headers?.get("authorization");
-                        if (header) {
-                            Cookies.set("accessToken", header, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});
-                        }
-                        return res.json();
-                    })
-                }}
-            >
-                <Head>
-                    <title>MYB</title>
-                    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5" />
-                </Head>
-                <Pickers utils={DateUtils}>
-                    <Snackbar
-                        ref={snack as any}
-                        action={key => (
-                            <IconButton size="small" onClick={() => snack.current.closeSnackbar(key)}>
-                                <Icon path={mdiClose} />
-                            </IconButton>
-                        )}
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                        preventDuplicate
-                        autoHideDuration={8192}
-                        TransitionComponent={Grow as any}
-                        classes={{
-                            variantError: classes.error,
-                            variantSuccess: classes.success,
-                            variantInfo: classes.info,
-                            variantWarning: classes.warning,
-                            root: classes.snackbar,
-                            containerAnchorOriginBottomRight: classes.bottom,
-                        }}
-                        maxSnack={4}
-                    >
-                        <ThemeWrapper>
-                            <Component {...pageProps} />
-                        </ThemeWrapper>
-                    </Snackbar>
-                </Pickers>
-            </SWRConfig>
-        </Redux>
+                }).then(res => {
+                    const header = res?.headers?.get("authorization");
+                    if (header) {
+                        Cookies.set("accessToken", header, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});
+                    }
+                    return res.json();
+                })
+            }}
+        >
+            <Head>
+                <title>MYB</title>
+                <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5" />
+            </Head>
+            <Pickers utils={DateUtils}>
+                <Snackbar
+                    ref={snack as any}
+                    action={key => (
+                        <IconButton size="small" onClick={() => snack.current.closeSnackbar(key)}>
+                            <Icon path={mdiClose} />
+                        </IconButton>
+                    )}
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                    }}
+                    preventDuplicate
+                    autoHideDuration={8192}
+                    TransitionComponent={Grow as any}
+                    classes={{
+                        variantError: classes.error,
+                        variantSuccess: classes.success,
+                        variantInfo: classes.info,
+                        variantWarning: classes.warning,
+                        root: classes.snackbar,
+                        containerAnchorOriginBottomRight: classes.bottom,
+                    }}
+                    maxSnack={4}
+                >
+                    <ThemeWrapper>
+                        <Component {...pageProps} />
+                    </ThemeWrapper>
+                </Snackbar>
+            </Pickers>
+        </SWRConfig>
     );
 }
