@@ -20,7 +20,7 @@ export default function Dashboard() {
     return prizesLoading || membersLoading ? <Loader /> : (
         <div>
             <div className={"flex flex_wrap align_items_center mb_8"}>
-                <Image src={group.pic || "/images/default_school.png"} height={128} width={128} className={"br_50"} key={group.pic} />
+                <Image src={group.pic || "/images/default_group.png"} height={128} width={128} className={"br_50"} key={group.pic} />
                 <Typography variant="h4" component="div" style={{flex: 1, minWidth: 160, }} className="ml_16">
                     {group.name}
                 </Typography>
