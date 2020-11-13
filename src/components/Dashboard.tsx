@@ -37,19 +37,25 @@ export default function Dashboard() {
                 </Button>
             </CopyToClipboard>
             <Divider className={"my_16"} />
-            <Typography gutterBottom>
-                You currently have {unvoted.length} prize{unvoted.length === 1 ? "" : "s"} you haven't voted for yet{unvoted.length === 0 ? "." : ":"}
-            </Typography>
-            <div className="mb_8">
-                {unvoted.map(u => (
-                    <Chip avatar={<Avatar><PrizeIcon path={u.icon} /></Avatar>} variant="outlined" color="primary" label={u.name} key={u._id} style={{marginRight: 4}} />
-                ))}
-            </div>
-            <Typography gutterBottom>There {totalUnvoted.length === 1 ? "is" : "are"} {totalUnvoted.length} prize{totalUnvoted.length === 1 ? "" : "s"} which haven't been voted for by everyone in your group yet.</Typography>
-            <Typography gutterBottom>There {membersNotVoted.length === 1 ? "is" : "are"} {membersNotVoted.length} member{membersNotVoted.length === 1 ? "" : "s"} who still have prizes to vote for. Get them to vote!</Typography>
-            <Link href="/prizes">
-                <Button color="secondary">Go To Prizes</Button>
-            </Link>
+            {group.can_vote ? (
+                <>
+                    <Typography gutterBottom>
+                        You currently have {unvoted.length} prize{unvoted.length === 1 ? "" : "s"} you haven't voted for yet{unvoted.length === 0 ? "." : ":"}
+                    </Typography>
+                    <div className="mb_8">
+                        {unvoted.map(u => (
+                            <Chip avatar={<Avatar><PrizeIcon path={u.icon} /></Avatar>} variant="outlined" color="primary" label={u.name} key={u._id} style={{marginRight: 4}} />
+                        ))}
+                    </div>
+                    <Typography gutterBottom>There {totalUnvoted.length === 1 ? "is" : "are"} {totalUnvoted.length} prize{totalUnvoted.length === 1 ? "" : "s"} which haven't been voted for by everyone in your group yet.</Typography>
+                    <Typography gutterBottom>There {membersNotVoted.length === 1 ? "is" : "are"} {membersNotVoted.length} member{membersNotVoted.length === 1 ? "" : "s"} who still have prizes to vote for. Get them to vote!</Typography>
+                    <Link href="/prizes">
+                        <Button color="secondary">Go To Prizes</Button>
+                    </Link>
+                </>
+            ) : (
+                <Typography>Voting is currently disabled for your group</Typography>
+            )}
         </div>
     );
 }

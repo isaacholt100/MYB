@@ -1,10 +1,27 @@
+import { Button } from "@material-ui/core";
 import { mutate } from "swr";
 import useGroup from "../../hooks/useGroup";
+import { usePut } from "../../hooks/useRequest";
+import LoadBtn from "../LoadBtn";
 import FieldSettings from "./FieldSettings";
 import Pic from "./Pic";
 
 export default function Group() {
     const group = useGroup();
+    const [put, loading] = usePut();
+    const changeVote = e => {
+        e.preventDefault();
+        put("/group", {
+            setLoading: true,
+            body: {
+                can_vote: !group.can_vote,
+            },
+            done() {
+                mutate("/api/group", {...group, can_vote: !group.can_vote}, true);
+            },
+            failedMsg: "updating group settings",
+        });
+    }
     return (
         <div className="mt_16">
             <FieldSettings name="name" limit={50} route="/group/" initial={group.name} />
@@ -14,7 +31,9 @@ export default function Group() {
                     pic: data.name,
                 }, false);
             }} pic={group.pic} />
-            <br />
+            <form onSubmit={changeVote}>
+                <LoadBtn color="secondary" className={"mt_8"} label={group.can_vote ? "Disable Voting" : "Enable Voting"} loading={loading} disabled={false} />
+            </form>
         </div>
     );
 }
