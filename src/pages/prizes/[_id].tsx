@@ -13,6 +13,7 @@ import useMembers from "../../hooks/useMembers";
 import MemberItem from "../../components/MemberItem";
 import QuoteDialog from "../../components/QuoteDialog";
 import PrizeIcon from "../../components/PrizeIcon";
+import useGroup from "../../hooks/useGroup";
 
 const getTopThree = (polls: IPoll[]) => {
     if (!polls || polls.length === 0) {
@@ -49,6 +50,7 @@ export default function Prize() {
     const [activeMember, setActiveMember] = useState(null);
     const [members, membersLoading] = useMembers();
     const classes = useStyles();
+    const group = useGroup();
     return !isLoggedIn ? null : !prize ? !prizesLoading && !membersLoading ? (
         <AlertError
             msg="Prize not found"
@@ -69,7 +71,7 @@ export default function Prize() {
                 <Typography variant="h4">{prize.name}</Typography>
             </div>
             {prize.poll.every(v => v.user_id !== user._id) ? (
-                <Button color="primary" onClick={() => setOpen(true)} className={"mr_8"}>Vote</Button>
+                <Button color="primary" onClick={() => setOpen(true)} className={"mr_8"} disabled={!group.can_vote}>Vote</Button>
             ) : (
                 <Typography>You've already voted for this prize</Typography>
             )}

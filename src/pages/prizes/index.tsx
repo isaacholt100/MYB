@@ -15,6 +15,7 @@ import useUser from "../../hooks/useUser";
 import prizeIcons from "../../lib/prizeIcons";
 import clsx from "clsx";
 import PrizeIcon from "../../components/PrizeIcon";
+import useGroup from "../../hooks/useGroup";
 
 const useStyles = makeStyles(theme => ({
     avatar: {
@@ -51,6 +52,7 @@ export default function Prizes() {
     const classes = useStyles();
     const [icon, setIcon] = useState("");
     const [ConfirmDialog, confirm, closeConfirm] = useConfirm(delLoading);
+    const group = useGroup();
     const submitPrize = (e) => {
         e.preventDefault();
         post("/prizes", {
@@ -182,7 +184,7 @@ export default function Prizes() {
                             <ListItemText primary={p.name} />
                             <ListItemSecondaryAction>
                                 <Tooltip title="Vote">
-                                    <IconButton edge="end" aria-label="vote" onClick={() => setCurrentPrize(p._id)} disabled={p.poll.some(v => v.user_id === user._id)} color="secondary">
+                                    <IconButton edge="end" aria-label="vote" onClick={() => setCurrentPrize(p._id)} disabled={p.poll.some(v => v.user_id === user._id) || !group.can_vote} color="secondary">
                                         <Icon path={mdiVote} />
                                     </IconButton>
                                 </Tooltip>
