@@ -61,7 +61,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         const hash = await bcrypt.hash(password, SALT_ROUNDS);
                         const user_id = new ObjectId();
                         const r1 = create
-                        ? await groups.insertOne({ admin_id: user_id, name: groupID, pic: "", can_vote: false, }, { session })
+                        ? await groups.insertOne({ admin_id: user_id, name: groupID, pic: "", can_vote: true, }, { session })
                         : {
                             insertedCount: 1,
                             insertedId: new ObjectId(groupID),
