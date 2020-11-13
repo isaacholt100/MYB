@@ -11,18 +11,18 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
         case "PUT": {
             const { _id } = await auth(req, res);
             const db = await getDB();
-            const schools = db.collection("schools");
+            const groups = db.collection("groups");
             const users = db.collection("users");
-            const exists = ObjectId.isValid(req.body.group_id) && await schools.countDocuments({ _id: new ObjectId(req.body.group_id) }) === 1;
+            const exists = ObjectId.isValid(req.body.group_id) && await groups.countDocuments({ _id: new ObjectId(req.body.group_id) }) === 1;
             if (exists) {
                 await users.updateOne({ _id, group_id: null }, {
                     $set: {
-                        school_id: new ObjectId(req.body.group_id),
+                        group_id: new ObjectId(req.body.group_id),
                     },
                 });
                 done(res);
             } else {
-                errors(res, "School not found");
+                errors(res, "Group not found");
             }
             res.setHeader("Set-Cookie", serialize("httpRefreshToken", "", {
                 maxAge: -1,
@@ -40,7 +40,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             const users = db.collection("users");
             await users.updateOne({ _id, group_id }, {
                 $set: {
-                    school_id: null,
+                    group_id: null,
                 },
             });
             done(res);

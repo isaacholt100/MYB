@@ -244,13 +244,13 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
 }
 const Listener = (): null => {
     const user = useUser();
-    const school = useGroup();
+    const group = useGroup();
     process.browser && window.addEventListener("beforeunload", () => {
         for (let key in user) {
             localStorage.setItem(key, user[key]);
         }
-        for (let key in school) {
-            localStorage.setItem("group_" + key, school[key]);
+        for (let key in group) {
+            localStorage.setItem("group_" + key, group[key]);
         }
     });
     return null;

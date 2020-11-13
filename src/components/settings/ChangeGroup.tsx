@@ -18,8 +18,8 @@ export default function ChangeGroup() {
         change = () => {
             put("/user/group", {
                 failedMsg: "updating your group",
-                body: { school_id: state._id },
-                doneMsg: "School updated",
+                body: { group_id: state._id },
+                doneMsg: "Group updated",
                 setLoading: true,
                 done(data) {
                     close();
@@ -43,8 +43,8 @@ export default function ChangeGroup() {
             e.preventDefault();
             if (state._id !== "") {
                 if (localStorage.getItem("group_id")) {
-                    confirm("change your school? You will be logged out and will have to login again.", change);
-                } else if (state._id === Cookies.get("school_id")) {
+                    confirm("change your group? You will be logged out and will have to login again.", change);
+                } else if (state._id === localStorage.getItem("group_id")) {
                     setState({
                         ...state,
                         _id: "",
