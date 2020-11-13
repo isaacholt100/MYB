@@ -14,11 +14,15 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             }
             const db = await getDB();
             const prizes = db.collection("prizes");
+            const groups = db.collection("groups");
             const obj = {
                 _id: new ObjectId(),
                 user_id: _id,
                 votes: req.body.votes.map(v => new ObjectId(v))
             };
+            if ((await groups.countDocuments({ _id: group_id, can_vote: false })) > 0) {
+                throw new Error("400");
+            }
             if ((await prizes.countDocuments({ group_id, _id: new ObjectId(req.body._id), poll: { $elemMatch: {user_id: _id} } })) > 0) {
                 throw new Error("400");
             }
