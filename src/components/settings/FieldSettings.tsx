@@ -7,7 +7,7 @@ import LoadBtn from "../LoadBtn";
 export default function FieldSettings({ name, limit, route, initial }: { name: "quote" | "name", limit: number, route: string, initial: string }) {
     const [val, setVal] = useState(initial);
     const [put, loading] = usePut();
-    const error = val?.length > limit;
+    const error = val?.length > limit || val?.split(" ").some(w => w.length >= 40);
     const updateQuote = e => {
         e.preventDefault();
         if (!loading) {

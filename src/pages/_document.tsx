@@ -4,7 +4,7 @@ import Document, {
 } from "next/document";
 import { ServerStyleSheets } from "@material-ui/core/styles";
 const
-    APP_NAME = "My Year Book",
+    APP_NAME = "My Yearbook",
     APP_DESC = "<Description Here>",
     APP_URL = "https://myyearbook.vercel.app",
     APP_COLOR = "#000000";
@@ -25,7 +25,6 @@ export default class MyDocument extends Document {
                     <meta name="msapplication-TileColor" content="#000000" />
                     <meta name="msapplication-tap-highlight" content="no" />
                     <meta name="theme-color" content={APP_COLOR} />
-                            
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
                     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png" />
                     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />

@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { notAllowed } from "../../../../server/helpers";
+import { done, notAllowed } from "../../../../server/helpers";
 import tryCatch from "../../../../server/tryCatch";
 import { File, IncomingForm } from "formidable";
 import getDB from "../../../../server/getDB";
 import auth from "../../../../server/auth";
 import { v2 as cloudinary } from "cloudinary";
+import hash from "../../../../server/hash";
+import { promises as fs } from "fs";
 
 cloudinary.config({
     cloud_name: "dv9qm574l", 
@@ -21,6 +23,8 @@ export const config = {
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
         case "PUT": {
+            const { _id } = await auth(req, res);
+            const db = await getDB();
             const f = await new Promise<File>((resolve, reject) => {
                 const form = new IncomingForm();
             
@@ -34,7 +38,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             });
             const name = await new Promise((resolve, reject) => {
                 cloudinary.uploader.upload(f.path, {
-                    folder: "uploads",
+                    public_id: "uploads/" + hash(_id.toHexString()),
+                    overwrite: true,
                 }, async (err, data) => {
                     if (err) {
                         reject(err);
@@ -43,9 +48,9 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     resolve(data.secure_url);
                 });
             });
-            //fs.rm && await fs.rm(f.path);
-            const { _id } = await auth(req, res);
-            const db = await getDB();
+            if (fs.rm) {
+                await fs.rm(f.path);
+            }
             const users = db.collection("users");
             users.updateOne({ _id }, {
                 $set: {
@@ -55,6 +60,18 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             res.json({
                 name,
             });
+            break;
+        }
+        case "DELETE": {
+            const { _id } = await auth(req, res);
+            const db = await getDB();
+            const users = db.collection("users");
+            users.updateOne({ _id }, {
+                $set: {
+                    pic: "",
+                },
+            });
+            done(res);
             break;
         }
         default: {

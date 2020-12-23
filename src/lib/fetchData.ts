@@ -18,8 +18,6 @@ export default async function fetchData({ serverUrl, url, method, file, body, ac
     const extra = header ? {
         accessToken: header,
     } : {};
-    console.log(res);
-    
     if (res?.ok) {
         const data = await res.json();
         if (data?.errors) {
@@ -36,10 +34,17 @@ export default async function fetchData({ serverUrl, url, method, file, body, ac
             });
         }
     } else {
-        fn({
-            type: "failed",
-            data: "failed",
-            ...extra,
-        });
+        if (res?.status === 401) {
+            fn({
+                type: "noauth",
+                data: "noauth",
+            });
+        } else {
+            fn({
+                type: "failed",
+                data: "failed",
+                ...extra,
+            });
+        }
     }
 }

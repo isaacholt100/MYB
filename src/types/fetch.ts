@@ -12,7 +12,7 @@ export interface IFetchOptions {
     fetchOptions?: RequestInit;
 }
 export interface IRes {
-    type: "errors" | "success" | "failed";
+    type: "errors" | "success" | "failed" | "noauth";
     data: any;
     accessToken?: string;
 }

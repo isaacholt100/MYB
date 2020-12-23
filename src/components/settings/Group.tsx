@@ -1,13 +1,13 @@
-import { Button } from "@material-ui/core";
 import { mutate } from "swr";
 import useGroup from "../../hooks/useGroup";
 import { usePut } from "../../hooks/useRequest";
 import LoadBtn from "../LoadBtn";
+import Loader from "../Loader";
 import FieldSettings from "./FieldSettings";
 import Pic from "./Pic";
 
 export default function Group() {
-    const group = useGroup();
+    const [group, groupLoading] = useGroup();
     const [put, loading] = usePut();
     const changeVote = e => {
         e.preventDefault();
@@ -22,7 +22,7 @@ export default function Group() {
             failedMsg: "updating group settings",
         });
     }
-    return (
+    return groupLoading ? <Loader /> : (
         <div className="mt_16">
             <FieldSettings name="name" limit={50} route="/group/" initial={group.name} />
             <Pic route="/group/pic" done={(data: any) => {

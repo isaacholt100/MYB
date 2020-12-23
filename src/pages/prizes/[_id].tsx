@@ -50,8 +50,8 @@ export default function Prize() {
     const [activeMember, setActiveMember] = useState(null);
     const [members, membersLoading] = useMembers();
     const classes = useStyles();
-    const group = useGroup();
-    return !isLoggedIn ? null : !prize ? !prizesLoading && !membersLoading ? (
+    const [group, groupLoading] = useGroup();
+    return !isLoggedIn ? null : !prize ? !prizesLoading && !membersLoading && !groupLoading ? (
         <AlertError
             msg="Prize not found"
             btn={(

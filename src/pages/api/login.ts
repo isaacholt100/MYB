@@ -31,6 +31,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                     };
                     const refreshToken = jwt.sign(jwtInfo, process.env.REFRESH_TOKEN);
                     setRefreshToken(res, refreshToken);
+                    console.log(user);
+                    
                     res.json({
                         ...user,
                         accessToken: jwt.sign(jwtInfo, process.env.ACCESS_TOKEN, {

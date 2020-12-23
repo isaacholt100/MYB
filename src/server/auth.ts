@@ -21,14 +21,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             if (!user || err) {
                 if (err.name === "TokenExpiredError") {
                     const refreshHeader = req.headers["authorization-refresh"] as string;
-                    //console.log(req.cookies.httpRefreshToken, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiX2lkIjoiNWZhMzFhZjkwYzkxMmYyZDI0NTBkOTNlIiwiZ3JvdXBfaWQiOiI1ZmEzMWFmOTBjOTEyZjJkMjQ1MGQ5M2QiLCJpYXQiOjE2MDQ1NjM3MzZ9.2a1wfnyLhisv4deXoeSSBQH_v3D17kYt5gFiIZHblDc");
                     
                     if (!refreshHeader) {
-                        throw new Error("403");
+                        throw new Error("401");
                     }
                     const refreshToken = refreshHeader.split(" ")[1];
                     if (req.cookies.httpRefreshToken !== refreshToken) {
-                        throw new Error("403");
+                        throw new Error("401");
                     }
                     const payload = jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN}`) as IUSer;
                     if (user && user._id !== payload._id) {
@@ -54,7 +53,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             }
         });
     } catch (err) {
-        throw new Error("403");
+        throw new Error("401");
     }
     return token;
 }

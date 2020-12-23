@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { Button, Typography } from "@material-ui/core";
 import useRedirect from "../../hooks/useRedirect";
 import useUser from "../../hooks/useUser";
@@ -8,6 +7,7 @@ import useMembers from "../../hooks/useMembers";
 import AlertError from "../../components/AlertError";
 import Loader from "../../components/Loader";
 import Quote from "../../components/Quote";
+import ProfileImg from "../../components/ProfileImg";
 
 export default function Bio() {
     const router = useRouter();
@@ -30,7 +30,7 @@ export default function Bio() {
     ) : (
         <div>
             <div className={"flex flex_wrap align_items_center"}>
-                <Image src={member.pic || "/images/default_user.png"} height={128} width={128} className={"br_50"} key={member.pic} />
+                <ProfileImg src={member.pic || "/images/default_user.png"} height={128} width={128} className={"br_50"} />
                 <Typography variant="h4" className={"ml_16"}>{member.name}</Typography>
             </div>
             <div className={"mt_8"}>

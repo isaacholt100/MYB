@@ -13,7 +13,7 @@ import {
 import { Box } from "@material-ui/core";
 import clsx from "clsx";
 import Icon from "./Icon";
-import { mdiAccountGroup, mdiCog, mdiHome, mdiSeal } from "@mdi/js";
+import { mdiAccountGroup, mdiBook, mdiCog, mdiHome, mdiSeal } from "@mdi/js";
 import Link from "next/link";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import NProgress from "nprogress";

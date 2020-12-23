@@ -10,11 +10,24 @@ import Pic from "../components/settings/Pic";
 import Group from "../components/settings/Group";
 import ChangeGroup from "../components/settings/ChangeGroup";
 import Link from "next/link";
+import { useDelete } from "../hooks/useRequest";
+import LoadBtn from "../components/LoadBtn";
 
 export default function Settings() {
     const [page, setPage] = useState(0);
     const user = useUser();
     const isLoggedIn = useRedirect();
+    const [del, delLoading] = useDelete();
+    const resetPicture = e => {
+        e.preventDefault();
+        if (user.pic !== "") {
+            del("/user/settings/pic", {
+                doneMsg: "Profile picture reset",
+                failedMsg: "resetting your profile picture",
+                setLoading: true,
+            });
+        }
+    }
     return !isLoggedIn ? null : (
         <div>
             <Box clone mb={{ xs: "8px !important", lg: "16px !important" }}>
@@ -50,6 +63,9 @@ export default function Settings() {
                         }, true);
                         mutate("/api/members");
                     }} pic={user.pic} />
+                    <form onSubmit={resetPicture}>
+                        <LoadBtn label="Reset Picture" className="mt_8" loading={delLoading} disabled={user.pic === ""} color="default" />
+                    </form>
                     <Divider className={"my_16"} />
                     <Link href={"/bio/" + user._id}>
                         <Button color="secondary">View Profile</Button>
