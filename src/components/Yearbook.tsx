@@ -7,13 +7,13 @@ import useUser from "../hooks/useUser";
 import { memo, useState } from "react";
 import { usePost } from "../hooks/useRequest";
 import LoadBtn from "./LoadBtn";
-import { Panel as ColorPickerPanel } from "material-ui-rc-color-picker";
 import MarginDivider from "./MarginDivider";
 import Color from "color";
 import { mutate } from "swr";
 import useSnackbar from "../hooks/useSnackbar";
 import useMembers from "../hooks/useMembers";
 import usePrizes from "../hooks/usePrizes";
+import { SliderPicker } from "react-color";
 
 const ContentText = memo((props: any) => (
     <DialogContentText gutterBottom>
@@ -21,10 +21,18 @@ const ContentText = memo((props: any) => (
     </DialogContentText>
 ), (prev: any, next: any) => next.createOpen === prev.createOpen || next.createOpen === null);
 
+const ColorPicker = (props: { color: { r: number; g: number; b: number; }; setColor: (c: { r: number; g: number; b: number; }) => void}) => {
+    return (
+        <div className="mb_16">
+            <SliderPicker color={props.color} onChange={c => props.setColor(c.rgb)} />
+        </div>
+    );
+}
+
 export default function Yearbook(props: { unvoted: number }) {
     const [group, groupLoading] = useGroup();
     const [createOpen, setCreateOpen] = useState(false);
-    const [color, setColor] = useState("#000000");
+    const [color, setColor] = useState({r: 64, g: 107, b: 191});
     const [cover, setCover] = useState<File>(null);
     const [name, setName] = useState(group.name);
     const snackbar = useSnackbar();
@@ -36,13 +44,13 @@ export default function Yearbook(props: { unvoted: number }) {
     const downloadPDF = e => {
         e.preventDefault();
         if (bytes) {
-            download(bytes, "yearbook.pdf", "application/pdf");
+            download(new Uint8Array(bytes), "yearbook.pdf", "application/pdf");
         } else {
             setDownloading(true);
             fetch(group.pdf).then(res => res.arrayBuffer()).then(data => {
                 setDownloading(false);
                 setBytes(data);
-                download(data, "yearbook.pdf", "application/pdf");
+                download(new Uint8Array(data), "yearbook.pdf", "application/pdf");
             });
         }
     }
@@ -52,18 +60,15 @@ export default function Yearbook(props: { unvoted: number }) {
         e.preventDefault();
         if (!pdfLoading && !disabled && !membersLoading && !prizesLoading) {
             setPdfLoading(true);
-            const rgb = Color(color).rgb().array();
             const worker = new Worker("../workers/createPDF", { type: "module", name: "createPDF" });
             worker.postMessage({
                 coverImage: new Uint8Array(await cover.arrayBuffer()),
                 groupName: name,
-                groupColour: rgb.map(c => c / 255),
+                groupColour: [color.r / 255, color.g / 255, color.b / 255],
                 coverPng: cover.type.includes("png"),
                 groupImage: group.pic,
                 members,
                 prizes: prizes.filter(p => p.poll.length > 0),
-            }, {
-
             });
             const pdf: Uint8Array = await new Promise((res, rej) => {
                 worker.addEventListener("message", ({ data }) => {
@@ -107,7 +112,7 @@ export default function Yearbook(props: { unvoted: number }) {
         }
     }
     const isLoggedIn = useRedirect();
-    const disabled = !cover || cover.size < 500000 || cover.size > 10000000 || name === "" || (cover.type !== "image/jpeg" && cover.type !== "image/jpg" && cover.type !== "image/png");
+    const disabled = !cover || cover.size > 320000000 || name === "" || (cover.type !== "image/jpeg" && cover.type !== "image/jpg" && cover.type !== "image/png");
 
     const noPics = members.filter(m => m.pic === "").length;
     const noQuotes = members.filter(m => m.quote === "").length;
@@ -167,12 +172,7 @@ export default function Yearbook(props: { unvoted: number }) {
                             helperText={name.length > 32 ? "Name too long" : " "}
                         />
                         <Typography gutterBottom>Pick a group colour: (this should be visible on a white background)</Typography>
-                        <ColorPickerPanel
-                            enableAlpha={false}
-                            onChange={c => setColor(c.color)}
-                            color={color}
-                            style={{height: 32, overflow: "hidden"}}
-                        />
+                        <ColorPicker color={color} setColor={setColor} />
                         <Typography gutterBottom>Upload a cover image: (this will work best if the image is portrait and at least 842px x 595px)</Typography>
                         <input
                             accept="image/x-png,image/jpeg,.png,.jpg,.jpeg"
@@ -188,8 +188,8 @@ export default function Yearbook(props: { unvoted: number }) {
                         </label>
                         <Typography>{cover === null ? "No image selected" : "Current image: " + cover.name}</Typography>
                         {cover?.size < 500000 ? (
-                            <Typography color="error">This image is too small to be used</Typography>
-                        ) : cover?.size > 10000000 ? (
+                            <Typography style={{color: "#ff9800"}}>This image may be appear pixelated as the cover image</Typography>
+                        ) : cover?.size > 320000000 ? (
                             <Typography color="error">This image is too large to be used</Typography>
                         ) : (cover && cover.type !== "image/jpeg" && cover.type !== "image/jpg" && cover.type !== "image/png") && (
                             <Typography color="error">Only PNG and JPG formats are allowed</Typography>
