@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import auth from "../../../../server/auth";
 import getDB from "../../../../server/getDB";
-import { didUpdate, notAllowed } from "../../../../server/helpers";
+import { done, notAllowed } from "../../../../server/helpers";
 import tryCatch from "../../../../server/tryCatch";
 
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
@@ -13,12 +13,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             const { _id } = await auth(req, res);
             const db = await getDB();
             const users = db.collection("users");
-            const r = await users.updateOne({ _id }, {
+            await users.updateOne({ _id }, {
                 $set: {
                     name: req.body.name,
                 },
             });
-            didUpdate(res, r.modifiedCount);
+            done(res);
             break;
         }
         default: {
