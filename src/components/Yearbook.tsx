@@ -16,10 +16,12 @@ import useMembers from "../hooks/useMembers";
 import usePrizes from "../hooks/usePrizes";
 
 const ContentText = memo((props: any) => (
-    <DialogContentText gutterBottom>{props.createOpen ? "Note: if you have already generated a yearbook, doing this again will overwrite the current one." : "You're creating a private yearbook which won't be saved, so it will be downloaded instantly when created."}{" "}Generating a yearbook can take some time, so please be patient!</DialogContentText>
+    <DialogContentText gutterBottom>
+        {props.createOpen ? "Note: if you have already generated a yearbook, doing this again will overwrite the current one." : "You're creating a private yearbook which won't be saved, so it will be downloaded instantly when created."}{" "}Generating a yearbook can take some time, so please be patient!
+    </DialogContentText>
 ), (prev: any, next: any) => next.createOpen === prev.createOpen || next.createOpen === null);
 
-export default function Yearbook() {
+export default function Yearbook(props: { unvoted: number }) {
     const [group, groupLoading] = useGroup();
     const [createOpen, setCreateOpen] = useState(false);
     const [color, setColor] = useState("#000000");
@@ -104,6 +106,9 @@ export default function Yearbook() {
     }
     const isLoggedIn = useRedirect();
     const disabled = !cover || cover.size < 500000 || cover.size > 10000000 || name === "" || (cover.type !== "image/jpeg" && cover.type !== "image/jpg" && cover.type !== "image/png");
+
+    const noPics = members.filter(m => m.pic === "").length;
+    const noQuotes = members.filter(m => m.quote === "").length;
     return !isLoggedIn ? null : groupLoading ? <Loader /> : (
         <div>
             {group.pdf === "" ? (
@@ -127,6 +132,29 @@ export default function Yearbook() {
                     <DialogTitle id="generate-yearbook">Generate Yearbook</DialogTitle>
                     <DialogContent>
                         <ContentText createOpen={createOpen} />
+                        {(noPics > 0 || props.unvoted > 0 || noQuotes > 0) && (
+                            <>
+                                <Typography style={{color: "#ff9800"}}>You may want these things to be finished before creating a yearbook:</Typography>
+                                <ul style={{color: "#ff9800"}}>
+                                    {noPics > 0 && (
+                                        <li>
+                                            <Typography>There are {noPics} member(s) with no photo of themself uploaded</Typography>
+                                        </li>
+                                    )}
+                                    {noQuotes > 0 && (
+                                        <li>
+                                            <Typography>There are {noQuotes} member(s) with no quote</Typography>
+                                        </li>
+                                    )}
+                                    {props.unvoted > 0 && (
+                                        <li>
+                                            <Typography>There are {props.unvoted} prize(s) which haven't been voted for by everyone</Typography>
+                                        </li>
+                                    )}
+                                </ul>
+                            </>
+                        )}
+                        
                         <TextField
                             value={name}
                             onChange={e => setName(e.target.value)}

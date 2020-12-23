@@ -38,7 +38,7 @@ export default function Dashboard() {
                 </Button>
             </CopyToClipboard>
             <Divider className={"my_16"} />
-            <Yearbook />
+            <Yearbook unvoted={totalUnvoted.length} />
             <Divider className={"my_16"} />
             {group.can_vote ? (
                 <>
