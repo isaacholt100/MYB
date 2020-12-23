@@ -15,7 +15,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             const users = db.collection("users");
             const r = await users.updateOne({ _id }, {
                 $set: {
-                    quote: req.body.quote,
+                    quote: req.body.quote.replace(/\n{2,}/g, "\n"),
                 },
             });
             didUpdate(res, r.modifiedCount);

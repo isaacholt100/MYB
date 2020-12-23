@@ -26,7 +26,7 @@ export default memo(() => {
         enabled = state.repeatPasswordError === "" && state.newPasswordError === "" && state.oldPasswordError === "" && state.newPassword !== "" && state.repeatPassword !== "",
         changePassword = e => {
             e.preventDefault();
-            if (enabled) {
+            if (enabled && !loading) {
                 put("/user/password", {
                     setLoading: true,
                     failedMsg: "changing your password",

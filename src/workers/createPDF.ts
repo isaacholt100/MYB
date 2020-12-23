@@ -2,7 +2,8 @@ import createPDF from "../lib/createPDF";
 
 addEventListener("message", async e => {
     const data = {
-        lobsterFontBytes: () => fetch("/fonts/Lobster-Regular.ttf").then(res => res.arrayBuffer()),
+        displayFontBytes: () => fetch("https://fonts.gstatic.com/s/fugazone/v10/rax_HiWKp9EAITukFsl8AxhfsUjQ8Q.woff2").then(res => res.arrayBuffer()),
+        standardFontBytes: () => fetch("https://fonts.gstatic.com/s/merriweather/v22/u-4m0qyriQwlOrhSvowK_l5-eRZOf-LVrPHp.woff2").then(res => res.arrayBuffer()),
         groupImage: () => fetch(e.data.groupImage).then(res => res.arrayBuffer()),
         coverImage: async () => e.data.coverImage,
     };

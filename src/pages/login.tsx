@@ -54,7 +54,7 @@ export default function Login() {
         handleSubmit = (e: FormEvent) => {
             e.preventDefault();
             const email = state.email.trim().toLocaleLowerCase();
-            if (!disabled) {
+            if (!disabled && !loading) {
                 post("/login", {
                     setLoading: true,
                     failedMsg: "logging you in",

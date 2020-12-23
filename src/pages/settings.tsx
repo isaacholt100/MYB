@@ -20,7 +20,7 @@ export default function Settings() {
     const [del, delLoading] = useDelete();
     const resetPicture = e => {
         e.preventDefault();
-        if (user.pic !== "") {
+        if (user.pic !== "" && !delLoading) {
             del("/user/settings/pic", {
                 doneMsg: "Profile picture reset",
                 failedMsg: "resetting your profile picture",

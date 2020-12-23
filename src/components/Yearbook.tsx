@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, TextField, Typography } from "@material-ui/core";
 import Loader from "./Loader";
 import useGroup from "../hooks/useGroup";
 import useRedirect from "../hooks/useRedirect";
@@ -7,7 +7,6 @@ import useUser from "../hooks/useUser";
 import { memo, useState } from "react";
 import { usePost } from "../hooks/useRequest";
 import LoadBtn from "./LoadBtn";
-import MarginDivider from "./MarginDivider";
 import { mutate } from "swr";
 import useSnackbar from "../hooks/useSnackbar";
 import useMembers from "../hooks/useMembers";
@@ -42,15 +41,17 @@ export default function Yearbook(props: { unvoted: number }) {
     const user = useUser();
     const downloadPDF = e => {
         e.preventDefault();
-        if (bytes) {
-            download(new Uint8Array(bytes), "yearbook.pdf", "application/pdf");
-        } else {
-            setDownloading(true);
-            fetch(group.pdf).then(res => res.arrayBuffer()).then(data => {
-                setDownloading(false);
-                setBytes(data);
-                download(new Uint8Array(data), "yearbook.pdf", "application/pdf");
-            });
+        if (!downloading) {
+            if (bytes) {
+                download(new Uint8Array(bytes), "yearbook.pdf", "application/pdf");
+            } else {
+                setDownloading(true);
+                fetch(group.pdf).then(res => res.arrayBuffer()).then(data => {
+                    setDownloading(false);
+                    setBytes(data);
+                    download(new Uint8Array(data), "yearbook.pdf", "application/pdf");
+                });
+            }
         }
     }
     const [post] = usePost();
@@ -124,11 +125,11 @@ export default function Yearbook(props: { unvoted: number }) {
                     <LoadBtn label="Download Yearbook" color="secondary" /*component="a" href={group.pdf} target="_blank"*/ disabled={false} loading={downloading} />
                 </form>
             )}
-            <MarginDivider />
+            <Divider className="mt_16 mb_8" />
             {user.admin && (
-                <Button color="primary" onClick={() => setCreateOpen(true)} className="mr_8">Generate Yearbook</Button>
+                <Button color="primary" onClick={() => setCreateOpen(true)} className="mr_8 mt_8">Generate Yearbook</Button>
             )}
-            <Button color="primary" onClick={() => setCreateOpen(null)}>Create Private Yearbook</Button>
+            <Button color="primary" onClick={() => setCreateOpen(null)} className="mt_8">Create Private Yearbook</Button>
             <Dialog
                 open={createOpen || createOpen === null}
                 onClose={() => setCreateOpen(false)}

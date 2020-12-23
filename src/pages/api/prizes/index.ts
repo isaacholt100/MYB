@@ -17,7 +17,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             //if (admin) {
             const sentiment = new Sentiment();
             const result = sentiment.analyze(req.body.name);
-            if (result.comparative < SENTIMENT_THRESHOLD) {
+            if (result.comparative < SENTIMENT_THRESHOLD || req.body.name === "") {
                 errors(res, "Sentiment analysis suggests this is too negative to be a prize name");
             } else {
                 const count = await prizes.countDocuments({ group_id, name: req.body.name });

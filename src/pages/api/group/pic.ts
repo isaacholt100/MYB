@@ -8,17 +8,17 @@ import { v2 as cloudinary } from "cloudinary";
 import hash from "../../../server/hash";
 import { promises as fs } from "fs";
 
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 export const config = {
     api: {
         bodyParser: false,
         sizeLimit: "10mb",
     }
 }
-cloudinary.config({
-    cloud_name: "dv9qm574l", 
-    api_key: "947231894266752", 
-    api_secret: "m-9PvepteXbQAWzNrEJimnMxzZ0",
-});
 
 export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, async () => {
     switch (req.method) {
