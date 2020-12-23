@@ -5,7 +5,6 @@ import { IPoll, IPrize } from "../hooks/usePrizes";
 import prizeIcons from "./prizeIcons";
 import { mdiTrophy } from "@mdi/js";
 import { groupBy, sortBy } from "lodash";
-import { title } from "process";
 
 interface IPdfData {
     lobsterFontBytes(): Promise<Bytes>;
