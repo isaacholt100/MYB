@@ -55,7 +55,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
             if (fs.rm) {
                 await fs.rm(pdf.path);
             }
-            console.log(name);
             
             const groups = db.collection("groups");
             groups.updateOne({ _id: group_id, admin_id: _id }, {
