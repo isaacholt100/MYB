@@ -2,25 +2,26 @@ import { Avatar, Button, Chip, Divider, Typography } from "@material-ui/core";
 import useUser from "../hooks/useUser";
 import CopyToClipboard from "react-copy-to-clipboard";
 import useGroup from "../hooks/useGroup";
-import Image from "next/image";
 import usePrizes from "../hooks/usePrizes";
 import Link from "next/link";
 import useMembers from "../hooks/useMembers";
 import Loader from "./Loader";
 import PrizeIcon from "./PrizeIcon";
+import ProfileImg from "./ProfileImg";
+import Yearbook from "./Yearbook";
 
 export default function Dashboard() {
     const user = useUser();
-    const group = useGroup();
+    const [group, groupLoading] = useGroup();
     const [prizes, prizesLoading] = usePrizes();
     const [members, membersLoading] = useMembers();
     const unvoted = prizes.filter(p => p.accepted && p.poll.every(v => v.user_id !== user._id));
     const totalUnvoted = prizes.filter(p => p.accepted &&  p.poll.length < members.length);
     const membersNotVoted = members.filter(m => prizes.some(p => p.accepted && p.poll.every(v => v.user_id !== m._id)));
-    return prizesLoading || membersLoading ? <Loader /> : (
+    return prizesLoading || membersLoading || groupLoading ? <Loader /> : (
         <div>
             <div className={"flex flex_wrap align_items_center mb_8"}>
-                <Image src={group.pic || "/images/default_group.png"} height={128} width={128} className={"br_50"} key={group.pic} />
+                <ProfileImg src={group.pic || "/images/default_group.png"} height={128} width={128} className={"br_50"} key={group.pic} priority />
                 <Typography variant="h4" component="div" style={{flex: 1, minWidth: 160, }} className="ml_16">
                     {group.name}
                 </Typography>
@@ -36,6 +37,8 @@ export default function Dashboard() {
                     Copy Link
                 </Button>
             </CopyToClipboard>
+            <Divider className={"my_16"} />
+            <Yearbook />
             <Divider className={"my_16"} />
             {group.can_vote ? (
                 <>

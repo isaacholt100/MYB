@@ -1,9 +1,9 @@
 import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Tooltip } from "@material-ui/core";
 import { mdiFormatQuoteClose } from "@mdi/js";
-import Image from "next/image";
 import Link from "next/link";
 import { IMember } from "../types/member";
 import Icon from "./Icon";
+import ProfileImg from "./ProfileImg";
 
 export default function MemberItem({ m, setActiveMember, btn }: {m: IMember, setActiveMember: (m: IMember) => void, btn?: JSX.Element }) {
     return (
@@ -11,7 +11,7 @@ export default function MemberItem({ m, setActiveMember, btn }: {m: IMember, set
             <ListItem button>
                 <ListItemAvatar>
                     <Avatar>
-                        <Image src={m.pic || "/images/default_user.png"} height={40} width={40} key={m.pic} />
+                        <ProfileImg src={m.pic || "/images/default_user.png"} height={40} width={40} />
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={m.name} />

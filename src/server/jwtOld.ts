@@ -43,7 +43,7 @@ export default async (req: NextApiRequest & {user: any}, res: NextApiResponse) =
                 }
             });
         } catch (err) {
-            throw new Error("403");
+            throw new Error("401");
         }
     } else {
         throw new Error("401");

@@ -16,6 +16,7 @@ import "../css/global.css";
 import useUser from "../hooks/useUser";
 import useGroup from "../hooks/useGroup";
 import Cookies from "js-cookie";
+import useLogout from "../hooks/useLogout";
 
 const PRIMARY = "#1976D2";
 const SECONDARY = "#0097A7";
@@ -244,7 +245,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
 }
 const Listener = (): null => {
     const user = useUser();
-    const group = useGroup();
+    const [group] = useGroup();
     process.browser && window.addEventListener("beforeunload", () => {
         for (let key in user) {
             localStorage.setItem(key, user[key]);
@@ -329,6 +330,7 @@ const useStyles = makeStyles(({ palette }) => ({
 export default function App({ Component, pageProps }) {
     const snack: MutableRefObject<ProviderContext> = useRef();
     const classes = useStyles();
+    const logout = useLogout();
     useEffect(() => {
         const jssStyles = document.querySelector("#jss-server-side");
         if (jssStyles) {
@@ -344,22 +346,25 @@ export default function App({ Component, pageProps }) {
                         variant: "error",
                     });
                 },
-                fetcher: (url, options) => fetch(url, {
-                    ...options,
-                    credentials: "include",
-                    headers: {
-                        "authorization": "Bearer " + Cookies.get("accessToken"),
-                        "authorization-refresh": "Bearer " + Cookies.get("refreshToken"),
-                        "Access-Control-Expose-Headers": "authorization",
-                        "Access-Control-Allow-Headers": "authorization",
-                    },
-                }).then(res => {
+                fetcher: async (url, options) => {
+                    const res = await fetch(url, {
+                        ...options,
+                        credentials: "include",
+                        headers: {
+                            "authorization": "Bearer " + Cookies.get("accessToken"),
+                            "authorization-refresh": "Bearer " + Cookies.get("refreshToken"),
+                            "Access-Control-Expose-Headers": "authorization",
+                            "Access-Control-Allow-Headers": "authorization",
+                        },
+                    });
                     const header = res?.headers?.get("authorization");
-                    if (header) {
-                        Cookies.set("accessToken", header, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});
+                    if (res?.status === 401) {
+                        logout();
+                    } else if (header) {
+                        Cookies.set("accessToken", header, { sameSite: "strict", ...(true ? { expires: 100 } : { expires: 100 }) });
                     }
                     return res.json();
-                })
+                }
             }}
         >
             <Head>

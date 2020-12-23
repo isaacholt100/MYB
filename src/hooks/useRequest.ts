@@ -3,6 +3,7 @@ import useSnackbar from "./useSnackbar";
 import { IFetchOptions, IRes } from "../types/fetch";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import useLogout from "./useLogout";
 type Handler = (data: object | string) => void;
 interface IOptions extends IFetchOptions {
     setLoading?: boolean;
@@ -19,12 +20,17 @@ interface IErrors {
 function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => void, boolean] {
     const
         snackbar = useSnackbar(),
-        [loading, setLoading] = useState(false);
+        [loading, setLoading] = useState(false),
+        logout = useLogout();
     const fetcher = ({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => {
         const response = (res: IRes) => {
             load && setLoading(false);
             res.accessToken && Cookies.set("accessToken", res.accessToken, {sameSite: "strict", ...(true ? { expires: 100 } : {expires: 100})});
             switch (res.type) {
+                case "noauth":
+                    done(res.data);
+                    logout();
+                    break;
                 case "failed":
                     failed && failed(failedMsg);
                     failedMsg && snackbar.error("There was an error " + failedMsg);

@@ -52,7 +52,7 @@ export default function Prizes() {
     const classes = useStyles();
     const [icon, setIcon] = useState("");
     const [ConfirmDialog, confirm, closeConfirm] = useConfirm(delLoading);
-    const group = useGroup();
+    const [group, groupLoading] = useGroup();
     const submitPrize = (e) => {
         e.preventDefault();
         post("/prizes", {
@@ -94,7 +94,7 @@ export default function Prizes() {
             }
         });
     }
-    return !isLoggedIn ? null : getLoading ? <Loader /> : (
+    return !isLoggedIn ? null : getLoading || groupLoading ? <Loader /> : (
         <div>
             <Button color="primary" onClick={() => setOpen(true)}>
                 {isAdmin ? "Create" : "Suggest"}{" "}Prize
