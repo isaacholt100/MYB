@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { didUpdate, errors, notAllowed } from "../../../server/helpers";
+import { done, errors, notAllowed } from "../../../server/helpers";
 import tryCatch from "../../../server/tryCatch";
 import bcrypt from "bcrypt";
 import getDB from "../../../server/getDB";
@@ -21,12 +21,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                 const users = db.collection("users");
                 const valid = await bcrypt.compare(oldPassword, (await users.findOne({ _id }, {projection: { password: 1, _id: 0 }}))?.password);
                 if (valid) {
-                    const r = await users.updateOne({ _id }, {
+                    await users.updateOne({ _id }, {
                         $set: {
                             password: await bcrypt.hash(newPassword, SALT_ROUNDS),
                         },
                     });
-                    didUpdate(res, r.modifiedCount);
+                    done(res);
                 } else {
                     errors(res, {
                         oldPasswordError: "Password is incorrect",
