@@ -101,7 +101,7 @@ export default memo(() => {
         },
         deleteAccount = (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            if (!state.deleteDisabled && passwordState.confirmPassword !== "") {
+            if (!state.deleteDisabled && passwordState.confirmPassword !== "" && !loading) {
                 del("/user", {
                     setLoading: true,
                     failedMsg: "deleting your account",

@@ -1,4 +1,4 @@
-import { clipEvenOdd, drawEllipsePath, endPath, PDFDocument, PDFFont, PDFImage, PDFPage, popGraphicsState, pushGraphicsState, RGB, rgb, StandardFonts } from "pdf-lib";
+import { clipEvenOdd, drawEllipsePath, endPath, PDFDocument, PDFFont, PDFImage, PDFPage, popGraphicsState, pushGraphicsState, RGB, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { IMember } from "../types/member";
 import { IPoll, IPrize } from "../hooks/usePrizes";
@@ -7,7 +7,8 @@ import { mdiTrophy } from "@mdi/js";
 import { groupBy, sortBy } from "lodash";
 
 interface IPdfData {
-    lobsterFontBytes(): Promise<Bytes>;
+    displayFontBytes(): Promise<Bytes>;
+    standardFontBytes(): Promise<Bytes>;
     coverImage(): Promise<Bytes>;
     groupImage(): Promise<Bytes>;
 }
@@ -29,9 +30,9 @@ export default async function createPDF(data: IPdfData, info: IInfo) {
     try {
         const doc = await PDFDocument.create();
         doc.registerFontkit(fontkit);
-        const coverBytes = await data.coverImage(), lobsterFontBytes = await data.lobsterFontBytes(), groupBytes = await data.groupImage();
-        const lobsterFont = await doc.embedFont(lobsterFontBytes);
-        const standardFont = await doc.embedFont(StandardFonts.TimesRomanItalic);
+        const coverBytes = await data.coverImage(), displayFontBytes = await data.displayFontBytes(), groupBytes = await data.groupImage();
+        const displayFont = await doc.embedFont(displayFontBytes);
+        const standardFont = await doc.embedFont(await data.standardFontBytes());
         const coverImage = await doc[info.coverPng ? "embedPng" : "embedJpg"](coverBytes);
         const groupImage = await doc[info.groupPng ? "embedPng" : "embedJpg"](groupBytes);
         
@@ -52,7 +53,7 @@ export default async function createPDF(data: IPdfData, info: IInfo) {
         }, (err) => {
             throw err;
         });*/
-        return new Yearbook(doc, coverImage, groupImage, lobsterFont, standardFont, info.groupName, info.groupColour, members, info.prizes).create();
+        return new Yearbook(doc, coverImage, groupImage, displayFont, standardFont, info.groupName, info.groupColour, members, info.prizes).create();
     } catch (err) {
         console.error(err);
         return null;
@@ -75,24 +76,36 @@ const getTopThree = (polls: IPoll[]) => {
 
 class Yearbook {
     private groupColour: RGB;
-    constructor(private doc: PDFDocument, private coverImage: PDFImage, private groupImage: PDFImage, private lobsterFont: PDFFont, private standardFont: PDFFont, private groupName: string, groupColour: [number, number, number], private members: Member[], private prizes: IPrize[]) {
+    constructor(private doc: PDFDocument, private coverImage: PDFImage, private groupImage: PDFImage, private displayFont: PDFFont, private standardFont: PDFFont, private groupName: string, groupColour: [number, number, number], private members: Member[], private prizes: IPrize[]) {
         this.doc = doc;
         this.coverImage = coverImage;
         this.groupImage = groupImage;
         this.groupName = groupName;
-        this.lobsterFont = lobsterFont;
+        this.displayFont = displayFont;
         this.standardFont = standardFont;
         this.groupColour = rgb(...groupColour);
         this.members = members;
         this.prizes = prizes;
     }
     
-    private getLobsterSize(text: string, size: number, pageWidth: number): [number, number] {
-        const width = this.lobsterFont.widthOfTextAtSize(text, size);
-        const height = this.lobsterFont.heightAtSize(size);
+    private getdisplaySize(text: string, size: number, pageWidth: number): [number, number] {
+        const width = this.displayFont.widthOfTextAtSize(text, size);
+        const height = this.displayFont.heightAtSize(size);
         const x = (pageWidth - width) / 2;
 
         return [height, x];
+    }
+    private async drawCoverImage(page: PDFPage, pageHeight: number, pageWidth: number) {
+        const pageRatio = pageHeight / pageWidth;
+        const imageRatio = this.coverImage.height / this.coverImage.width;
+        const [imgHeight, imgWidth] = pageRatio < imageRatio ? [imageRatio * pageWidth, pageWidth] : [pageHeight, pageHeight / imageRatio];
+    
+        page.drawImage(this.coverImage, {
+            x: Math.min((pageWidth - imgWidth) / 2, 0),
+            y: Math.min((pageHeight - imgHeight) / 2, 0),
+            height: imgHeight,
+            width: imgWidth,
+        });
     }
     private async coverPage() {
         const year = new Date().getFullYear();
@@ -100,61 +113,79 @@ class Yearbook {
         const coverPage = this.doc.addPage();
         const pageHeight = coverPage.getHeight(), pageWidth = coverPage.getWidth();
 
-        const pageRatio = pageHeight / pageWidth;
-        const imageRatio = this.coverImage.height / this.coverImage.width;
-        const [imgHeight, imgWidth] = pageRatio < imageRatio ? [imageRatio * pageWidth, pageWidth] : [pageHeight, pageHeight / imageRatio];
-    
-        coverPage.drawImage(this.coverImage, {
-            x: Math.min((pageWidth - imgWidth) / 2, 0),
-            y: Math.min((pageHeight - imgHeight) / 2, 0),
-            height: imgHeight,
-            width: imgWidth,
-        });
+        this.drawCoverImage(coverPage, pageHeight, pageWidth);
     
         const title = "Yearbook";
-        const [height, x] = this.getLobsterSize(title, titleSize, pageWidth);
+        const [height, x] = this.getdisplaySize(title, titleSize, pageWidth);
         let rectangleHeight = height;
     
         const leaversText = year + " Leavers";
-        const [height1, x1] = this.getLobsterSize(leaversText, subtitleSize, pageWidth);
+        const [height1, x1] = this.getdisplaySize(leaversText, subtitleSize, pageWidth);
         rectangleHeight += height1;
         const y1 = rectangleHeight;
     
         const subtitle = this.groupName;
-        const [height2, x2] = this.getLobsterSize(subtitle, subtitleSize, pageWidth);
+        const [height2, x2] = this.getdisplaySize(subtitle, subtitleSize, pageWidth);
         rectangleHeight += height2;
     
         coverPage.drawRectangle({
             borderColor: rgb(0, 0, 0),
             borderWidth: 4,
             width: pageWidth - 16,
-            height: rectangleHeight + 32,
+            height: rectangleHeight + 40,
             x: 8,
-            y: pageHeight - rectangleHeight - 40,
+            y: pageHeight - rectangleHeight - 48,
             color: rgb(1, 1, 1),
             opacity: 0.5,
         });
     
         coverPage.drawText(title, {
-            font: this.lobsterFont,
+            font: this.displayFont,
             color: rgb(0, 0, 0),
             size: titleSize,
             y: pageHeight - 8 - height,
             x,
         });
         coverPage.drawText(leaversText, {
-            font: this.lobsterFont,
+            font: this.displayFont,
             color: rgb(0, 0, 0),
             size: subtitleSize,
             y: pageHeight - y1 - 24,
             x: x1,
         });
         coverPage.drawText(subtitle, {
-            font: this.lobsterFont,
+            font: this.displayFont,
             color: this.groupColour,
             size: subtitleSize,
             y: pageHeight - rectangleHeight - 24,
             x: x2,
+        });
+    }
+    private async lastPage() {
+        const page = this.doc.addPage();
+        const pageWidth = page.getWidth(), pageHeight = page.getHeight(); 
+        const text = "Happy Memories!";
+        const [height, x] = this.getdisplaySize(text, titleSize, page.getWidth());
+    
+        this.drawCoverImage(page, pageHeight, pageWidth);
+
+        page.drawRectangle({
+            borderColor: rgb(0, 0, 0),
+            borderWidth: 4,
+            width: pageWidth - 16,
+            height: height + 40,
+            x: 8,
+            y: pageHeight - height - 48,
+            color: rgb(1, 1, 1),
+            opacity: 0.5,
+        });
+    
+        page.drawText(text, {
+            font: this.displayFont,
+            color: rgb(0, 0, 0),
+            size: titleSize,
+            y: pageHeight - 8 - height,
+            x,
         });
     }
     private async embedImage(bytes: ArrayBuffer, src: string) {
@@ -164,7 +195,7 @@ class Yearbook {
         const page = this.doc.addPage();
         const pageWidth = page.getWidth(), pageHeight = page.getHeight();
 
-        const [textHeight, x] = this.getLobsterSize(title, titleSize, pageWidth);
+        const [textHeight, x] = this.getdisplaySize(title, titleSize, pageWidth);
 
         const imgHeight = this.groupImage.height, imgWidth = this.groupImage.width;
         const newHeight = 256;
@@ -178,7 +209,7 @@ class Yearbook {
         });
 
         page.drawText(title, {
-            font: this.lobsterFont,
+            font: this.displayFont,
             x,
             y: (pageHeight) - 32 - textHeight, 
             size: titleSize,
@@ -225,12 +256,12 @@ class Yearbook {
         const pic = await this.embedImage(member.picBytes, member.pic);
         this.drawProfilePic(page, pic, x, y);
         page.drawText(member.name, {
-            font: this.lobsterFont,
+            font: this.displayFont,
             color: this.groupColour,
             size: 18,
             maxWidth: maxWidth - picSize - 12,
             x: x + picSize + 12,
-            y: y + picSize - this.lobsterFont.heightAtSize(18),
+            y: y + picSize - this.displayFont.heightAtSize(18),
         });
         member.quote && page.drawText(member.quote, {
             x,
@@ -249,7 +280,7 @@ class Yearbook {
             scale: 3,
         });
         page.drawText(prize.name, {
-            font: this.lobsterFont,
+            font: this.displayFont,
             size: titleSize,
             x: x + 88,
             y: y - 48,
@@ -258,32 +289,32 @@ class Yearbook {
         });
         const topThree = getTopThree(prize.poll);
         await this.insertWinner(page, this.members.find(m => m._id === topThree[0]), 1, x, y - 80);
-        await this.insertWinner(page, this.members.find(m => m._id === topThree[1]), 2, x, y - 184);
-        await this.insertWinner(page, this.members.find(m => m._id === topThree[2]), 3, x, y - 288);
+        await this.insertWinner(page, this.members.find(m => m._id === topThree[1]), 2, x, y - 176);
+        await this.insertWinner(page, this.members.find(m => m._id === topThree[2]), 3, x, y - 270);
     }
     private async insertWinner(page: PDFPage, member: Member, pos: number, x: number, y: number) {
         const colours: [number, number, number][] = [[1, 215/255, 0], [192/255, 192/255, 192/255], [205/255, 127/255, 50/255]];
         page.drawCircle({
-            x: x + 48,
-            y: y - 48,
-            size: 48,
+            x: x + 40,
+            y: y - 40,
+            size: 40,
             color: rgb(...colours[pos - 1]),
         });
         page.drawText(pos + "", {
-            x: x + (96 - this.lobsterFont.widthOfTextAtSize(pos + "", titleSize)) / 2,
-            y: y - 60.5,
-            font: this.lobsterFont,
+            x: x + (80 - this.displayFont.widthOfTextAtSize(pos + "", titleSize)) / 2,
+            y: y - 52.5,
+            font: this.displayFont,
             color: rgb(0, 0, 0),
             size: titleSize,
         });
         const pic = await this.embedImage(member.picBytes, member.pic);
-        this.drawProfilePic(page, pic, x + 108, y - picSize / 2 - 48);
+        this.drawProfilePic(page, pic, x + 100, y - picSize / 2 - 40);
         page.drawText(member.name, {
-            font: this.lobsterFont,
-            size: subtitleSize,
+            font: this.displayFont,
+            size: 24,
             color: rgb(0, 0, 0),
-            x: x + 120 + picSize,
-            y: y - 60.5,
+            x: x + 112 + picSize,
+            y: y - 48,
         });
     }
     private async prizesTitlePage() {
@@ -304,6 +335,7 @@ class Yearbook {
         for (let i = 0, j = this.prizes.length; i < j; i += 2) {
             this.prizesPage(this.prizes.slice(i, i + 2));
         }
+        this.lastPage();
 
         const bytes = await this.doc.save();
         return bytes;

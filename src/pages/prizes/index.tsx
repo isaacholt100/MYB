@@ -55,20 +55,22 @@ export default function Prizes() {
     const [group, groupLoading] = useGroup();
     const submitPrize = (e) => {
         e.preventDefault();
-        post("/prizes", {
-            body: {
-                name,
-                icon,
-            },
-            setLoading: true,
-            done(data: any) {
-                setOpen(false);
-                mutate("/api/prizes", [...prizes, data], true);
-            },
-            errors(data) {
-                setErr(data.errors as string);
-            }
-        });
+        if (name !== "" && err === "" && !postLoading) {
+            post("/prizes", {
+                body: {
+                    name,
+                    icon,
+                },
+                setLoading: true,
+                done(data: any) {
+                    setOpen(false);
+                    mutate("/api/prizes", [...prizes, data], true);
+                },
+                errors(data) {
+                    setErr(data.errors as string);
+                }
+            });
+        }
     }
     const removePrize = (_id: string) => {
         del("/prizes", {

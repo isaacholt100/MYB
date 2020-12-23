@@ -23,20 +23,22 @@ export default function VoteDialog(props: IProps) {
     const [post, loading] = usePost();
     const vote = (e) => {
         e.preventDefault();
-        post("/prizes/vote", {
-            setLoading: true,
-            doneMsg: "Votes submitted!",
-            failedMsg: "submitting your votes",
-            body: {
-                _id: props._id,
-                votes: votes.map(v => v._id),
-            },
-            done(data: any) {
-                mutate("/api/prizes", prizes.map(p => p._id === props._id ? {...p, poll: [...p.poll, data]} : p), true);
-                props.close();
-                setVotes([]);
-            }
-        });
+        if (!loading) {
+            post("/prizes/vote", {
+                setLoading: true,
+                doneMsg: "Votes submitted!",
+                failedMsg: "submitting your votes",
+                body: {
+                    _id: props._id,
+                    votes: votes.map(v => v._id),
+                },
+                done(data: any) {
+                    mutate("/api/prizes", prizes.map(p => p._id === props._id ? {...p, poll: [...p.poll, data]} : p), true);
+                    props.close();
+                    setVotes([]);
+                }
+            });
+        }
     }
     return (
         <Dialog

@@ -10,7 +10,7 @@ export default function FieldSettings({ name, limit, route, initial }: { name: "
     const error = val?.length > limit || val?.split(" ").some(w => w.length >= 40);
     const updateQuote = e => {
         e.preventDefault();
-        if (!loading) {
+        if (!loading && val !== "") {
             put(route + name, {
                 setLoading: true,
                 failedMsg: "changing your " + name,
@@ -18,7 +18,10 @@ export default function FieldSettings({ name, limit, route, initial }: { name: "
                     [name]: val,
                 },
                 doneMsg: startCase(name) + " updated",
-            })
+                done() {
+                    setVal(val.replace(/\n{2,}/g, "\n"));
+                }
+            });
         }
     }
     useEffect(() => {

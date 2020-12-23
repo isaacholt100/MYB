@@ -69,36 +69,49 @@ export default function Login() {
         classes = useStyles(),
         [create, setCreate] = useState(false),
         router = useRouter(),
+        disabled =
+            helpers.email !== "" ||
+            helpers.password !== "" ||
+            helpers.repeatPassword !== "" ||
+            helpers.name !== "" ||
+            helpers.groupID !== "" ||
+            values.email === "" ||
+            values.password === "" ||
+            values.repeatPassword === "" ||
+            values.name === "" ||
+            values.groupID === "",
         //history = useHistory(),
         signup = (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const email = values.email.trim().toLocaleLowerCase();
-            post("/user", {
-                setLoading: true,
-                failedMsg:  "signing you up",
-                body: {
-                    email,
-                    name: values.name.trim(),
-                    groupID: values.groupID.trim(),
-                    password: values.password,
-                    repeatPassword: values.repeatPassword,
-                    create,
-                    staySignedIn,
-                },
-                done: (data: any) => {
-                    jwtCookies({
-                        accessToken: data.accessToken,
-                        refreshToken: data.refreshToken,
+            if (!loading && !disabled) {
+                post("/user", {
+                    setLoading: true,
+                    failedMsg:  "signing you up",
+                    body: {
+                        email,
+                        name: values.name.trim(),
+                        groupID: values.groupID.trim(),
+                        password: values.password,
+                        repeatPassword: values.repeatPassword,
+                        create,
                         staySignedIn,
-                        user_id: data.user_id,
-                    });
-                    router.replace("/home");
-                },
-                errors: data => setHelpers({
-                    ...helpers,
-                    ...data.errors as object,
-                })
-            });
+                    },
+                    done: (data: any) => {
+                        jwtCookies({
+                            accessToken: data.accessToken,
+                            refreshToken: data.refreshToken,
+                            staySignedIn,
+                            user_id: data.user_id,
+                        });
+                        router.replace("/home");
+                    },
+                    errors: data => setHelpers({
+                        ...helpers,
+                        ...data.errors as object,
+                    })
+                });
+            }
         },
         handleClear = () => {
             setHelpers(initialValues);
@@ -178,18 +191,7 @@ export default function Login() {
                 ...helpers,
                 ...newState,
             });
-        },
-        disabled =
-            helpers.email !== "" ||
-            helpers.password !== "" ||
-            helpers.repeatPassword !== "" ||
-            helpers.name !== "" ||
-            helpers.groupID !== "" ||
-            values.email === "" ||
-            values.password === "" ||
-            values.repeatPassword === "" ||
-            values.name === "" ||
-            values.groupID === "";
+        };
     useEffect(() => {
         const id = window.location.search.split("id=")[1]?.split("&")[0];
         if (id) {

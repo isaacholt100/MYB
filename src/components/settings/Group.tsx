@@ -11,16 +11,18 @@ export default function Group() {
     const [put, loading] = usePut();
     const changeVote = e => {
         e.preventDefault();
-        put("/group", {
-            setLoading: true,
-            body: {
-                can_vote: !group.can_vote,
-            },
-            done() {
-                mutate("/api/group", {...group, can_vote: !group.can_vote}, true);
-            },
-            failedMsg: "updating group settings",
-        });
+        if (!loading) {
+            put("/group", {
+                setLoading: true,
+                body: {
+                    can_vote: !group.can_vote,
+                },
+                done() {
+                    mutate("/api/group", {...group, can_vote: !group.can_vote}, true);
+                },
+                failedMsg: "updating group settings",
+            });
+        }
     }
     return groupLoading ? <Loader /> : (
         <div className="mt_16">

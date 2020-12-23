@@ -16,28 +16,30 @@ export default function ChangeGroup() {
             helper: "",
         }),
         change = () => {
-            put("/user/group", {
-                failedMsg: "updating your group",
-                body: { group_id: state._id },
-                doneMsg: "Group updated",
-                setLoading: true,
-                done(data) {
-                    close();
-                    setState({
-                        helper: "",
-                        _id: "",
-                    });
-                    Cookies.remove("refreshToken");
-                    Cookies.remove("accessToken");
-                    Cookies.remove("user_id");
-                    localStorage.clear();
-                    mutate("/api/login", "", false);
-                },
-                errors: data => setState({
-                    ...state,
-                    helper: data.errors as string,
-                })
-            });
+            if (!loading) {
+                put("/user/group", {
+                    failedMsg: "updating your group",
+                    body: { group_id: state._id },
+                    doneMsg: "Group updated",
+                    setLoading: true,
+                    done(data) {
+                        close();
+                        setState({
+                            helper: "",
+                            _id: "",
+                        });
+                        Cookies.remove("refreshToken");
+                        Cookies.remove("accessToken");
+                        Cookies.remove("user_id");
+                        localStorage.clear();
+                        mutate("/api/login", "", false);
+                    },
+                    errors: data => setState({
+                        ...state,
+                        helper: data.errors as string,
+                    })
+                });
+            }
         },
         submit = e => {
             e.preventDefault();
