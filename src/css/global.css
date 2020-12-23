@@ -176,3 +176,6 @@
         opacity: 1;
     }
 }
+body, html, #__next {
+    overflow: hidden !important;
+}
