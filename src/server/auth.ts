@@ -10,8 +10,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const accessHeader = req.headers["authorization"];
     let token: IUSer;
     if (!accessHeader) {
-        console.log("no accessHeader");
-        
         throw new Error("401");
     }
     try {
