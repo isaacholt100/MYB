@@ -14,6 +14,7 @@ module.exports = withPWA({
             config.plugins.push(
                 new WorkerPlugin({
                     globalObject: "self",
+                    //filename: "[name].worker.js",
                 })
             );
         }
