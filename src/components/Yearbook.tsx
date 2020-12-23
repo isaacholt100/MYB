@@ -53,7 +53,7 @@ export default function Yearbook(props: { unvoted: number }) {
         if (!pdfLoading && !disabled && !membersLoading && !prizesLoading) {
             setPdfLoading(true);
             const rgb = Color(color).rgb().array();
-            const worker = new Worker("../workers/createPDF", { type: "module" });
+            const worker = new Worker("../workers/createPDF", { type: "module", name: "createPDF" });
             worker.postMessage({
                 coverImage: new Uint8Array(await cover.arrayBuffer()),
                 groupName: name,
@@ -62,6 +62,8 @@ export default function Yearbook(props: { unvoted: number }) {
                 groupImage: group.pic,
                 members,
                 prizes: prizes.filter(p => p.poll.length > 0),
+            }, {
+
             });
             const pdf: Uint8Array = await new Promise((res, rej) => {
                 worker.addEventListener("message", ({ data }) => {

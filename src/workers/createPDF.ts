@@ -1,6 +1,6 @@
 import createPDF from "../lib/createPDF";
 
-self.addEventListener("message", async e => {
+addEventListener("message", async e => {
     const data = {
         lobsterFontBytes: () => fetch("/fonts/Lobster-Regular.ttf").then(res => res.arrayBuffer()),
         groupImage: () => fetch(e.data.groupImage).then(res => res.arrayBuffer()),
@@ -16,5 +16,5 @@ self.addEventListener("message", async e => {
         prizes: e.data.prizes,
     });
     
-    self.postMessage(pdf);
+    postMessage(pdf);
 });
