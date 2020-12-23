@@ -275,6 +275,8 @@ const useContainerStyles = makeStyles(({ breakpoints }) => ({
             margin: "0 auto",
             overflowY: "scroll",
             overflowX: "hidden",
+            zIndex: 1,
+            WebkitOverflowScrolling: "touch",
             flex: 1,
             //height: "100%",
             [breakpoints.up("lg")]: {
