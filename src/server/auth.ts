@@ -10,10 +10,15 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const accessHeader = req.headers["authorization"];
     let token: IUSer;
     if (!accessHeader) {
+        console.log("no accessHeader");
+        
         throw new Error("401");
     }
     try {
-        const accessToken = accessHeader.split(" ")[1];
+        let accessToken = accessHeader.split(" ")[1];
+        if (accessToken === "undefined") {
+            accessToken = req.cookies.accessToken;
+        }
         if (!accessToken) {
             throw new Error("401");
         }
@@ -21,7 +26,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             if (!user || err) {
                 if (err.name === "TokenExpiredError") {
                     const refreshHeader = req.headers["authorization-refresh"] as string;
-                    
                     if (!refreshHeader) {
                         throw new Error("401");
                     }
@@ -34,7 +38,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
                         throw err;
                     }
                     res.setHeader("authorization", jwt.sign(payload, process.env.ACCESS_TOKEN, {
-                        expiresIn: "1m",
+                        expiresIn: "20m",
                     }));
                     token = {
                         admin: payload.admin,
