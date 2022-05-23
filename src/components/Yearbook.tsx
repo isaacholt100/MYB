@@ -60,7 +60,7 @@ export default function Yearbook(props: { unvoted: number }) {
         e.preventDefault();
         if (!pdfLoading && !disabled && !membersLoading && !prizesLoading) {
             setPdfLoading(true);
-            const worker = new Worker("../workers/createPDF", { type: "module", name: "createPDF" });
+            const worker = new Worker(new URL("../workers/createPDF", import.meta.url), { type: "module", name: "createPDF" });
             worker.postMessage({
                 coverImage: new Uint8Array(await cover.arrayBuffer()),
                 groupName: name,
