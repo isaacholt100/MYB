@@ -33,7 +33,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         reject(err);
                         throw err;
                     }
-                    resolve(file.file);
+                    resolve(file.file as File);
                 });
             });
             const name = await new Promise((resolve, reject) => {

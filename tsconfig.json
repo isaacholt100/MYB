@@ -23,6 +23,7 @@
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true,
     "noUnusedLocals": true,
+    "incremental": true
     //"noUnusedParameters": true
   },
   "exclude": [
