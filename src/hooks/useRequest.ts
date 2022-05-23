@@ -59,7 +59,7 @@ function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, erro
                 ...obj
             }, response);
         } else {
-            const worker = new Worker(new URL("../workers/request", import.meta.url), { type: "module", name: "request" });
+            const worker = new Worker(new URL("../workers/request", import.meta.url));
             worker.postMessage(obj);
             worker.addEventListener("message", ({ data: res }) => {
                 response(res);

@@ -12,6 +12,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
     switch (req.method) {
         case "POST": {
             //throw new Error("Test error");
+				console.log("user");
             const
                 db = await getDB(),
                 users = db.collection("users"),
