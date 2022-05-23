@@ -36,7 +36,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => tryCatch(res, asyn
                         reject(err);
                         throw err;
                     }
-                    resolve(file.pdf);
+                    resolve(file.pdf as File);
                 });
             });
             const name = await new Promise((resolve, reject) => {
