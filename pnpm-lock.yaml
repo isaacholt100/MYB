@@ -56,6 +56,9 @@ dependencies:
   cloudinary:
     specifier: ^1.23.0
     version: 1.23.0
+  clsx:
+    specifier: ^2.0.0
+    version: 2.0.0
   cookie:
     specifier: ^0.4.1
     version: 0.4.1
@@ -2456,6 +2459,11 @@ packages:
 
   /clsx@1.2.1:
     resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
+
+  /clsx@2.0.0:
+    resolution: {integrity: sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==}
     engines: {node: '>=6'}
     dev: false
 
