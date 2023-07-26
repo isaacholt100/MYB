@@ -1,6 +1,6 @@
 import { useEffect, ReactChild, useRef, MutableRefObject } from "react";
 import Head from "next/head";
-import { createTheme, makeStyles, ThemeProvider as MuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, makeStyles, ThemeProvider as MuiTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiPickersUtilsProvider as Pickers } from "@material-ui/pickers";
 import DateUtils from "@date-io/date-fns";
@@ -29,7 +29,7 @@ function ThemeWrapper({ children }: { children: ReactChild }) {
         paperBg = TYPE === "light" ? "#f1f3f4" : "#424242",
         defaultBg = TYPE === "light" ? "#fff" : "#121212",
         level1Bg = TYPE === "light" ? "#ddd" : "#333",
-        muiTheme = createTheme({
+        muiTheme = createMuiTheme({
             palette: {
                 primary: {
                     main: PRIMARY,

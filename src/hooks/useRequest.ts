@@ -17,7 +17,7 @@ interface IOptions extends IFetchOptions {
 interface IErrors {
     errors: string | { [key: string]: string };
 }
-function useFetch(): [({ url, setLoading: load, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => void, boolean] {
+function useFetch(): [({ url, setLoading, method, failedMsg, doneMsg, errors, done, failed, file, body, ...other }: IOptions) => void, boolean] {
     const
         snackbar = useSnackbar(),
         [loading, setLoading] = useState(false),
