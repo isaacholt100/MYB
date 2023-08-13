@@ -78,8 +78,8 @@ dependencies:
     specifier: ^9.0.0
     version: 9.0.0
   lodash:
-    specifier: ^4.17.20
-    version: 4.17.20
+    specifier: ^4.17.21
+    version: 4.17.21
   mongodb:
     specifier: ^3.6.3
     version: 3.6.3
@@ -2439,21 +2439,21 @@ packages:
       webpack: 5.88.2
     dev: false
 
-  /cloudinary-core@2.13.0(lodash@4.17.20):
+  /cloudinary-core@2.13.0(lodash@4.17.21):
     resolution: {integrity: sha512-Nt0Q5I2FtenmJghtC4YZ3MZZbGg1wLm84SsxcuVwZ83OyJqG9CNIGp86CiI6iDv3QobaqBUpOT7vg+HqY5HxEA==}
     peerDependencies:
       lodash: '>=4.0'
     dependencies:
-      lodash: 4.17.20
+      lodash: 4.17.21
     dev: false
 
   /cloudinary@1.23.0:
     resolution: {integrity: sha512-akOxzroonvwWkuSVq7BI50nYpZPRXc5DbQIYETCVeKX9ZoToH2Gvc3MdUH63UtKiszuGYE51q2B+jQsJkBp2AQ==}
     engines: {node: '>=0.6'}
     dependencies:
-      cloudinary-core: 2.13.0(lodash@4.17.20)
+      cloudinary-core: 2.13.0(lodash@4.17.21)
       core-js: 3.6.5
-      lodash: 4.17.20
+      lodash: 4.17.21
       q: 1.5.1
     dev: false
 
@@ -3504,10 +3504,6 @@ packages:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
     dev: false
 
-  /lodash@4.17.20:
-    resolution: {integrity: sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==}
-    dev: false
-
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
@@ -4041,7 +4037,7 @@ packages:
       react: '*'
     dependencies:
       '@icons/material': 0.2.4(react@17.0.1)
-      lodash: 4.17.20
+      lodash: 4.17.21
       lodash-es: 4.17.21
       material-colors: 1.2.6
       prop-types: 15.8.1
@@ -4105,7 +4101,7 @@ packages:
     peerDependencies:
       react: '*'
     dependencies:
-      lodash: 4.17.20
+      lodash: 4.17.21
       react: 17.0.1
     dev: false
 
@@ -4896,7 +4892,7 @@ packages:
       fast-json-stable-stringify: 2.1.0
       fs-extra: 9.1.0
       glob: 7.2.3
-      lodash: 4.17.20
+      lodash: 4.17.21
       pretty-bytes: 5.6.0
       rollup: 2.79.1
       rollup-plugin-terser: 7.0.2(rollup@2.79.1)
