@@ -81,8 +81,8 @@ dependencies:
     specifier: ^4.17.21
     version: 4.17.21
   mongodb:
-    specifier: ^3.6.3
-    version: 3.6.3
+    specifier: ^3.6.10
+    version: 3.6.10
   next:
     specifier: ^12.1.6
     version: 12.1.6(@babel/core@7.22.9)(react-dom@17.0.1)(react@17.0.1)
@@ -3613,8 +3613,8 @@ packages:
       minimist: 1.2.8
     dev: false
 
-  /mongodb@3.6.3:
-    resolution: {integrity: sha512-rOZuR0QkodZiM+UbQE5kDsJykBqWi0CL4Ec2i1nrGrUI3KO11r6Fbxskqmq3JK2NH7aW4dcccBuUujAP0ERl5w==}
+  /mongodb@3.6.10:
+    resolution: {integrity: sha512-fvIBQBF7KwCJnDZUnFFy4WqEFP8ibdXeFANnylW19+vOwdjOAvqIzPdsNCEMT6VKTHnYu4K64AWRih0mkFms6Q==}
     engines: {node: '>=4'}
     peerDependencies:
       aws4: '*'
@@ -3640,7 +3640,7 @@ packages:
       bl: 2.2.1
       bson: 1.1.6
       denque: 1.5.1
-      require_optional: 1.0.1
+      optional-require: 1.1.8
       safe-buffer: 5.2.1
     optionalDependencies:
       saslprep: 1.0.3
@@ -3857,6 +3857,13 @@ packages:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
       wrappy: 1.0.2
+    dev: false
+
+  /optional-require@1.1.8:
+    resolution: {integrity: sha512-jq83qaUb0wNg9Krv1c5OQ+58EK+vHde6aBPzLvPPqJm89UQWsvSuFy9X/OSNJnFeSOKo7btE0n8Nl2+nE+z5nA==}
+    engines: {node: '>=4'}
+    dependencies:
+      require-at: 1.0.6
     dev: false
 
   /os-homedir@1.0.2:
@@ -4179,20 +4186,13 @@ packages:
       jsesc: 0.5.0
     dev: false
 
+  /require-at@1.0.6:
+    resolution: {integrity: sha512-7i1auJbMUrXEAZCOQ0VNJgmcT2VOKPRl2YGJwgpHpC9CE91Mv4/4UYIUm4chGJaI381ZDq1JUicFii64Hapd8g==}
+    engines: {node: '>=4'}
+    dev: false
+
   /require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
-    engines: {node: '>=0.10.0'}
-    dev: false
-
-  /require_optional@1.0.1:
-    resolution: {integrity: sha512-qhM/y57enGWHAe3v/NcwML6a3/vfESLe/sGM2dII+gEO0BpKRUkWZow/tyloNqJyN6kXSl3RyyM8Ll5D/sJP8g==}
-    dependencies:
-      resolve-from: 2.0.0
-      semver: 5.7.2
-    dev: false
-
-  /resolve-from@2.0.0:
-    resolution: {integrity: sha512-qpFcKaXsq8+oRoLilkwyc7zHGF5i9Q2/25NIgLQQ/+VVv9rU4qvr6nXVAw1DsnXJyQkZsR4Ytfbtg5ehfcUssQ==}
     engines: {node: '>=0.10.0'}
     dev: false
 
