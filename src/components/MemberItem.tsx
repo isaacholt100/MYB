@@ -11,7 +11,7 @@ export default function MemberItem({ m, setActiveMember, btn }: {m: IMember, set
             <ListItem button>
                 <ListItemAvatar>
                     <Avatar>
-                        <ProfileImg src={m.pic || "/images/default_user.png"} height={40} width={40} />
+                        <ProfileImg alt="" src={m.pic || "/images/default_user.png"} height={40} width={40} />
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={m.name} />
