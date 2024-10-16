@@ -34,7 +34,7 @@
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mongodb": "^3.6.10",
-    "next": "^14.1.1",
+    "next": "^14.2.10",
     "next-cookies": "^2.0.3",
     "next-pwa": "^5.5.2",
     "notistack": "^1.0.2",
