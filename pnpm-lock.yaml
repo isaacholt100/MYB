@@ -63,8 +63,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       cookie:
-        specifier: ^0.4.1
-        version: 0.4.1
+        specifier: ^0.7.0
+        version: 0.7.0
       date-fns:
         specifier: ^2.16.1
         version: 2.16.1
@@ -1460,6 +1460,10 @@ packages:
 
   cookie@0.4.1:
     resolution: {integrity: sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==}
+    engines: {node: '>= 0.6'}
+
+  cookie@0.7.0:
+    resolution: {integrity: sha512-qCf+V4dtlNhSRXGAZatc1TasyFO6GjohcOul807YOb5ik3+kQSnb4d7iajeCL8QHaJ4uZEjCgiCJerKXwdRVlQ==}
     engines: {node: '>= 0.6'}
 
   copy-to-clipboard@3.3.3:
@@ -4321,6 +4325,8 @@ snapshots:
   convert-source-map@1.9.0: {}
 
   cookie@0.4.1: {}
+
+  cookie@0.7.0: {}
 
   copy-to-clipboard@3.3.3:
     dependencies:
